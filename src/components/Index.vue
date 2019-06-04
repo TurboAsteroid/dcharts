@@ -1,8 +1,5 @@
 <template>
   <v-container>
-    <i class="material-icons">10k</i> первая страница
-    <v-btn @click="$router.push('secondPage')">secondPage ></v-btn>
-
     <v-container>
       <v-layout>
         <v-flex
@@ -17,10 +14,11 @@
             :key="i">
           <v-text-field
             v-model="userData[i]"
+            mask="#####"
           ></v-text-field>
             </span>
-          <v-btn @click="addField">Добавить</v-btn><v-btn @click="toStore">Далее</v-btn>
-          {{userData}}
+          <v-btn @click="addField">Добавить</v-btn>
+          <v-btn @click="toStore">Далее</v-btn>
         </v-flex>
       </v-layout>
     </v-container>
@@ -38,8 +36,12 @@
         this.userData.push(0)
       },
       toStore () {
+        for (let i = 0; i < this.userData.length; i++) {
+          this.userData[i] = parseInt(this.userData)
+        }
         this.$store.commit('indexUserData', this.userData)
         this.$store.commit('indexUserDataName', this.name)
+        this.$router.push('secondPage')
       }
     },
   }
