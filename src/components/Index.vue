@@ -37,7 +37,7 @@
       },
       toStore () {
         for (let i = 0; i < this.userData.length; i++) {
-          this.userData[i] = parseInt(this.userData)
+          this.userData[i] = parseInt(this.userData[i])
         }
         this.$store.commit('indexUserData', this.userData)
         this.$store.commit('indexUserDataName', this.name)
