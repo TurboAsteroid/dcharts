@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    первая страница  <v-btn @click="$router.push('secondPage')">secondPage ></v-btn>
+    <i class="material-icons">10k</i> первая страница  <v-btn @click="$router.push('secondPage')">secondPage ></v-btn>
   </v-container>
 </template>
 
