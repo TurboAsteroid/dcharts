@@ -21,47 +21,47 @@
 </template>
 
 <script>
-  import LineChart from './LineChart.js'
-  import BarChart from './BarChart.js'
-  import PieChart from './PieChart.js'
+import LineChart from './LineChart.js'
+import BarChart from './BarChart.js'
+import PieChart from './PieChart.js'
 
-  export default {
-    components: {
-      LineChart,
-      BarChart,
-      PieChart,
-    },
-    data() {
-      return {
-        datacollection: null,
-        items: ['Line', 'Bar', 'Pie'],
-        chartType: "",
-        backgroundColors: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
+export default {
+  components: {
+    LineChart,
+    BarChart,
+    PieChart
+  },
+  data () {
+    return {
+      datacollection: null,
+      items: ['Line', 'Bar', 'Pie'],
+      chartType: '',
+      backgroundColors: [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)'
+      ]
+    }
+  },
+  mounted () {
+    this.fillData()
+  },
+  methods: {
+    fillData () {
+      this.datacollection = {
+        labels: this.$store.getters.indexUserData,
+        datasets: [
+          {
+            label: this.$store.getters.indexUserDataName,
+            backgroundColor: this.backgroundColors,
+            data: this.$store.getters.indexUserData
+          }
         ]
-      }
-    },
-    mounted() {
-      this.fillData()
-    },
-    methods: {
-      fillData() {
-        this.datacollection = {
-          labels: this.$store.getters.indexUserData,
-          datasets: [
-            {
-              label: this.$store.getters.indexUserDataName,
-              backgroundColor: this.backgroundColors,
-              data: this.$store.getters.indexUserData
-            }
-          ]
-        }
       }
     }
   }
+}
 </script>
