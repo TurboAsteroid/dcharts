@@ -1,19 +1,23 @@
 <template>
-  <div>
-    <div class="small">
-      <v-select :items="items" v-model="chartType" label="Standard"></v-select>
+  <v-container>
+    <v-layout>
+      <v-flex
+        xl2
+      >
+        <v-select :items="items" v-model="chartType" label="Standard"></v-select>
 
-      <div v-if="chartType=='Line'">
-        <line-chart :chart-data="datacollection"></line-chart>
-      </div>
-      <div v-if="chartType=='Bar'">
-        <Bar-chart :chart-data="datacollection"></Bar-chart>
-      </div>
-      <div v-if="chartType=='Pie'">
-        <pie-chart :chart-data="datacollection"></pie-chart>
-      </div>
-    </div>
-  </div>
+        <div>
+          <line-chart :is="Line" :chart-data="datacollection"></line-chart>
+        </div>
+        <div v-if="chartType=='Bar'">
+          <Bar-chart :chart-data="datacollection"></Bar-chart>
+        </div>
+        <div v-if="chartType=='Pie'">
+          <pie-chart :chart-data="datacollection"></pie-chart>
+        </div>
+      </v-flex>
+    </v-layout>
+  </v-container>
 
 </template>
 
@@ -28,7 +32,7 @@
       BarChart,
       PieChart,
     },
-    data () {
+    data() {
       return {
         datacollection: null,
         items: ['Line', 'Bar', 'Pie'],
@@ -43,12 +47,11 @@
         ]
       }
     },
-    mounted () {
+    mounted() {
       this.fillData()
     },
     methods: {
-      fillData () {
-
+      fillData() {
         this.datacollection = {
           labels: this.$store.getters.indexUserData,
           datasets: [
@@ -59,9 +62,6 @@
             }
           ]
         }
-      },
-      getRandomInt () {
-        return Math.floor(Math.random() * (50 - 5 + 1)) + 5
       }
     }
   }
