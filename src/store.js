@@ -7,7 +7,7 @@ export default new Vuex.Store({
   state: {
     index: {
       userData: [],
-      name: ''
+      name: []
     }
   },
   mutations: {
