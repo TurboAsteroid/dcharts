@@ -1,21 +1,28 @@
 <template>
-  <v-container>
-    <v-layout>
-      <v-flex
-        xl2
-      >
-        <v-select :items="items" v-model="chartType" label="Standard"></v-select>
+  <v-container grid-list-md text-xs-center>
+    <v-layout  row wrap>
 
-        <div>
-          <line-chart :is="Line" :chart-data="datacollection"></line-chart>
-        </div>
-        <div v-if="chartType=='Bar'">
-          <Bar-chart :chart-data="datacollection"></Bar-chart>
-        </div>
-        <div v-if="chartType=='Pie'">
-          <pie-chart :chart-data="datacollection"></pie-chart>
-        </div>
+      <v-flex xs4  v-for="(chart, index) in datacollections" v-bind:key="index">
+        <v-card>
+          <v-card-title primary-title>
+            <div>
+              <h3 class="headline mb-0">{{chart.label}}</h3>
+              <v-select :items="items" v-model="chartType[index]" label="Standard"></v-select>
+
+              <div v-if="chartType[index]=='Line'">
+                <line-chart :chart-data="chart"></line-chart>
+              </div>
+              <div v-if="chartType[index]=='Bar'">
+                <Bar-chart :chart-data="chart"></Bar-chart>
+              </div>
+              <div v-if="chartType[index]=='Pie'">
+                <pie-chart :chart-data="chart"></pie-chart>
+              </div>
+            </div>
+          </v-card-title>
+        </v-card>
       </v-flex>
+
     </v-layout>
   </v-container>
 </template>
@@ -33,9 +40,9 @@ export default {
   },
   data () {
     return {
-      datacollection: null,
-      items: ['Line', 'Bar', 'Pie'],
-      chartType: '',
+      datacollections: null,
+      items: ['Pie', 'Line', 'Bar'],
+      chartType: [],
       backgroundColors: [
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)',
@@ -47,20 +54,28 @@ export default {
     }
   },
   mounted () {
+    if (!this.$store.getters.indexUserDataName.length || !this.$store.getters.indexUserData.length) {
+      this.$router.replace('/')
+    }
     this.fillData()
   },
   methods: {
     fillData () {
-      this.datacollection = {
-        labels: this.$store.getters.indexUserData,
-        datasets: [
-          {
-            label: this.$store.getters.indexUserDataName,
-            backgroundColor: this.backgroundColors,
-            data: this.$store.getters.indexUserData
-          }
-        ]
+      this.datacollections = []
+      for (let i in this.$store.getters.indexUserDataName) {
+        this.datacollections.push({
+          labels: this.$store.getters.indexUserData[i],
+          datasets: [
+            {
+              label: this.$store.getters.indexUserDataName[i],
+              backgroundColor: this.backgroundColors,
+              data: this.$store.getters.indexUserData[i]
+            }
+          ]
+        })
       }
+
+      console.log(this.datacollections)
     }
   }
 }
