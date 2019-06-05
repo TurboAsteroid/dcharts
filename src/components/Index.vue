@@ -4,27 +4,32 @@
       v-model="name"
       label="Имя набора данных"
     ></v-text-field>
-      <v-layout>
+    <v-btn @click="addArr" color="info">Добавить столбец</v-btn>
+      <v-layout wrap>
         <v-flex
-          xl2
-          v-for="(arr, j) in userData"
           :key="j+'arr'"
+          v-for="(arr, j) in userData"
+          xl2
         >
           <v-container>
-          <span
-            v-for="(item, i) in userData[j]"
-            :key="i+'item'">
-          <v-text-field
-            v-model="userData[j][i]"
-            mask="#############"
-            label="Значение"
-          ></v-text-field>
-            </span>
-          <v-btn @click="addField(j)">Добавить значение</v-btn>
+            <v-card>
+              <v-container>
+                <span
+                  v-for="(item, i) in userData[j]"
+                  :key="i+'item'">
+                  <v-text-field
+                    v-model="userData[j][i]"
+                    mask="#############"
+                    label="Значение"
+                  ></v-text-field>
+                </span>
+                <v-btn @click="addField(j)" color="info">Добавить значение</v-btn>
+              </v-container>
+            </v-card>
           </v-container>
         </v-flex>
       </v-layout>
-      <v-btn @click="toStore">Далее</v-btn>
+      <v-btn @click="toStore" color="success">Далее</v-btn>
   </v-container>
 </template>
 
@@ -37,6 +42,9 @@ export default {
   methods: {
     addField (j) {
       this.userData[j].push(0)
+    },
+    addArr () {
+      this.userData.push([0])
     },
     toStore () {
       for (let j = 0; j < this.userData.length; j++) {
