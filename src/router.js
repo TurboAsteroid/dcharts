@@ -18,6 +18,6 @@ export default new Router({
       path: '/secondPage',
       name: 'secondPage',
       component: SecondPage
-    },
+    }
   ]
 })

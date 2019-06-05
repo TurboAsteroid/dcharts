@@ -16,7 +16,7 @@ export default new Vuex.Store({
     },
     indexUserDataName (state, name) {
       state.index.name = name
-    },
+    }
   },
   actions: {},
   getters: {
