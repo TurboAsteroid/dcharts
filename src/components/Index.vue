@@ -1,10 +1,6 @@
 <template>
   <v-container>
-    <v-text-field
-      v-model="name"
-      label="Имя набора данных"
-    ></v-text-field>
-    <v-btn @click="addArr" color="info">Добавить столбец</v-btn>
+    <v-btn @click="addArr" color="info">Добавить набор данных</v-btn>
       <v-layout wrap>
         <v-flex
           :key="j+'arr'"
@@ -14,6 +10,10 @@
           <v-container>
             <v-card>
               <v-container>
+                <v-text-field
+                  v-model="name[j]"
+                  label="Имя набора данных"
+                ></v-text-field>
                 <span
                   v-for="(item, i) in userData[j]"
                   :key="i+'item'">
@@ -37,7 +37,7 @@
 export default {
   data: () => ({
     userData: [[11, 22, 0], [144, 522, 30, 532]],
-    name: 'набор данных'
+    name: ['набор данных', 'набор данных2']
   }),
   methods: {
     addField (j) {
@@ -45,6 +45,7 @@ export default {
     },
     addArr () {
       this.userData.push([0])
+      this.name.push('новый набор данных')
     },
     toStore () {
       for (let j = 0; j < this.userData.length; j++) {
