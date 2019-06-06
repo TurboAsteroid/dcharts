@@ -10,19 +10,35 @@
           <v-container>
             <v-card>
               <v-container>
-                <v-text-field
-                  v-model="name[j]"
-                  label="Имя набора данных"
-                ></v-text-field>
-                <span
+                <v-layout row>
+                  <v-flex xs9>
+                    <v-text-field
+                      v-model="name[j]"
+                      label="Имя набора данных"
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex xs3>
+                    <v-btn fab dark color="red" @click="removeCol(j)">
+                      <v-icon dark>remove</v-icon>
+                    </v-btn>
+                  </v-flex>
+                </v-layout>
+                <v-layout row
                   v-for="(item, i) in userData[j]"
                   :key="i+'item'">
-                  <v-text-field
-                    v-model="userData[j][i]"
-                    mask="#############"
-                    label="Значение"
-                  ></v-text-field>
-                </span>
+                  <v-flex xs9>
+                    <v-text-field
+                      v-model="userData[j][i]"
+                      mask="#############"
+                      label="Значение"
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex xs3>
+                    <v-btn fab dark small color="orange" @click="removeRow(j,i)">
+                      <v-icon dark>remove</v-icon>
+                    </v-btn>
+                  </v-flex>
+                </v-layout>
                 <v-btn @click="addField(j)" color="info">Добавить значение</v-btn>
               </v-container>
             </v-card>
@@ -42,6 +58,13 @@ export default {
   methods: {
     addField (j) {
       this.userData[j].push(0)
+    },
+    removeRow (j, i) {
+      this.userData[j].splice(i, 1)
+    },
+    removeCol (j) {
+      this.userData.splice(j, 1)
+      this.name.splice(j, 1)
     },
     addArr () {
       this.userData.push([0])
