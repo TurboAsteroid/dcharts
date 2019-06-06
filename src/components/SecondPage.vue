@@ -1,7 +1,7 @@
 <template>
   <v-container grid-list-md text-xs-center>
+    <v-btn @click="goBack" color="success">Назад</v-btn>
     <v-layout  row wrap>
-
       <v-flex xs4  v-for="(chart, index) in datacollections" v-bind:key="index">
         <v-card>
           <v-card-title primary-title>
@@ -74,8 +74,9 @@ export default {
           ]
         })
       }
-
-      console.log(this.datacollections)
+    },
+    goBack () {
+      this.$router.back()
     }
   }
 }
