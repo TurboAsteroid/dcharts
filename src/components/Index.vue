@@ -69,14 +69,14 @@ export default {
     userData: [{
       data: [131, 22, 0],
       name: '3набор данных',
-      val1: 2,
-      val2: 5
+      val1: 50,
+      val2: 100
     },
     {
       data: [1344, 522, 30, 532],
       name: '3набор данных 2',
-      val1: 4,
-      val2: 8
+      val1: 100,
+      val2: 600
     }]
   }),
   methods: {
