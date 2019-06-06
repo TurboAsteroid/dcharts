@@ -18,7 +18,7 @@
                     ></v-text-field>
                   </v-flex>
                   <v-flex xs3>
-                    <v-btn fab dark color="red" @click="removeCol(j)">
+                    <v-btn fab dark small color="red" @click="removeCol(j)">
                       <v-icon dark>remove</v-icon>
                     </v-btn>
                   </v-flex>
@@ -34,7 +34,7 @@
                     ></v-text-field>
                   </v-flex>
                   <v-flex xs3>
-                    <v-btn fab dark small color="orange" @click="removeRow(j,i)">
+                    <v-btn fab outline dark small color="orange" @click="removeRow(j,i)">
                       <v-icon dark>remove</v-icon>
                     </v-btn>
                   </v-flex>
