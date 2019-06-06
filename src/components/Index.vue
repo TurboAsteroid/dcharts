@@ -23,6 +23,20 @@
                   </v-btn>
                 </v-flex>
               </v-layout>
+              <v-layout row>
+                <v-flex xs6>
+                  <v-text-field
+                    v-model="obj.val1"
+                    label="Первый порог"
+                  ></v-text-field>
+                </v-flex>
+                <v-flex xs6>
+                <v-text-field
+                  v-model="obj.val2"
+                  label="Второй порог"
+                ></v-text-field>
+              </v-flex>
+              </v-layout>
               <v-layout row
                         v-for="(item, i) in obj.data"
                         :key="i+'item'">
@@ -55,14 +69,14 @@ export default {
     userData: [{
       data: [131, 22, 0],
       name: '3набор данных',
-      val1: 0,
-      val2: 0
+      val1: 2,
+      val2: 5
     },
     {
       data: [1344, 522, 30, 532],
       name: '3набор данных 2',
-      val1: 0,
-      val2: 0
+      val1: 4,
+      val2: 8
     }]
   }),
   methods: {
@@ -88,6 +102,8 @@ export default {
         for (let i = 0; i < this.userData[j].data.length; i++) {
           this.userData[j].data[i] = parseInt(this.userData[j].data[i])
         }
+        this.userData[j].val1 = parseInt(this.userData[j].val1)
+        this.userData[j].val2 = parseInt(this.userData[j].val2)
       }
       this.$store.commit('indexUserData', this.userData)
       this.$router.push('secondPage')
