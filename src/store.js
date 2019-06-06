@@ -7,7 +7,8 @@ export default new Vuex.Store({
   state: {
     index: {
       userData: [],
-      name: []
+      name: [],
+      objs: []
     }
   },
   mutations: {
@@ -16,11 +17,15 @@ export default new Vuex.Store({
     },
     indexUserDataName (state, name) {
       state.index.name = name
-    }
+    },
+    indexObjs (state, data) {
+      state.index.objs = data
+    },
   },
   actions: {},
   getters: {
     indexUserData: state => state.index.userData,
-    indexUserDataName: state => state.index.name
+    indexUserDataName: state => state.index.name,
+    indexObjs: state => state.index.objs
   }
 })
