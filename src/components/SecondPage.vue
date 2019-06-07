@@ -7,7 +7,7 @@
           <v-card-title primary-title>
             <div>
               <h3 class="headline mb-0">{{chart.name}}</h3>
-              <v-select :items="items" v-model="chartType[index]" label="Standard"></v-select>
+              <v-select :items="items" v-model="chartType[index]" label="Тип отображения"></v-select>
               <div v-if="chartType[index]=='Line'">
                 <line-chart :chart-data="chart"></line-chart>
               </div>
@@ -18,7 +18,7 @@
                 <pie-chart :chart-data="chart"></pie-chart>
               </div>
               <div v-if="chartType[index]=='Status'">
-                <v-avatar :size="avatarSize" :color="chart.co">
+                <v-avatar :color="chart.co">
                   <v-icon color="white">{{chart.st}}</v-icon>
                 </v-avatar>
               </div>
