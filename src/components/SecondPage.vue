@@ -2,28 +2,20 @@
   <v-container grid-list-md text-xs-center>
     <v-btn @click="goBack" color="success">Назад</v-btn>
     <v-layout row wrap>
-      <v-flex xs4 v-for="(chart, index) in datacollections" v-bind:key="index">
+      <v-flex sm12 md4 v-for="(chart, index) in datacollections" v-bind:key="index">
         <v-card>
           <v-card-title primary-title>
-            <div>
-              <h3 class="headline mb-0">{{chart.name}}</h3>
-              <v-select :items="items" v-model="chartType[index]" label="Тип отображения"></v-select>
-              <div v-if="chartType[index]=='Line'">
-                <line-chart :chart-data="chart"></line-chart>
-              </div>
-              <div v-if="chartType[index]=='Bar'">
-                <Bar-chart :chart-data="chart"></Bar-chart>
-              </div>
-              <div v-if="chartType[index]=='Pie'">
-                <pie-chart :chart-data="chart"></pie-chart>
-              </div>
-              <div v-if="chartType[index]=='Status'">
-                <v-avatar :color="chart.co">
-                  <v-icon color="white">{{chart.st}}</v-icon>
-                </v-avatar>
-              </div>
-            </div>
+            <h3 class="headline mb-0">{{chart.name}}</h3>
           </v-card-title>
+          <v-container>
+            <v-select :items="items" v-model="chartType[index]" label="Тип отображения"></v-select>
+            <line-chart v-if="chartType[index]=='График'" :chart-data="chart"></line-chart>
+            <Bar-chart v-if="chartType[index]=='Диаграмма'" :chart-data="chart"></Bar-chart>
+            <pie-chart v-if="chartType[index]=='Круговая диаграмма'" :chart-data="chart"></pie-chart>
+            <v-avatar v-if="chartType[index]=='Статус'" :color="chart.co">
+              <v-icon color="white">{{chart.st}}</v-icon>
+            </v-avatar>
+          </v-container>
         </v-card>
       </v-flex>
     </v-layout>
@@ -44,8 +36,22 @@ export default {
   data () {
     return {
       datacollections: null,
-      items: ['Pie', 'Line', 'Bar', 'Status'],
-      chartType: [],
+      items: ['Круговая диаграмма', 'График', 'Диаграмма', 'Статус'],
+      chartType: [
+        'Статус',
+        'Статус',
+        'Статус',
+        'Круговая диаграмма',
+        'Диаграмма',
+        'График',
+        'Диаграмма',
+        'График',
+        'Диаграмма',
+        'Статус',
+        'Статус',
+        'Статус',
+        'Статус'
+      ],
       backgroundColors: [
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)',
