@@ -7,33 +7,10 @@
               {{userData[selectedObjId]}}
           </v-flex>
           <v-flex xs4>
-<!--              <v-container-->
-<!--                  :key="j+'obj'"-->
-<!--                  v-for="(obj, j) in userData"-->
-<!--              >-->
-<!--                  <v-btn @click="objLibClk(obj)" >{{obj.name}}</v-btn>-->
-<!--              </v-container>-->
-
               <v-container>
               <v-card>
               <v-container>
-                  <draggable
-                          class="dragArea list-group"
-                          :list="userData"
-                          :group="{ name: 'people', pull: 'clone', put: false }"
-                          @change="log"
-                  >
-                  <v-card style="margin: 16px"
-                          class="list-group-item"
-                          v-for="obj in userData"
-                          :key="obj.name"
-                          @mousedown.native="objLibClk(obj)"
-                  >
-                      <v-container>
-                      {{ obj.name }}
-                      </v-container>
-                  </v-card>
-              </draggable>
+<libDraggable :tasks="userData" />
               </v-container>
               </v-card>
               </v-container>
@@ -42,7 +19,7 @@
               <v-container>
               <v-card>
                   <v-container>
-                      <nestedDraggable :tasks="list" />
+                      <nested-draggable :tasks="list0"/>
 <!--                      <div  v-if="list2.length === 0">Пусто</div>-->
 <!--                      <draggable-->
 <!--                              class="dragArea list-group"-->
@@ -127,37 +104,15 @@
 </template>
 
 <script>
-import draggable from 'vuedraggable'
 import nestedDraggable from './nested-draggable'
+import libDraggable from './lib-draggable'
 export default {
   components: {
-    draggable,
-    nestedDraggable
+    nestedDraggable,
+    libDraggable
   },
   data: () => ({
-    list: [
-      {
-        name: 'task 1',
-        tasks: [
-          {
-            name: 'task 2',
-            tasks: []
-          }
-        ]
-      },
-      {
-        name: 'task 3',
-        tasks: [
-          {
-            name: 'task 4',
-            tasks: []
-          }
-        ]
-      },
-      {
-        name: 'task 5',
-        tasks: []
-      }
+    list0: [
     ],
     userData: [
       {
@@ -165,100 +120,110 @@ export default {
         data: [95, 97, 99, 100],
         name: 'СИЗ: Промышленная безопасность',
         val1: 98,
-        val2: 100
+        val2: 100,
+        tasks: []
       },
       {
         id: 2,
         data: [95, 99, 100, 98],
         name: 'ЛПП: Промышленная безопасность',
         val1: 98,
-        val2: 100
+        val2: 100,
+        tasks: []
       },
       {
         id: 3,
         data: [99, 93, 100, 98],
         name: 'Численность: Кадровая комплектация',
         val1: 95,
-        val2: 100
+        val2: 100,
+        tasks: []
       },
       {
         id: 4,
         data: [5, 2, 17, 10, 2, 7],
         name: 'Текучесть: Кадровая комплектация',
         val1: 3,
-        val2: 12
+        val2: 12,
+        tasks: []
       },
       {
         id: 5,
         data: [99, 100, 101, 98, 100, 99],
         name: 'Трудовая дисциплина: Кадровая комплектация',
         val1: 100,
-        val2: 99
+        val2: 99,
+        tasks: []
       },
       {
         id: 6,
         data: [3054, 2602, 4125],
         name: 'Количество обученных сотрудников',
         val1: 2500,
-        val2: 2600
+        val2: 2600,
+        tasks: []
       },
       {
         id: 7,
         data: [100, 99, 98, 102, 105, 95],
         name: 'Фонд оплаты труда',
         val1: 100,
-        val2: 99
+        val2: 99,
+        tasks: []
       },
       {
         id: 8,
         data: [43528, 44564, 42888, 45821, 41433],
         name: 'Средняя заработная плата',
         val1: 42000,
-        val2: 45000
+        val2: 45000,
+        tasks: []
       },
       {
         id: 9,
         data: [97, 99, 105, 99, 99, 103],
         name: 'Ежедневный учет: Производство',
         val1: 98,
-        val2: 100
+        val2: 100,
+        tasks: []
       },
       {
         id: 10,
         data: [96, 106, 101, 100, 100, 102],
         name: 'Ежемесячный учет: Производство',
         val1: 98,
-        val2: 100
+        val2: 100,
+        tasks: []
       },
       {
         id: 11,
         data: [100, 100, 105, 101, 102, 103],
         name: 'Накопительный учет: Производство',
         val1: 98,
-        val2: 100
+        val2: 100,
+        tasks: []
       },
       {
         id: 12,
         data: [100, 99, 98, 102, 100, 99],
         name: 'Накопительный итог: Данные СБ',
         val1: 100,
-        val2: 102
+        val2: 102,
+        tasks: []
       },
       {
         id: 13,
         data: [150, 135],
         name: 'Социальная напряженность',
         val1: 80,
-        val2: 140
+        val2: 140,
+        tasks: []
       }],
     selectedObjId: -1,
     list2: [
     ]
   }),
   methods: {
-    log: function (evt) {
-      window.console.log(evt)
-    },
     objLibClk (obj) {
       this.selectedObjId = obj.id
       console.log(obj.id)

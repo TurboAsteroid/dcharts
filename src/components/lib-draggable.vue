@@ -1,13 +1,17 @@
 <template>
-    <draggable class="dragArea" tag="ul" :list="tasks" :group="{ name: 'g1' }">
-        <v-container>
-        <v-card v-for="el in tasks" :key="el.name">
+    <draggable
+            :list="tasks"
+            :group="{ name: 'g1', pull: 'clone', put: false }"
+    >
+        <v-card style="margin: 16px"
+                class="list-group-item"
+                v-for="obj in tasks"
+                :key="obj.name"
+        >
             <v-container>
-            <p>{{ el.name }}</p>
-            <nested-draggable :tasks="el.tasks" />
+                {{ obj.name }}
             </v-container>
         </v-card>
-        </v-container>
     </draggable>
 </template>
 <script>
@@ -23,7 +27,7 @@ export default {
   components: {
     draggable
   },
-  name: 'nested-draggable'
+  name: 'lib-draggable'
 }
 </script>
 <style scoped>
