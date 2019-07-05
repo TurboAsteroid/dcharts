@@ -5,17 +5,15 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    index: {
-      userData: []
-    }
+    library: []
   },
   mutations: {
-    indexUserData (state, data) {
-      state.index.userData = data
+    library (state, data) {
+      state.library = data
     }
   },
   actions: {},
   getters: {
-    indexUserData: state => state.index.userData
+    library: state => state.library
   }
 })

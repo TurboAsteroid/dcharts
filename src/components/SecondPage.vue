@@ -60,7 +60,7 @@ export default {
     }
   },
   mounted () {
-    if (!this.$store.getters.indexUserData.length) {
+    if (!this.$store.getters.library.length) {
       this.$router.replace('/')
     }
     this.fillData()
@@ -68,15 +68,15 @@ export default {
   methods: {
     fillData () {
       this.datacollections = []
-      for (let i in this.$store.getters.indexUserData) {
+      for (let i in this.$store.getters.library) {
         this.datacollections[i] = {
-          name: this.$store.getters.indexUserData[i].name,
+          name: this.$store.getters.library[i].name,
           top: {
             label: 'Верхний порог',
             backgroundColor: 'rgba(0, 255, 0, 1)',
             borderColor: 'rgba(0, 255, 0, 1)',
             borderWidth: 2,
-            data: Array(this.$store.getters.indexUserData[i].data.length).fill(this.$store.getters.indexUserData[i].val2),
+            data: Array(this.$store.getters.library[i].data.length).fill(this.$store.getters.library[i].val2),
             fill: false,
             type: 'line'
           },
@@ -85,28 +85,28 @@ export default {
             backgroundColor: 'rgba(255, 0, 0, 1)',
             borderColor: 'rgba(255, 0, 0, 1)',
             borderWidth: 2,
-            data: Array(this.$store.getters.indexUserData[i].data.length).fill(this.$store.getters.indexUserData[i].val1),
+            data: Array(this.$store.getters.library[i].data.length).fill(this.$store.getters.library[i].val1),
             fill: false,
             type: 'line'
           },
           datasets: [
             {
-              label: this.$store.getters.indexUserData[i].name,
+              label: this.$store.getters.library[i].name,
               backgroundColor: this.backgroundColors,
-              data: this.$store.getters.indexUserData[i].data
+              data: this.$store.getters.library[i].data
             }
           ],
-          labels: this.$store.getters.indexUserData[i].data
+          labels: this.$store.getters.library[i].data
         }
         let average = 0
-        for (let j in this.$store.getters.indexUserData[i].data) {
-          average += this.$store.getters.indexUserData[i].data[j]
+        for (let j in this.$store.getters.library[i].data) {
+          average += this.$store.getters.library[i].data[j]
         }
-        average /= this.$store.getters.indexUserData[i].data.length
-        if (average >= this.$store.getters.indexUserData[i].val2) {
+        average /= this.$store.getters.library[i].data.length
+        if (average >= this.$store.getters.library[i].val2) {
           this.datacollections[i].st = 'check_circle'
           this.datacollections[i].co = 'green'
-        } else if (average < this.$store.getters.indexUserData[i].val1) {
+        } else if (average < this.$store.getters.library[i].val1) {
           this.datacollections[i].st = 'error'
           this.datacollections[i].co = 'red'
         } else {
