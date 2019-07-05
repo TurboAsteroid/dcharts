@@ -37,7 +37,7 @@ export default {
   methods: {
     onClick (evt) {
       this.dialog = true
-      this.addToTree(evt)
+      this.place = evt
     },
     addToTree (evt) {
       evt.data.children.push({
@@ -52,6 +52,7 @@ export default {
     },
     ok () {
       this.dialog = false
+      this.addToTree(this.place)
     },
     cancel () {
       this.dialog = false
