@@ -9,14 +9,13 @@
   },
   "dependencies": {
     "chart.js": "^2.8.0",
-    "core-js": "^2.6.5",
+    "circular-json": "^0.5.9",
     "material-design-icons-iconfont": "^5.0.1",
     "roboto-fontface": "^0.10.0",
     "vue": "^2.6.10",
     "vue-chartjs": "^3.4.2",
-    "vue-nestable": "^2.4.3",
     "vue-router": "^3.0.3",
-    "vuedraggable": "^2.23.0",
+    "vued3tree": "^3.7.1",
     "vuetify": "^1.5.5",
     "vuex": "^3.0.1"
   },
