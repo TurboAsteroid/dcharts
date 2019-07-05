@@ -3700,6 +3700,13 @@ ignore@^5.0.2:
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.1.2.tgz#e28e584d43ad7e92f96995019cc43b9e1ac49558"
 
+immutability-helper@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/immutability-helper/-/immutability-helper-3.0.1.tgz#4f609c5afbf8d78cb297970e8af2fba8b0eda1d6"
+  integrity sha512-U92ROQQt7XkIwrdqCByUI118TQM1hXdKnRQpvKeA0HRyGSnJipu9IWHe4UD8zCN00O8UnQjQzPCgZ1CC3yBzHA==
+  dependencies:
+    invariant "^2.2.4"
+
 import-cwd@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/import-cwd/-/import-cwd-2.1.0.tgz#aa6cf36e722761285cb371ec6519f53e2435b0a9"
@@ -3808,7 +3815,7 @@ internal-ip@^4.3.0:
     default-gateway "^4.2.0"
     ipaddr.js "^1.9.0"
 
-invariant@^2.2.2:
+invariant@^2.2.2, invariant@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
   dependencies:
@@ -6982,6 +6989,14 @@ vue-loader@^15.7.0:
     loader-utils "^1.1.0"
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
+
+vue-nestable@^2.4.3:
+  version "2.4.3"
+  resolved "https://registry.yarnpkg.com/vue-nestable/-/vue-nestable-2.4.3.tgz#2614a3a17fe157333381050c2b886e12291a0cbb"
+  integrity sha512-eiaMHRit8P4FkhnVxQQHKR55qt7npUO5IBk+XGlUzXx20XgiTkpR4K0ShanSlNlVwIaFDP9UaUpQOTHFpQb0Tw==
+  dependencies:
+    immutability-helper "^3.0.0"
+    vue "^2.6.10"
 
 vue-router@^3.0.3:
   version "3.0.6"
