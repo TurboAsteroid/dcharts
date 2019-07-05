@@ -13,22 +13,26 @@ export default new Router({
     {
       path: '/',
       name: 'index',
-      component: Index
+      component: Index,
+      meta: { nameRu: 'Библиотека' }
     },
     {
       path: '/secondPage',
       name: 'secondPage',
-      component: SecondPage
+      component: SecondPage,
+      meta: { nameRu: 'Отчёт' }
     },
     {
       path: '/secondPage/:page',
       name: 'certainparameter',
-      component: CertainParameter
+      component: CertainParameter,
+      meta: { nameRu: 'Библиотека' }
     },
     {
       path: '/reportConfigurator',
       name: 'reportConfigurator',
-      component: ReportConfigurator
+      component: ReportConfigurator,
+      meta: { nameRu: 'Создание отчёта' }
     }
   ]
 })
