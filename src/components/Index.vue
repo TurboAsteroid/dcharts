@@ -74,7 +74,8 @@ export default {
           name: 'СИЗ: Промышленная безопасность',
           val1: 98,
           val2: 100,
-          children: []
+          children: [],
+          link: 'salary'
         },
         {
           id: 2,
