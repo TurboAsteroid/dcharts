@@ -7,15 +7,15 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
-          <v-btn flat :to="{ name: 'index'}">
-              Библиотека
-          </v-btn>
-          <v-btn flat :to="{ name: 'reportConfigurator'}">
-              Создание отчёта
-          </v-btn>
-          <v-btn flat :to="{ name: 'secondPage'}">
-              Отчёт
-          </v-btn>
+        <v-btn flat exact :to="{ name: 'index'}">
+          Библиотека
+        </v-btn>
+        <v-btn flat exact :to="{ name: 'reportConfigurator'}">
+          Создание отчёта
+        </v-btn>
+        <v-btn flat :to="{ name: 'secondPage'}">
+          Отчёт
+        </v-btn>
         <span class="mr-2">v0.0.1</span>
       </v-toolbar-items>
 
