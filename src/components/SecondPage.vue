@@ -6,7 +6,7 @@
       <v-flex v-for="(chart, index) in datacollections" v-bind:key="index">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-            <router-link :to="{ name: 'certainparameter', params: { page: chart.link }}" class="link">
+            <router-link :to="{ name: 'certainparameter', params: { reportName: chart.link }}" class="link">
               <v-avatar :color="chart.co" v-on="on">
                 <v-icon color="white">{{chart.st}}</v-icon>
               </v-avatar>
@@ -71,6 +71,7 @@ export default {
       for (let i in this.$store.getters.library) {
         this.datacollections[i] = {
           name: this.$store.getters.library[i].name,
+          link: this.$store.getters.library[i].link,
           top: {
             label: 'Верхний порог',
             backgroundColor: 'rgba(0, 255, 0, 1)',

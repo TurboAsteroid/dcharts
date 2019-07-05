@@ -23,7 +23,7 @@ export default new Router({
       meta: { nameRu: 'Отчёт' }
     },
     {
-      path: '/secondPage/:page',
+      path: '/secondPage/:reportName',
       name: 'certainparameter',
       component: CertainParameter,
       meta: { nameRu: 'Библиотека' }
