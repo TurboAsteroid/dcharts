@@ -1,22 +1,19 @@
 <template>
   <v-container grid-list-md text-xs-center>
     <v-btn @click="goBack" color="success">Назад</v-btn>
+    <v-divider class="my-5"></v-divider>
     <v-layout row wrap>
-      <v-flex sm12 md4 v-for="(chart, index) in datacollections" v-bind:key="index">
-        <v-card>
-          <v-card-title primary-title>
-            <h3 class="headline mb-0">{{chart.name}}</h3>
-          </v-card-title>
-          <v-container>
-            <v-select :items="items" v-model="chartType[index]" label="Тип отображения"></v-select>
-            <line-chart v-if="chartType[index]=='График'" :chart-data="chart"></line-chart>
-            <Bar-chart v-if="chartType[index]=='Диаграмма'" :chart-data="chart"></Bar-chart>
-            <pie-chart v-if="chartType[index]=='Круговая диаграмма'" :chart-data="chart"></pie-chart>
-            <v-avatar v-if="chartType[index]=='Статус'" :color="chart.co">
-              <v-icon color="white">{{chart.st}}</v-icon>
-            </v-avatar>
-          </v-container>
-        </v-card>
+      <v-flex v-for="(chart, index) in datacollections" v-bind:key="index">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <router-link :to="{ name: 'certainparameter', params: { page: chart.link }}" class="link">
+              <v-avatar :color="chart.co" v-on="on">
+                <v-icon color="white">{{chart.st}}</v-icon>
+              </v-avatar>
+            </router-link>
+          </template>
+          <span>{{chart.name}}</span>
+        </v-tooltip>
       </v-flex>
     </v-layout>
   </v-container>
