@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Index from './components/Index.vue'
 import SecondPage from './components/SecondPage.vue'
+import CertainParameter from './components/CertainParameter.vue'
 
 Vue.use(Router)
 
@@ -18,6 +19,11 @@ export default new Router({
       path: '/secondPage',
       name: 'secondPage',
       component: SecondPage
+    },
+    {
+      path: '/secondPage/:page',
+      name: 'certainparameter',
+      component: CertainParameter
     }
   ]
 })
