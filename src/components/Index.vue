@@ -1,117 +1,190 @@
 <template>
-  <v-container>
-    <v-btn @click="addArr" color="info">Добавить набор данных</v-btn>
-    <v-btn @click="toStore" color="success">Далее</v-btn>
-      <v-layout wrap>
-          <v-flex xs4>
-              {{userData[selectedObjId]}}
-          </v-flex>
-          <v-flex xs4>
-              <v-container>
-              <v-card>
-              <v-container>
-<libDraggable :tasks="userData" />
-              </v-container>
-              </v-card>
-              </v-container>
-          </v-flex>
-          <v-flex xs4>
-              <v-container>
-              <v-card>
-                  <v-container>
-                      <nested-draggable :tasks="list0"/>
-<!--                      <div  v-if="list2.length === 0">Пусто</div>-->
-<!--                      <draggable-->
-<!--                              class="dragArea list-group"-->
-<!--                              :list="list2"-->
-<!--                              group="people"-->
-<!--                              @change="log"-->
-<!--                      >-->
-<!--                          <v-card style="margin: 16px"-->
-<!--                                  class="list-group-item"-->
-<!--                                  v-for="obj in list2"-->
-<!--                                  :key="obj.name"-->
-<!--                          >-->
-<!--                              <v-container>-->
-<!--                                  {{ obj.name }}-->
-<!--                              </v-container>-->
-<!--                          </v-card>-->
-<!--                      </draggable>-->
-                  </v-container>
-              </v-card>
-              </v-container>
-          </v-flex>
-      </v-layout>
-    <v-layout wrap>
-      <v-flex
-        :key="j+'obj'"
-        v-for="(obj, j) in userData"
-        xl2
-      >
-        <v-container>
-          <v-card>
-            <v-container>
-              <v-layout row>
-                <v-flex xs9>
-                  <v-text-field
-                    v-model="obj.name"
-                    label="Имя набора данных"
-                  ></v-text-field>
-                </v-flex>
-                <v-flex xs3>
-                  <v-btn fab dark small color="red" @click="removeCol(j)">
-                    <v-icon dark>close</v-icon>
-                  </v-btn>
-                </v-flex>
-              </v-layout>
-              <v-layout row>
-                <v-flex xs6>
-                  <v-text-field
-                    v-model="obj.val1"
-                    label="Первый порог"
-                  ></v-text-field>
-                </v-flex>
-                <v-flex xs6>
-                <v-text-field
-                  v-model="obj.val2"
-                  label="Второй порог"
-                ></v-text-field>
-              </v-flex>
-              </v-layout>
-              <v-layout row
-                        v-for="(item, i) in obj.data"
-                        :key="i+'item'">
-                <v-flex xs9>
-                  <v-text-field
-                    v-model="obj.data[i]"
-                    mask="#############"
-                    label="Значение"
-                  ></v-text-field>
-                </v-flex>
-                <v-flex xs3>
-                  <v-btn fab outline dark small color="orange" @click="removeRow(j,i)">
-                    <v-icon dark>close</v-icon>
-                  </v-btn>
-                </v-flex>
-              </v-layout>
-              <v-btn @click="addField(j)" color="info">Добавить значение</v-btn>
-            </v-container>
-          </v-card>
-        </v-container>
-      </v-flex>
-    </v-layout>
-  </v-container>
+    <div>
+        <div class="side-by-side">
+            <v-card class="side">
+                <v-container>
+                    <VueNestable
+                            v-model="userData"
+                            cross-list
+                            group="cross"
+                    >
+                        <VueNestableHandle
+                                slot-scope="{ item }"
+                                :item="item"
+                        >
+                            {{ item.name }}
+                        </VueNestableHandle>
+                    </VueNestable>
+                </v-container>
+            </v-card>
+            <br/>
+            <v-card class="side">
+                <v-container>
+                    <VueNestable
+                            v-model="addedToPage"
+                            cross-list
+                            group="cross"
+                            @change="objLibClk"
+                    >
+                        <VueNestableHandle
+                                slot-scope="{ item }"
+                                :item="item"
+                        >
+                            {{ item.name }}
+                        </VueNestableHandle>
+                    </VueNestable>
+                </v-container>
+            </v-card>
+        </div>
+        <br/>
+        <br/>
+        {{selectedObjA}}
+        <br/><br/><br/><br/>
+        {{selectedObjB}}
+    </div>
+<!--  <v-container>-->
+<!--    <v-btn @click="addArr" color="info">Добавить набор данных</v-btn>-->
+<!--    <v-btn @click="toStore" color="success">Далее</v-btn>-->
+<!--      <v-layout wrap>-->
+<!--          <v-flex xs4>-->
+<!--              {{userData[selectedObjId]}}-->
+<!--          </v-flex>-->
+<!--          <v-flex xs4>-->
+<!--              <v-container>-->
+<!--              <v-card>-->
+<!--              <v-container>-->
+<!--<libDraggable :tasks="userData" />-->
+<!--              </v-container>-->
+<!--              </v-card>-->
+<!--              </v-container>-->
+<!--          </v-flex>-->
+<!--          <v-flex xs4>-->
+<!--              <v-container>-->
+<!--              <v-card>-->
+<!--                  <v-container>-->
+<!--                      <nested-draggable :tasks="list0"/>-->
+<!--&lt;!&ndash;                      <div  v-if="list2.length === 0">Пусто</div>&ndash;&gt;-->
+<!--&lt;!&ndash;                      <draggable&ndash;&gt;-->
+<!--&lt;!&ndash;                              class="dragArea list-group"&ndash;&gt;-->
+<!--&lt;!&ndash;                              :list="list2"&ndash;&gt;-->
+<!--&lt;!&ndash;                              group="people"&ndash;&gt;-->
+<!--&lt;!&ndash;                              @change="log"&ndash;&gt;-->
+<!--&lt;!&ndash;                      >&ndash;&gt;-->
+<!--&lt;!&ndash;                          <v-card style="margin: 16px"&ndash;&gt;-->
+<!--&lt;!&ndash;                                  class="list-group-item"&ndash;&gt;-->
+<!--&lt;!&ndash;                                  v-for="obj in list2"&ndash;&gt;-->
+<!--&lt;!&ndash;                                  :key="obj.name"&ndash;&gt;-->
+<!--&lt;!&ndash;                          >&ndash;&gt;-->
+<!--&lt;!&ndash;                              <v-container>&ndash;&gt;-->
+<!--&lt;!&ndash;                                  {{ obj.name }}&ndash;&gt;-->
+<!--&lt;!&ndash;                              </v-container>&ndash;&gt;-->
+<!--&lt;!&ndash;                          </v-card>&ndash;&gt;-->
+<!--&lt;!&ndash;                      </draggable>&ndash;&gt;-->
+<!--                  </v-container>-->
+<!--              </v-card>-->
+<!--              </v-container>-->
+<!--          </v-flex>-->
+<!--      </v-layout>-->
+<!--    <v-layout wrap>-->
+<!--      <v-flex-->
+<!--        :key="j+'obj'"-->
+<!--        v-for="(obj, j) in userData"-->
+<!--        xl2-->
+<!--      >-->
+<!--        <v-container>-->
+<!--          <v-card>-->
+<!--            <v-container>-->
+<!--              <v-layout row>-->
+<!--                <v-flex xs9>-->
+<!--                  <v-text-field-->
+<!--                    v-model="obj.name"-->
+<!--                    label="Имя набора данных"-->
+<!--                  ></v-text-field>-->
+<!--                </v-flex>-->
+<!--                <v-flex xs3>-->
+<!--                  <v-btn fab dark small color="red" @click="removeCol(j)">-->
+<!--                    <v-icon dark>close</v-icon>-->
+<!--                  </v-btn>-->
+<!--                </v-flex>-->
+<!--              </v-layout>-->
+<!--              <v-layout row>-->
+<!--                <v-flex xs6>-->
+<!--                  <v-text-field-->
+<!--                    v-model="obj.val1"-->
+<!--                    label="Первый порог"-->
+<!--                  ></v-text-field>-->
+<!--                </v-flex>-->
+<!--                <v-flex xs6>-->
+<!--                <v-text-field-->
+<!--                  v-model="obj.val2"-->
+<!--                  label="Второй порог"-->
+<!--                ></v-text-field>-->
+<!--              </v-flex>-->
+<!--              </v-layout>-->
+<!--              <v-layout row-->
+<!--                        v-for="(item, i) in obj.data"-->
+<!--                        :key="i+'item'">-->
+<!--                <v-flex xs9>-->
+<!--                  <v-text-field-->
+<!--                    v-model="obj.data[i]"-->
+<!--                    mask="#############"-->
+<!--                    label="Значение"-->
+<!--                  ></v-text-field>-->
+<!--                </v-flex>-->
+<!--                <v-flex xs3>-->
+<!--                  <v-btn fab outline dark small color="orange" @click="removeRow(j,i)">-->
+<!--                    <v-icon dark>close</v-icon>-->
+<!--                  </v-btn>-->
+<!--                </v-flex>-->
+<!--              </v-layout>-->
+<!--              <v-btn @click="addField(j)" color="info">Добавить значение</v-btn>-->
+<!--            </v-container>-->
+<!--          </v-card>-->
+<!--        </v-container>-->
+<!--      </v-flex>-->
+<!--    </v-layout>-->
+<!--  </v-container>-->
 </template>
 
 <script>
-import nestedDraggable from './nested-draggable'
-import libDraggable from './lib-draggable'
+// import nestedDraggable from './nested-draggable'
+// import libDraggable from './lib-draggable'
+import { VueNestable, VueNestableHandle } from 'vue-nestable'
+
 export default {
   components: {
-    nestedDraggable,
-    libDraggable
+    // nestedDraggable,
+    // libDraggable,
+    VueNestable,
+    VueNestableHandle
   },
   data: () => ({
+    addedToPage: [],
+    nestableItems1: [
+      {
+        id: 0,
+        text: 'Andy'
+      }, {
+        id: 1,
+        text: 'Harry',
+        children: [{
+          id: 2,
+          text: 'David'
+        }]
+      }, {
+        id: 3,
+        text: 'Lisa'
+      }
+    ],
+    nestableItems2: [
+      {
+        id: 4,
+        text: 'Mike'
+      }, {
+        id: 5,
+        text: 'Edgar'
+      }
+    ],
     list0: [
     ],
     userData: [
@@ -219,14 +292,17 @@ export default {
         val2: 140,
         tasks: []
       }],
-    selectedObjId: -1,
+    selectedObjA: -1,
+    selectedObjB: -1,
     list2: [
     ]
   }),
   methods: {
-    objLibClk (obj) {
-      this.selectedObjId = obj.id
-      console.log(obj.id)
+    objLibClk (a, b) {
+      this.selectedObjA = a
+      this.selectedObjB = b
+      console.log(a)
+      console.log(b)
     },
     addField (j) {
       this.userData[j].data.push(0)
