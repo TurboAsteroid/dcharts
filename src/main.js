@@ -7,6 +7,7 @@ import 'material-design-icons-iconfont'
 import 'roboto-fontface'
 import 'vuetify/dist/vuetify.min.css'
 import Vuetify from 'vuetify'
+import 'babel-polyfill'
 
 Vue.use(Vuetify)
 Vue.config.productionTip = false

@@ -3,7 +3,7 @@
         <v-container>
             <v-card>
                 <v-container>
-                <tree :data="library" node-text="name" layoutType="euclidean" style="height: 800px;" @clicked="onClick"/>
+                <tree :data="root" node-text="name" layoutType="euclidean" style="height: 800px;" @clicked="onClick" @retract="onRetract"/>
                 </v-container>
             </v-card>
         </v-container>
@@ -12,7 +12,16 @@
             <v-dialog v-model="dialog" persistent max-width="400">
                 <v-card>
                     <v-card-title class="headline">Выберите какой элемент добавить</v-card-title>
-                    <v-card-text>один элемент в любом случае будет сейчас добавлен в дерево в ту ноду что вы кликнули, ниже библиотека всех элементов {{$store.getters.library}}</v-card-text>
+                    <v-card-text>
+                        <v-radio-group v-model="selectedForAdd">
+                            <v-radio
+                                    v-for="item in library.children"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item"
+                            ></v-radio>
+                        </v-radio-group>
+                    </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="green darken-1" flat @click="ok">OK</v-btn>
@@ -32,23 +41,36 @@ export default {
     tree
   },
   data: () => ({
+    selectedForAdd: {
+      id: -1,
+      data: [],
+      name: 'что-то новенькое',
+      val1: -1,
+      val2: -1,
+      children: []
+    },
+    root: {
+      id: -1,
+      data: [],
+      name: 'Корневой элемент',
+      val1: -1,
+      val2: -1,
+      children: []
+    },
     dialog: false
   }),
+  mounted () {
+    if (!this.$store.getters.library.length) {
+      this.$router.replace('/')
+    }
+  },
   methods: {
     onClick (evt) {
       this.dialog = true
       this.place = evt
     },
     addToTree (evt) {
-      evt.data.children.push({
-        id: 13,
-        data: [150, 135],
-        name: 'что-то новенькое',
-        val1: 80,
-        val2: 140,
-        children: []
-      })
-      console.log(this.tree)
+      evt.data.children.push(this.selectedForAdd)
     },
     ok () {
       this.dialog = false
@@ -64,7 +86,10 @@ export default {
       this.onEvent('onRetract', evt)
     },
     onEvent (eventName, data) {
-      this.events.push({ eventName, data: data.data })
+      console.log(eventName)
+      console.log(data)
+      data.remove()
+      // this.events.push({ eventName, data: data.data })
     },
     toStore () {
       for (let j = 0; j < this.library.length; j++) {
