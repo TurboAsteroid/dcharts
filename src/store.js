@@ -5,15 +5,20 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    library: []
+    library: [],
+    report: []
   },
   mutations: {
     library (state, data) {
       state.library = data
+    },
+    report (state, data) {
+      state.report = data
     }
   },
   actions: {},
   getters: {
-    library: state => state.library
+    library: state => state.library,
+    report: state => state.report
   }
 })
