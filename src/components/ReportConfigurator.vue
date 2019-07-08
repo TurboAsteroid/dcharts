@@ -56,16 +56,33 @@ export default {
       this.dialog = true
       this.node = evt
       this.selected = []
-      if (evt.data.children.length > 0) {
-        for (let i = 0; i < evt.data.children.length; i++) {
-          this.selected.push(evt.data.children[i])
-        }
+      for (let i = 0; i < evt.data.children.length; i++) {
+        let tmpNode = Object.assign({}, evt.data.children[i]);
+        tmpNode.children = [];
+        this.selected.push(tmpNode)
       }
     },
     ok () {
       this.dialog = false
+
+      for (let i = 0; i < this.node.data.children.length; i++) {
+        if (!this.selected.find(function(element) {
+            return element.id === this.node.data.children[i].id;
+          }, this)) {
+          this.node.data.children.splice(i, 1);
+          i--;
+        }
+      }
+
       for (let i = 0; i < this.selected.length; i++) {
-        this.node.data.children.push(this.selected[i])
+        let tmpEl = this.node.data.children.find(function(element) {
+          return element.id === this.selected[i].id;
+        }, this);
+        if (!tmpEl) {
+          let tmpNode = Object.assign({}, this.selected[i]);
+          tmpNode.children = [];
+          this.node.data.children.push(tmpNode)
+        }
       }
     },
     cancel () {
