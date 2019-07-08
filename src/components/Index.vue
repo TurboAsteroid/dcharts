@@ -1,7 +1,14 @@
 <template>
   <v-container>
-    <v-btn @click="addArr" color="info">Добавить набор данных</v-btn>
-    <v-btn @click="toStore" color="success">Далее</v-btn>
+      <v-layout wrap>
+          <v-flex xs2>
+              <v-btn @click="addArr" color="info" block>Добавить набор данных</v-btn>
+          </v-flex>
+          <v-flex xs8></v-flex>
+          <v-flex xs2>
+              <v-btn @click="toStore" color="success" block>Сохранить бибилиотеку</v-btn>
+          </v-flex>
+      </v-layout>
     <v-layout wrap>
       <v-flex
         :key="j+'obj'"
@@ -188,10 +195,12 @@ export default {
     },
     addArr () {
       this.library.push({
+        id: -1,
         data: [0],
         name: 'набор данных',
         val1: 0,
-        val2: 0
+        val2: 0,
+        children: []
       })
     },
     toStore () {
@@ -203,7 +212,7 @@ export default {
         this.library[j].val2 = parseInt(this.library[j].val2)
       }
       this.$store.commit('library', this.library)
-      this.$router.push('secondPage')
+      // this.$router.push('secondPage')
     }
   }
 }

@@ -62,6 +62,7 @@ export default {
   mounted () {
     if (!this.$store.getters.library.length) {
       this.$router.replace('/')
+      return
     }
     this.fillData()
   },

@@ -4,23 +4,22 @@
       <v-toolbar-title class="headline text-uppercase">
         <span>d</span>
         <span class="font-weight-light">Charts</span>:{{$router.currentRoute.meta.nameRu}}
+          <span style="font-size: 10px">v0.0.1</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
         <v-btn flat exact :to="{ name: 'index'}">
           Библиотека
         </v-btn>
-        <v-btn flat exact :to="{ name: 'reportConfigurator'}">
+        <v-btn flat exact :to="{ name: 'reportConfigurator'}" :disabled="active">
           Создание отчёта
         </v-btn>
-        <v-btn flat :to="{ name: 'secondPage'}">
+        <v-btn flat :to="{ name: 'secondPage'}" :disabled="active">
           Отчёт
         </v-btn>
-        <span class="mr-2">v0.0.1</span>
       </v-toolbar-items>
 
     </v-toolbar>
-
     <v-content>
       <router-view></router-view>
     </v-content>
@@ -34,6 +33,14 @@ export default {
   data () {
     return {
       //
+    }
+  },
+  computed: {
+    active () {
+      if (!this.$store.getters.library.length) {
+        return true
+      }
+      return false
     }
   }
 }
