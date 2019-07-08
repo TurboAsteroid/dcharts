@@ -18,7 +18,7 @@ export default new Vuex.Store({
   },
   actions: {},
   getters: {
-    library: state => state.library,
-    report: state => state.report
+    library: state => Object.assign(state.library),
+    report: state => Object.assign(state.report)
   }
 })
