@@ -16,7 +16,7 @@
                         <v-container fluid>
                             <v-checkbox
                                 v-model="selected"
-                                v-for="item in library"
+                                v-for="item in $store.getters.library"
                                 :key="item.id"
                                 :label="item.name"
                                 :value="item"
@@ -57,8 +57,8 @@ export default {
       this.node = evt
       this.selected = []
       for (let i = 0; i < evt.data.children.length; i++) {
-        let tmpNode = Object.assign({}, evt.data.children[i]);
-        tmpNode.children = [];
+        let tmpNode = Object.assign({}, evt.data.children[i])
+        tmpNode.children = []
         this.selected.push(tmpNode)
       }
     },
@@ -66,33 +66,31 @@ export default {
       this.dialog = false
 
       for (let i = 0; i < this.node.data.children.length; i++) {
-        if (!this.selected.find(function(element) {
-            return element.id === this.node.data.children[i].id;
-          }, this)) {
-          this.node.data.children.splice(i, 1);
-          i--;
+        if (!this.selected.find(function (element) {
+          return element.id === this.node.data.children[i].id
+        }, this)) {
+          this.node.data.children.splice(i, 1)
+          i--
         }
       }
 
       for (let i = 0; i < this.selected.length; i++) {
-        let tmpEl = this.node.data.children.find(function(element) {
-          return element.id === this.selected[i].id;
-        }, this);
+        let tmpEl = this.node.data.children.find(function (element) {
+          return element.id === this.selected[i].id
+        }, this)
         if (!tmpEl) {
-          let tmpNode = Object.assign({}, this.selected[i]);
-          tmpNode.children = [];
+          let tmpNode = Object.assign({}, this.selected[i])
+          tmpNode.children = []
           this.node.data.children.push(tmpNode)
         }
       }
+      this.$store.commit('report', this.report.children)
     },
     cancel () {
       this.dialog = false
     }
   },
   computed: {
-    library () {
-      return this.$store.getters.library
-    },
     report () {
       return { name: 'Корневой элемент', children: this.$store.getters.report }
     }
