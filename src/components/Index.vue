@@ -1,11 +1,11 @@
 <template>
   <v-container>
       <v-layout wrap>
-          <v-flex xs2>
+          <v-flex xs3>
               <v-btn @click="addArr" color="info" block>Добавить набор данных</v-btn>
           </v-flex>
-          <v-flex xs8></v-flex>
-          <v-flex xs2>
+          <v-flex xs6></v-flex>
+          <v-flex xs3>
               <v-btn @click="toStore" color="success" block>Сохранить бибилиотеку</v-btn>
           </v-flex>
       </v-layout>
