@@ -73,7 +73,6 @@ export default {
           i--
         }
       }
-
       for (let i = 0; i < this.selected.length; i++) {
         let tmpEl = this.node.data.children.find(function (element) {
           return element.id === this.selected[i].id
@@ -84,7 +83,7 @@ export default {
           this.node.data.children.push(tmpNode)
         }
       }
-      this.$store.commit('report', this.report.children)
+      this.$store.commit('report', this.report)
     },
     cancel () {
       this.dialog = false
@@ -92,12 +91,8 @@ export default {
   },
   computed: {
     report () {
-      return { name: 'Корневой элемент', children: this.$store.getters.report }
+      return this.$store.getters.report
     }
   }
 }
 </script>
-
-<style>
-
-</style>
