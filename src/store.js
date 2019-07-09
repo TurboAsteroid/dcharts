@@ -6,7 +6,11 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     library: [],
-    report: []
+    report: {
+      name: 'Корневой элемент',
+      children: [],
+      data: []
+    }
   },
   mutations: {
     library (state, data) {

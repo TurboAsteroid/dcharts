@@ -81,8 +81,7 @@ export default {
           name: 'СИЗ: Промышленная безопасность',
           val1: 98,
           val2: 100,
-          children: [],
-          link: 'salary'
+          link: 'sizp'
         },
         {
           id: 2,
@@ -90,7 +89,7 @@ export default {
           name: 'ЛПП: Промышленная безопасность',
           val1: 98,
           val2: 100,
-          children: []
+          link: 'lppp'
         },
         {
           id: 3,
@@ -98,7 +97,7 @@ export default {
           name: 'Численность: Кадровая комплектация',
           val1: 95,
           val2: 100,
-          children: []
+          link: 'chkk'
         },
         {
           id: 4,
@@ -106,7 +105,7 @@ export default {
           name: 'Текучесть: Кадровая комплектация',
           val1: 3,
           val2: 12,
-          children: []
+          link: 'tkk'
         },
         {
           id: 5,
@@ -114,7 +113,7 @@ export default {
           name: 'Трудовая дисциплина: Кадровая комплектация',
           val1: 100,
           val2: 99,
-          children: []
+          link: 'tdkk'
         },
         {
           id: 6,
@@ -122,7 +121,7 @@ export default {
           name: 'Количество обученных сотрудников',
           val1: 2500,
           val2: 2600,
-          children: []
+          link: 'kos'
         },
         {
           id: 7,
@@ -130,7 +129,7 @@ export default {
           name: 'Фонд оплаты труда',
           val1: 100,
           val2: 99,
-          children: []
+          link: 'fot'
         },
         {
           id: 8,
@@ -138,7 +137,7 @@ export default {
           name: 'Средняя заработная плата',
           val1: 42000,
           val2: 45000,
-          children: []
+          link: 'salary'
 
         },
         {
@@ -147,7 +146,7 @@ export default {
           name: 'Ежедневный учет: Производство',
           val1: 98,
           val2: 100,
-          children: []
+          link: 'eup'
         },
         {
           id: 10,
@@ -155,7 +154,7 @@ export default {
           name: 'Ежемесячный учет: Производство',
           val1: 98,
           val2: 100,
-          children: []
+          link: 'eupm'
         },
         {
           id: 11,
@@ -163,7 +162,7 @@ export default {
           name: 'Накопительный учет: Производство',
           val1: 98,
           val2: 100,
-          children: []
+          link: 'nug'
         },
         {
           id: 12,
@@ -171,7 +170,7 @@ export default {
           name: 'Накопительный итог: Данные СБ',
           val1: 100,
           val2: 102,
-          children: []
+          link: 'nidsb'
         },
         {
           id: 13,
@@ -179,7 +178,7 @@ export default {
           name: 'Социальная напряженность',
           val1: 80,
           val2: 140,
-          children: []
+          link: 'sn'
         }
       ]
   }),
