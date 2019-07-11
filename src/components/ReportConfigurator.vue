@@ -79,7 +79,7 @@ export default {
         }, this)
         if (!tmpEl) {
           let tmpNode = Object.assign({}, this.selected[i])
-          delete tmpNode.children
+          tmpNode.children = []
           this.node.data.children.push(tmpNode)
         }
       }
