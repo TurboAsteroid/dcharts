@@ -152,7 +152,7 @@ export default {
         this.$store.getters.library.find(element => element.link === routerArr[routerArr.length - 1], this) || {},
         report
       )
-      return report;
+      return report
     }
   }
 }
