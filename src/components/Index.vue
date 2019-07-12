@@ -219,7 +219,7 @@ export default {
             link
           }
         }`
-    }).then(res => console.log(res) )
+    }).then(res => this.library = res.data.data.getLibrary)
   },
   methods: {
     addField (j) {
