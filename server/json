@@ -1,0 +1,53 @@
+createDate(date){
+    return  `${date.getDate() < 10 ? `0${date.getData()}` : date.getDate()}.${date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1}.${date.getFullYear()} 
+    ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+
+ответ: {
+    [
+        id:sex
+        data: [
+            44827,
+            53350
+        ],
+        labels: [
+            "male",
+            "female"
+        ]
+    ],
+    female: [
+        data: [
+            44407,
+            45552,
+            46076,
+            45881,
+            44701,
+            44827,
+        ],
+        labels: [
+            01.2019,
+            02.2019,
+            03.2019,
+            04.2019,
+            05.2019,
+            06.2019
+        ]
+    ],
+    company: [
+        data: [
+            46255,
+            47425,
+            48607,
+            48725,
+            46773,
+            46864
+        ],
+        labels: [
+            01.2019,
+            02.2019,
+            03.2019,
+            04.2019,
+            05.2019,
+            06.2019
+        ]
+    ]
+}
