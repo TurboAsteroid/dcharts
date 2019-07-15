@@ -84,6 +84,7 @@ export default {
         }
       }
       this.$store.commit('report', this.report)
+      console.log("report", this.report);
     },
     cancel () {
       this.dialog = false
