@@ -2,14 +2,30 @@ const express = require('express');
 const { buildSchema } = require('graphql');
 const graphqlHTTP = require('express-graphql');
 const cors = require('cors');
-const fsPromise = require('fs-readfile-promise');
+// const fsPromise = require('fs-readfile-promise');
 const fetch = require('node-fetch');
 const https = require("https");
 const agent = new https.Agent({
     rejectUnauthorized: false
 })
+const mysql = require('mysql2/promise');
+//const bodyParser = require('body-parser');
+// const urlencodedParser = bodyParser.urlencoded({extended: false});
+
+let connect
+async function mysqlDb () {
+     connect = await mysql.createConnection({
+        host: "localhost",
+        user: "root",
+        database: "dcharts_salary",
+        password: "450979"
+    });
+}
+mysqlDb();
+
 
 const createDate = require('./modules/date.js');
+//const getData = require('./modules/dataParametrs');
 
 const schema = buildSchema(`
     type Query {
@@ -18,34 +34,42 @@ const schema = buildSchema(`
     }
     type Library {
         id: ID!
-        data: [Int]
+        data: [String]
         name: String
-        val1: Int
-        val2: Int
+        value: [String]
         link: String
     }
     type DataParametrs {
-        
-        data: [String]!
-        label: [String]!
-    }
+        id: String!
+        data: [String]
+        label: [String]
+    } 
 `)
 const rootValue = {
-    getLibrary:async() => {
+    getLibrary: async() => {
         try {
-            let library = JSON.parse(await fsPromise('./server/library.json', 'utf8'));
-            return library
+            const [rows] = await connect.execute(`
+            SELECT library.id,library.name,library.link,
+            (SELECT GROUP_CONCAT(value,'') FROM value WHERE library_id = library.id) AS value, GROUP_CONCAT(data.value,'') AS data 
+            FROM library, data WHERE library.id = data.library_id GROUP BY data.library_id
+            `);
+            for(let o of rows) {
+                o.data = o.data.split(',');
+                o.value = o.value.split(',');
+            }
+            // console.log(rows)
+            return rows;
         } catch (e) {
-            console.log(e.message)
+            console.log(e.message);
         }
     },
     getDataByParametr: async ({parametr}) => {
         try {
-            console.log(parametr)
-            let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=${parametr}&date=${createDate()}`, {agent})
+            let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=${parametr}&date=${createDate(12)}`, {agent})
             let data = await response.json();
-            console.log(data);
-            // return data
+            
+            //return getData(data, parametr)
+            
         } catch (e) {
             console.log(e.message)
         }
