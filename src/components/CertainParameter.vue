@@ -111,7 +111,7 @@ export default {
               data: libraryItem.data
             }
           ],
-          labels: this.datacollections.data
+          labels: libraryItem.labels || this.datacollections.data
         })
       }
       for (let i in currentReport.children) {
