@@ -1,5 +1,5 @@
-const createDate = () => {
-    const count = 12;
+const createDate = (count) => {
+    // const count = 12;
     let dateCurrent = new Date()
     let date;
     let result = '';
