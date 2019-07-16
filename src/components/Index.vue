@@ -71,27 +71,18 @@
 </template>
 
 <script>
-import axios from 'axios'
+
 export default {
   data: () => ({
-    library:[],
+    // library: []
   }),
-  mounted() {
-    axios.post('http://localhost:4000/graphql', {
-        query: `{
-          getLibrary {
-            id
-            data
-            name
-            value
-            link
-          }
-        }`
-    }).then(res => {
-          this.library = res.data.data.getLibrary
-        }
-      )
-      
+  mounted () {
+    this.$store.dispatch('getLibrary')
+  },
+  computed: {
+    library () {
+      return this.$store.getters.library
+    }
   },
   methods: {
     addField (j) {
