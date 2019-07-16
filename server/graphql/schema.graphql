@@ -1,0 +1,30 @@
+ type Query {
+    getLibrary: [Library]
+    getDataByParametr(parametr: String!): [DataParametrs]
+}
+type Mutation {
+    createNewSetData(data: [libraryInput]): [Library]
+    updateLibrary(id: ID!, link: String!): Library
+}
+type Library {
+    id: ID!
+    data: [String]
+    name: String
+    val1: String
+    val2: String
+    link: String
+    children:[Library]
+}
+type DataParametrs {
+    id: String!
+    data: [String]
+    labels: [String]
+} 
+input libraryInput {
+    id: ID!
+    data: [Int!]!
+    name:String!
+    val1: Int!
+    val2: Int!
+    link: String!
+}

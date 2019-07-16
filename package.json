@@ -19,6 +19,7 @@
     "express-graphql": "^0.8.0",
     "fs-readfile-promise": "^3.0.1",
     "graphql": "^14.4.2",
+    "graphql-yoga": "^1.18.1",
     "material-design-icons-iconfont": "^5.0.1",
     "mysql2": "^1.6.5",
     "node-fetch": "^2.6.0",
