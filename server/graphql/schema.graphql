@@ -3,8 +3,9 @@
     getDataByParametr(parametr: String!): [DataParametrs]
 }
 type Mutation {
-    createNewSetData(data: [libraryInput]): [Library]
-    updateLibrary(id: ID!, link: String!): Library
+    createNewSetData(data: [libraryInput!]!): [Library]
+    updateSetData(id: ID!, link: String!): Library
+    deleteSetData(id: ID!): Library
 }
 type Library {
     id: ID!
