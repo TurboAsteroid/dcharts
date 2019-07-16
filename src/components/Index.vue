@@ -71,19 +71,37 @@
 </template>
 
 <script>
-
+import axios from 'axios'
 export default {
   data: () => ({
-    // library: []
+    library: [],
+    compareLibrary: []
   }),
   mounted () {
-    this.$store.dispatch('getLibrary')
+    // this.$store.dispatch('getLibrary')
+    axios.post('http://localhost:4000', {
+      query: 
+        `query {
+            getLibrary {
+              id
+              data
+              name
+              val1
+              val2
+              link
+            }
+        }`
+    }).then(res => {
+          this.library = res.data.data.getLibrary;
+          // this.compareLibrary = JSON.parse(JSON.stringify(this.library));
+        }
+      )
   },
-  computed: {
-    library () {
-      return this.$store.getters.library
-    }
-  },
+  // computed: {
+  //   library () {
+  //     return this.$store.getters.library
+  //   }
+  // },
   methods: {
     addField (j) {
       this.library[j].data.push(0)
@@ -112,9 +130,20 @@ export default {
         this.library[j].val1 = parseInt(this.library[j].val1)
         this.library[j].val2 = parseInt(this.library[j].val2)
       }
+      
+      console.log(this.library)
+      console.log(this.compareLibrary)
+
+      // for(let i in this.library) {
+      //   if(this.library[i] == this.compareLibrary[i]) {
+      //     console.log(this.library[i])
+      //   }
+      // }
+
       this.$store.commit('library', this.library)
       // this.$router.push('secondPage')
-    }
+    },
+
   }
 }
 </script>

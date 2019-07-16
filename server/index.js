@@ -2,8 +2,7 @@ const { GraphQLServer } = require('graphql-yoga')
 const mysql = require('mysql2/promise');
 const createDate = require('./modules/date');
 const fetch = require('node-fetch');
-// const fsPromise = require('fs-readfile-promise');
-// const https = require("https");
+
 let connect
 async function mysqlDb () {
      connect = await mysql.createConnection({
@@ -57,11 +56,16 @@ const resolvers = {
         }
     },
     Mutation: {
-        createNewSetData: async (args) => {
+        createNewSetData: async (parent, args) => {
             console.log('createNewSetData', args)
         },
-        updateLibrary: async ({id, link}) => {
-            console.log('updateLibrary', id, link);
+        updateSetData: async (parent, {id, link}) => {
+            console.log('updateLibrary');
+            return {id, link};
+        },
+        deleteSetData: async (parent, {id}) => {
+            console.log('deleteSetData');
+            return id;
         }
     },
     Library:{
