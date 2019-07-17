@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import createData from '../modules/dataQueryDb'
+import findChangeLibrary from '../modules/changeLibrary'
 export default {
   data: () => ({
 
@@ -119,11 +119,10 @@ export default {
         this.library[j].val2 = parseInt(this.library[j].val2)
       }
       
-      let result = createData(this.library, this.$store.getters.library);
-      console.log('result',result)
+      let result = findChangeLibrary(this.library, this.$store.getters.library);
 
-      this.$store.commit('library', this.library)
-      //this.$store.dispatch('setLibrary', this.library)
+      // this.$store.commit('library', this.library)
+      this.$store.dispatch('setLibrary', { library: this.library, changeLibrary: result});
       // this.$router.push('secondPage')
     },
 

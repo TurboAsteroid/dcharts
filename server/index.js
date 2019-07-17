@@ -42,7 +42,7 @@ const resolvers = {
                 }
                 return data;
             } catch (e) {
-                console.log(e.message);
+                console.error(e.message);
             }
         },
         getDataByParametr: async ({parametr}) => {
@@ -56,21 +56,38 @@ const resolvers = {
         }
     },
     Mutation: {
-        // createNewSetData: async (parent, args) => {
-        //     console.log('createNewSetData', args)
-        // },
-        // updateSetData: async (parent, {id, link}) => {
-        //     console.log('updateLibrary');
-        //     return {id, link};
-        // },
-        // deleteSetData: async (parent, {id}) => {
-        //     console.log('deleteSetData', id);
-        //     return {id};
-        // }
-        changeDatabase: async (_, {data}) => {
-            console.log(JSON.parse(data))
-            // return {data}
+        createNewNote: async (_, {data}) => {
+            console.log('createNewNote', JSON.parse(data))
+            try {
+
+            } catch (e) {
+                console.error(e.message)
+            }
+            return [JSON.parse(data)]
+        },
+        updateNote: async (_, {data}) => {
+            console.log('updateNote', JSON.parse(data))
+            try {
+                
+            } catch (e) {
+                console.error(e.message)
+            }
+            return [JSON.parse(data)];
+        },
+        deleteNote: async (_, {data}) => {
+            let noteId = JSON.parse(data).map(e => JSON.parse(e))
+            console.log(noteId)
+            try {
+                await connect.execute(`DELETE FROM library WHERE id in (${noteId})`);
+            } catch (e) {
+                console.error(e.message)
+            }
+            return [JSON.parse(data)];
         }
+        // changeDatabase: async (_, {data}) => {
+        //     console.log(JSON.parse(data))
+        //     // return {data}
+        // }
     },
     Library:{
         children:() => {

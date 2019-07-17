@@ -3,13 +3,13 @@
     getDataByParametr(parametr: String!): [DataParametrs]
 }
 type Mutation {
-    changeDatabase(data: String!):[Library]
-    # createNewSetData(data: [libraryInput!]!): [Library]
-    # updateSetData(id: ID!, link: String!): Library
-    # deleteSetData(id: ID!): Library
+    # changeDatabase(data: String!):[Library]
+    createNewNote(data: String!): [Library]
+    updateNote(data: String!): [Library]
+    deleteNote(data: String!): [Library]
 }
 type Library {
-    id: ID!
+    id: ID
     data: [String]
     name: String
     val1: String
