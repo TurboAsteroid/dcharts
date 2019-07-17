@@ -3,9 +3,10 @@
     getDataByParametr(parametr: String!): [DataParametrs]
 }
 type Mutation {
-    createNewSetData(data: [libraryInput!]!): [Library]
-    updateSetData(id: ID!, link: String!): Library
-    deleteSetData(id: ID!): Library
+    changeDatabase(data: String!):[Library]
+    # createNewSetData(data: [libraryInput!]!): [Library]
+    # updateSetData(id: ID!, link: String!): Library
+    # deleteSetData(id: ID!): Library
 }
 type Library {
     id: ID!
@@ -29,3 +30,11 @@ input libraryInput {
     val2: Int!
     link: String!
 }
+# fragment libraryFields on Library {
+#     id: ID!
+#     data: [String]
+#     name: String
+#     val1: String
+#     val2: String
+#     link: String
+# }

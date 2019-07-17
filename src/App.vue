@@ -42,6 +42,9 @@ export default {
       }
       return false
     }
+  },
+  mounted () {
+    this.$store.dispatch('getLibrary')
   }
 }
 </script>
