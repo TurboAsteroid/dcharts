@@ -32,6 +32,14 @@
                 </v-flex>
               </v-layout>
               <v-layout row>
+                <v-flex xs12>
+                  <v-text-field
+                    v-model="obj.link"
+                    label="link"
+                  ></v-text-field>
+                </v-flex>
+              </v-layout>
+              <v-layout row>
                 <v-flex xs6>
                   <v-text-field
                     v-model="obj.val1"
@@ -71,37 +79,16 @@
 </template>
 
 <script>
-import axios from 'axios'
+import createData from '../modules/dataQueryDb'
 export default {
   data: () => ({
-    library: [],
-    compareLibrary: []
+
   }),
-  mounted () {
-    // this.$store.dispatch('getLibrary')
-    axios.post('http://localhost:4000', {
-      query: 
-        `query {
-            getLibrary {
-              id
-              data
-              name
-              val1
-              val2
-              link
-            }
-        }`
-    }).then(res => {
-          this.library = res.data.data.getLibrary;
-          // this.compareLibrary = JSON.parse(JSON.stringify(this.library));
-        }
-      )
+  computed: {
+    library () { 
+      return this.$store.state.oldLibrary 
+    }
   },
-  // computed: {
-  //   library () {
-  //     return this.$store.getters.library
-  //   }
-  // },
   methods: {
     addField (j) {
       this.library[j].data.push(0)
@@ -119,6 +106,7 @@ export default {
         name: 'набор данных',
         val1: 0,
         val2: 0,
+        link: 'null',
         children: []
       })
     },
@@ -131,16 +119,11 @@ export default {
         this.library[j].val2 = parseInt(this.library[j].val2)
       }
       
-      console.log(this.library)
-      console.log(this.compareLibrary)
-
-      // for(let i in this.library) {
-      //   if(this.library[i] == this.compareLibrary[i]) {
-      //     console.log(this.library[i])
-      //   }
-      // }
+      let result = createData(this.library, this.$store.getters.library);
+      console.log('result',result)
 
       this.$store.commit('library', this.library)
+      //this.$store.dispatch('setLibrary', this.library)
       // this.$router.push('secondPage')
     },
 

@@ -56,16 +56,20 @@ const resolvers = {
         }
     },
     Mutation: {
-        createNewSetData: async (parent, args) => {
-            console.log('createNewSetData', args)
-        },
-        updateSetData: async (parent, {id, link}) => {
-            console.log('updateLibrary');
-            return {id, link};
-        },
-        deleteSetData: async (parent, {id}) => {
-            console.log('deleteSetData');
-            return id;
+        // createNewSetData: async (parent, args) => {
+        //     console.log('createNewSetData', args)
+        // },
+        // updateSetData: async (parent, {id, link}) => {
+        //     console.log('updateLibrary');
+        //     return {id, link};
+        // },
+        // deleteSetData: async (parent, {id}) => {
+        //     console.log('deleteSetData', id);
+        //     return {id};
+        // }
+        changeDatabase: async (_, {data}) => {
+            console.log(JSON.parse(data))
+            // return {data}
         }
     },
     Library:{
