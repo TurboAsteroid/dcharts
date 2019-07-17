@@ -30,7 +30,7 @@ function createData(library, oldLibrary) {
         }
         for(let j in oldLibrary) {
             if(!arrId.includes(oldLibrary[j].id)) {
-                result.delete.push(oldLibrary[j])
+                result.delete.push(oldLibrary[j].id)
             } else if (arrId.includes(oldLibrary[j].id)) {
                 let id = arrId.find(i => i === oldLibrary[j].id)
                 for(let e in library) {

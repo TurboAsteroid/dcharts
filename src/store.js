@@ -52,11 +52,28 @@ export default new Vuex.Store({
           }
         )  
     },
-    setLibrary({commit}, payload) {
+    setLibrary({commit}, {library, changeLibrary}) {
+      console.log(changeLibrary)
       axios.post('http://localhost:4000', {
         query:
-          `mutation ChangeDatabase($data: String!) {
-            changeDatabase(data: $data) {
+          `mutation ChangeDatabase($update: String!, $create: String!, $delete: String!) {
+            updateNote(data: $update) {
+              id
+              data
+              name
+              val1
+              val2
+              link
+            }
+            createNewNote(data: $create) {
+              id
+              data
+              name
+              val1
+              val2
+              link
+            }
+            deleteNote(data: $delete) {
               id
               data
               name
@@ -66,10 +83,12 @@ export default new Vuex.Store({
             }
           }`,
           variables:{
-            data: JSON.stringify(payload)
+            update: JSON.stringify(changeLibrary.update),
+            create: JSON.stringify(changeLibrary.create),
+            delete: JSON.stringify(changeLibrary.delete)
           }
       }).then(res => console.log(res))
-      commit('library', payload)
+      commit('library', library)
     }
   },
   getters: {
