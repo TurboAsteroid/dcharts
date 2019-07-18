@@ -42,13 +42,13 @@
               <v-layout row>
                 <v-flex xs6>
                   <v-text-field
-                    v-model="obj.val1"
+                    v-model="obj.val1.value"
                     label="Первый порог"
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs6>
                 <v-text-field
-                  v-model="obj.val2"
+                  v-model="obj.val2.value"
                   label="Второй порог"
                 ></v-text-field>
               </v-flex>

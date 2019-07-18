@@ -3,35 +3,16 @@ function createData(library, oldLibrary) {
         update: [],
         create: [],
         delete: []
-    };
-    if (library.length === oldLibrary.length) {
-        for(let i in library) {
-            for(let j in oldLibrary[i]) {
-                if(library[i][j] && oldLibrary[i][j] && JSON.stringify(library[i][j]) != JSON.stringify(oldLibrary[i][j])) {
-                    result.update.push(library[i])
-                }
-            }
-        }
-    } else if (library.length > oldLibrary.length) {
-        for(let i in library) {
-            if(library[i] && !oldLibrary[i]) {
-                result.create.push(library[i])
-            }
-            for(let j in oldLibrary[i]) {
-                if(library[i][j] && oldLibrary[i][j] && JSON.stringify(library[i][j]) != JSON.stringify(oldLibrary[i][j])) {
-                    result.update.push(library[i])
-                }
-            }
-        }
-    } else if (library.length < oldLibrary.length) {
-        let arrId = []
-        for(let i in library) {
-            arrId.push(library[i].id)
-        }
+    },
+    arrId = []
+    
+    for(let i in library) {
+        arrId.push(library[i].id)
+    }
+
+    function findUpdate() {
         for(let j in oldLibrary) {
-            if(!arrId.includes(oldLibrary[j].id)) {
-                result.delete.push(oldLibrary[j].id)
-            } else if (arrId.includes(oldLibrary[j].id)) {
+            if (arrId.includes(oldLibrary[j].id)) {
                 let id = arrId.find(i => i === oldLibrary[j].id)
                 for(let e in library) {
                     if(id === library[e].id && JSON.stringify(library[e]) != JSON.stringify(oldLibrary[j])) {
@@ -40,6 +21,24 @@ function createData(library, oldLibrary) {
                 }
             }
         }
+    }
+
+    if (library.length === oldLibrary.length) {
+        findUpdate()
+    } else if (library.length > oldLibrary.length) {
+        for(let i in library) {
+            if(library[i] && !oldLibrary[i]) {
+                result.create.push(library[i])
+            }
+        }
+        findUpdate()
+    } else if (library.length < oldLibrary.length) {
+        for(let j in oldLibrary) {
+            if(!arrId.includes(oldLibrary[j].id)) {
+                result.delete.push(oldLibrary[j].id)
+            }
+        }
+        findUpdate()
     }
     return result
 }

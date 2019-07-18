@@ -32,20 +32,26 @@ export default new Vuex.Store({
                 id
                 data
                 name
-                val1
-                val2
+                labels
+                val1 {
+                  value
+                  label
+                }
+                val2 {
+                  value
+                  label
+                }
                 link
               }
           }`
       }).then(res => {
             let library = res.data.data.getLibrary
-            // console.log(library)
             for (let j = 0; j < library.length; j++) {
               for (let i = 0; i < library[j].data.length; i++) {
                 library[j].data[i] = parseInt(library[j].data[i])
               }
-              library[j].val1 = parseInt(library[j].val1)
-              library[j].val2 = parseInt(library[j].val2)
+              library[j].val1.value = parseInt(library[j].val1.value)
+              library[j].val2.value = parseInt(library[j].val2.value)
             }   
             this.state.oldLibrary = JSON.parse(JSON.stringify(library));
             commit('library', library)
@@ -53,7 +59,7 @@ export default new Vuex.Store({
         )  
     },
     setLibrary({commit}, {library, changeLibrary}) {
-      console.log(changeLibrary)
+      console.log('chl',changeLibrary)
       axios.post('http://localhost:4000', {
         query:
           `mutation ChangeDatabase($update: String!, $create: String!, $delete: String!) {
@@ -75,11 +81,6 @@ export default new Vuex.Store({
             }
             deleteNote(data: $delete) {
               id
-              data
-              name
-              val1
-              val2
-              link
             }
           }`,
           variables:{
@@ -87,7 +88,7 @@ export default new Vuex.Store({
             create: JSON.stringify(changeLibrary.create),
             delete: JSON.stringify(changeLibrary.delete)
           }
-      }).then(res => console.log(res))
+      }).then(res => console.log('res',res))
       commit('library', library)
     }
   },

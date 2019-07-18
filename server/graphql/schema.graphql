@@ -9,13 +9,18 @@ type Mutation {
     deleteNote(data: String!): [Library]
 }
 type Library {
-    id: ID
-    data: [String]
-    name: String
-    val1: String
-    val2: String
-    link: String
+    id: ID!
+    data: [String!]!
+    labels: [String]
+    name: String!
+    val1: Value!
+    val2: Value!
+    link: String!
     children:[Library]
+}
+type Value {
+    value: String!
+    label: String!
 }
 type DataParametrs {
     id: String!
@@ -30,11 +35,3 @@ input libraryInput {
     val2: Int!
     link: String!
 }
-# fragment libraryFields on Library {
-#     id: ID!
-#     data: [String]
-#     name: String
-#     val1: String
-#     val2: String
-#     link: String
-# }
