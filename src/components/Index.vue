@@ -104,8 +104,14 @@ export default {
         id: -1,
         data: [0],
         name: 'набор данных',
-        val1: 0,
-        val2: 0,
+        val1: {
+          value: 0,
+          label: ''
+        },
+        val2: {
+          value: 0,
+          label: ''
+        },
         link: 'null',
         children: []
       })
@@ -115,8 +121,9 @@ export default {
         for (let i = 0; i < this.library[j].data.length; i++) {
           this.library[j].data[i] = parseInt(this.library[j].data[i])
         }
-        this.library[j].val1 = parseInt(this.library[j].val1)
-        this.library[j].val2 = parseInt(this.library[j].val2)
+        // this.library[j].id = parseInt(this.library[j].id)
+        this.library[j].val1.value = parseInt(this.library[j].val1.value)
+        this.library[j].val2.value = parseInt(this.library[j].val2.value)
       }
       
       let result = findChangeLibrary(this.library, this.$store.getters.library);
