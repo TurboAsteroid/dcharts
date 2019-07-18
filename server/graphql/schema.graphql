@@ -4,22 +4,22 @@
 }
 type Mutation {
     # changeDatabase(data: String!):[Library]
-    createNewNote(data: String!): [Library]
-    updateNote(data: String!): [Library]
-    deleteNote(data: String!): [Library]
+    createNewNote(data: [libraryInput]!): [Library]
+    updateNote(data: [libraryInput]!): [Library]
+    deleteNote(data: [Int]!): [Library]
 }
 type Library {
     id: ID!
-    data: [String!]!
+    data: [String!]
     labels: [String]
-    name: String!
-    val1: Value!
-    val2: Value!
-    link: String!
+    name: String
+    val1: Value
+    val2: Value
+    link: String
     children:[Library]
 }
 type Value {
-    value: String!
+    value: Int!
     label: String!
 }
 type DataParametrs {
@@ -29,9 +29,14 @@ type DataParametrs {
 } 
 input libraryInput {
     id: ID!
-    data: [Int!]!
-    name:String!
-    val1: Int!
-    val2: Int!
-    link: String!
+    data: [Int!]
+    name:String
+    val1: valueInput
+    val2: valueInput
+    labels: [String]
+    link: String
+}
+input valueInput {
+    value: Int!
+    label: String!
 }

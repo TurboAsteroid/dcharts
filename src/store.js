@@ -46,6 +46,7 @@ export default new Vuex.Store({
           }`
       }).then(res => {
             let library = res.data.data.getLibrary
+            
             for (let j = 0; j < library.length; j++) {
               for (let i = 0; i < library[j].data.length; i++) {
                 library[j].data[i] = parseInt(library[j].data[i])
@@ -54,39 +55,31 @@ export default new Vuex.Store({
               library[j].val2.value = parseInt(library[j].val2.value)
             }   
             this.state.oldLibrary = JSON.parse(JSON.stringify(library));
+            console.log(library)
             commit('library', library)
           }
         )  
     },
     setLibrary({commit}, {library, changeLibrary}) {
       console.log('chl',changeLibrary)
+      
       axios.post('http://localhost:4000', {
         query:
-          `mutation ChangeDatabase($update: String!, $create: String!, $delete: String!) {
+          `mutation ChangeDatabase($update: [libraryInput]!, $create: [libraryInput]!, $delete: [Int]!) {
             updateNote(data: $update) {
               id
-              data
-              name
-              val1
-              val2
-              link
             }
             createNewNote(data: $create) {
               id
-              data
-              name
-              val1
-              val2
-              link
             }
             deleteNote(data: $delete) {
               id
             }
           }`,
           variables:{
-            update: JSON.stringify(changeLibrary.update),
-            create: JSON.stringify(changeLibrary.create),
-            delete: JSON.stringify(changeLibrary.delete)
+            update: changeLibrary.update,
+            create: changeLibrary.create,
+            delete: changeLibrary.delete.map(e => JSON.parse(e))
           }
       }).then(res => console.log('res',res))
       commit('library', library)

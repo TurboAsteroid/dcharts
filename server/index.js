@@ -52,6 +52,7 @@ const resolvers = {
                         link: o.link
                     })
                 }
+                // console.log(data)
                 return data;
             } catch (e) {
                 console.error(e.message);
@@ -69,68 +70,49 @@ const resolvers = {
     },
     Mutation: {
         createNewNote: async (_, {data}) => {
-            // console.log('createNewNote', JSON.parse(data))
+            console.log('createNewNote', data)
             if ( data != []) {
                 try {
 
                 } catch (e) {
                     console.error(e.message)
                 }
-                return [JSON.parse(data)]
+                return [data.id]
             }
         },
-        updateNote: async (_, {data}) => {  
-            let notes = JSON.parse(data)
-            if(notes.length != 0) {
-            
-                let updateLibrary = '',
-                    updateData = '',
-                    updateValue = '';
-                // for(let note of notes) {
-                //     updateLibrary += `UPDATE library SET name = ${JSON.stringify(note.name)}, link = ${JSON.stringify(note.link)} WHERE id = ${note.id};`
-                    
-                //     for(let i in note.data) {
-                //         updateData += `UPDATE data SET value = ${note.data[i]} WHERE library_id = ${note.id};`
-                //     }
-                //     updateValue += `UPDATE value v1 JOIN value v2 ON v1.library_id = ${note.id} AND v2.library_id = ${note.id} SET v1.value = ${note.val1} v2.value = ${note.val2};`
-                //     // updateValue += `UPDATE value SET value = ${note.val1} WHERE library_id = ${note.id}`
-                // }
-                // console.log('!!!',updateLibrary)
-                // console.log('!!!!!!',updateData)
-                // console.log('!!!!!!!!!!!',updateValue)
-                //let query = updateLibrary + updateData + updateValue
+        updateNote: async (_, {data}) => {
+            let notes = data
+            let dataArray = []
+            if(notes.length != 0) { 
                 try {
                     for(let note of notes) {
-                        updateLibrary = `UPDATE library SET name = ${JSON.stringify(note.name)}, link = ${JSON.stringify(note.link)} WHERE id = ${note.id};`
-                        await connect.execute(`${updateLibrary}`);
+                        await connect.execute(`UPDATE library SET name = ${JSON.stringify(note.name)}, link = ${JSON.stringify(note.link)} WHERE id = ${note.id};`);
 
-                        for(let i in note.data) {
-                            updateData = `INSERT INTO data SET value = ${note.data[i]}, `
-                            await connect.execute(`${updateData}`);
+                        for(let i = 0; i < note.data.length; i++) {
+                            dataArray.push([JSON.parse(note.id), note.data[i]]);
                         }
-                        updateValue = `UPDATE value v1 JOIN value v2 ON v1.library_id = ${note.id} AND v2.library_id = ${note.id} SET v1.value = ${note.val1} v2.value = ${note.val2};`
-                        await connect.execute(`${updateValue}`);
+
+                        await connect.execute(`DELETE FROM data WHERE library_id = ${note.id}`);
+                        await connect.query(`INSERT INTO data (library_id, value) VALUES ?`, [dataArray]);
+                        await connect.execute(`UPDATE value SET value = ${note.val1.value} WHERE library_id = ${note.id} AND label = '${note.val1.label}'`);
+                        await connect.execute(`UPDATE value SET value = ${note.val2.value} WHERE library_id = ${note.id} AND label = '${note.val2.label}'`);
                     }
-                    //await connect.execute(query);
-                    // await connect.execute(`${updateLibrary}`);
-                    // await connect.execute(`${updateData}`);
-                    // await connect.execute(`${updateValue}`);
                 } catch (e) {
                     console.error(e.message)
                 }
-                return [JSON.parse(data)]; 
+
+                // return [data.id] 
             }         
         },
         deleteNote: async (_, {data}) => {
-            let d = JSON.parse(data)
-            if (d.length != 0) {
-                let noteId = d.map(e => JSON.parse(e))        
+            if (data.length != 0) {
+                let noteId = data.map(e => JSON.parse(e))        
                 try {
                     await connect.execute(`DELETE FROM library WHERE id in (${noteId})`);
                 } catch (e) {
                     console.error(e.message)
                 }
-                return [JSON.parse(data)];
+                //return [data.id]
             }   
         }
     },
