@@ -3,7 +3,6 @@
     getDataByParametr(parametr: String!): [DataParametrs]
 }
 type Mutation {
-    # changeDatabase(data: String!):[Library]
     createNewNote(data: [libraryInput]!): [Library]
     updateNote(data: [libraryInput]!): [Library]
     deleteNote(data: [Int]!): [Library]
@@ -34,6 +33,7 @@ input libraryInput {
     val1: valueInput
     val2: valueInput
     labels: [String]
+    children: [String]
     link: String
 }
 input valueInput {

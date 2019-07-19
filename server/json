@@ -29,7 +29,8 @@
             06.2019
         ]
     ],
-    company: [
+    [
+        id: company
         data: [
             46255,
             47425,
