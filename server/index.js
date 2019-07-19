@@ -1,7 +1,12 @@
-const { GraphQLServer } = require('graphql-yoga')
+const { GraphQLServer } = require('graphql-yoga');
 const mysql = require('mysql2/promise');
 const createDate = require('./modules/date');
+const getData = require('./modules/dataParametrs');
 const fetch = require('node-fetch');
+const https = require("https");
+const agent = new https.Agent({
+    rejectUnauthorized: false
+});
 
 let connect
 async function mysqlDb () {
@@ -58,13 +63,16 @@ const resolvers = {
                 console.error(e.message);
             }
         },
-        getDataByParametr: async ({parametr}) => {
+        getDataByParametr: async (_,{parametr}) => {
+            // console.log(parametr);
             try {
-                let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=${parametr}&date=${createDate(12)}`, {agent})
+                let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=${parametr}&date=${createDate(12)}`, {agent});
                 let data = await response.json();
-                //return getData(data, parametr)         
+                // console.log(data);
+                // return data
+                getData(data, parametr)         
             } catch (e) {
-                console.log(e.message)
+                console.log(e.message);
             }
         }
     },

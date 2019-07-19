@@ -1,27 +1,56 @@
 const getData = (obj, parametr) => {
-    console.log(obj);
-    const params = parametr.split(',')
-    let result = []
-    // {
-    //     id:'',
-    //     data: [],
-    //     labels: []
-    // }
-    
-    for(let param of Object.keys(obj)) {
-        // result[0].id = param;
-        if(params.includes(param)){
-            //console.log(param)
-            for(let o of obj[param]) {
-                //console.log(o)
+    let jsonData = obj,
+        result = [],
+        arrChild = [],
+        values = [];
 
+    for(let jsonObj of Object.keys(jsonData)) {
+
+        let childId = [],
+            children = [];
+
+        for(let itemChildren of jsonData[jsonObj]) {    
+            for(let item of Object.keys(itemChildren)) {
+                if(item !== "date" && item !== "value") {
+                    arrChild.push({
+                        id: item,
+                        values: {
+                            value:  itemChildren[item],
+                            label:  itemChildren.date
+                        }
+                    });
+                    if(!childId.includes(item)) {
+                        childId.push(item);
+                    }
+                } else if (item !== "date" && item == "value") {
+                    arrChild.push({
+                        value: itemChildren[item],
+                        label: itemChildren.date
+                    });
+                }
             }
+           
         }
-        // console.log(o)
-        // console.log(obj[o][1])
-    }
-    console.log(result)
-    return result
-    
-}
+        if(childId.length != 0) {
+            for(let i in childId) {
+                values = arrChild.filter(x => x.id === childId[i]).map(x => x.values);
+                children.push({
+                    id:childId[i],
+                    values
+                });
+            }
+        } else if (childId.length == 0) {
+            children = arrChild;
+        }
+        
+        result.push({
+            id: jsonObj,
+            children
+        });
+        arrChild = [];
+    } 
+
+    return result;
+};
+
 module.exports = getData;

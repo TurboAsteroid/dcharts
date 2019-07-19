@@ -1,6 +1,6 @@
  type Query {
     getLibrary: [Library]
-    getDataByParametr(parametr: String!): [DataParametrs]
+    getDataByParametr(parametr: [String]!): [DataParametrs]
 }
 type Mutation {
     createNewNote(data: [libraryInput]!): [Library]
