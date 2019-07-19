@@ -1,4 +1,4 @@
-const getData = (obj, parametr) => {
+const getData = (obj) => {
     let jsonData = obj,
         result = [],
         arrChild = [],
