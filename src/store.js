@@ -62,7 +62,7 @@ export default new Vuex.Store({
         )  
     },
     setLibrary({commit}, {library, changeLibrary}) {
-      console.log('chl',changeLibrary)
+      console.log('chl',changeLibrary);
       
       axios.post('http://localhost:4000', {
         query:
@@ -82,12 +82,12 @@ export default new Vuex.Store({
             create: changeLibrary.create,
             delete: changeLibrary.delete.map(e => JSON.parse(e))
           }
-      }).then(res => console.log('res',res))
-      commit('library', library)
+      });
+      commit('library', library);
     }
   },
   getters: {
     library: state => Object.assign(state.library),
     report: state => Object.assign(state.report)
   }
-})
+});
