@@ -101,20 +101,21 @@ export default {
     },
     addArr () {
       this.library.push({
-        id: -1,
+        id: parseInt(this.library[this.library.length - 1].id) + 1,
         data: [0],
         name: 'набор данных',
         val1: {
           value: 0,
-          label: ''
+          label: 'min'
         },
         val2: {
           value: 0,
-          label: ''
+          label: 'max'
         },
         link: 'null',
         children: []
       })
+      console.log('addArr',this.library)
     },
     toStore () {
       for (let j = 0; j < this.library.length; j++) {

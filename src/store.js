@@ -46,11 +46,12 @@ export default new Vuex.Store({
           }`
       }).then(res => {
             let library = res.data.data.getLibrary
-            
+            console.log(library)
             for (let j = 0; j < library.length; j++) {
               for (let i = 0; i < library[j].data.length; i++) {
                 library[j].data[i] = parseInt(library[j].data[i])
               }
+              
               library[j].val1.value = parseInt(library[j].val1.value)
               library[j].val2.value = parseInt(library[j].val2.value)
             }   

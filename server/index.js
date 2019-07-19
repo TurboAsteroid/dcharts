@@ -71,17 +71,37 @@ const resolvers = {
     Mutation: {
         createNewNote: async (_, {data}) => {
             console.log('createNewNote', data)
-            if ( data != []) {
+            let notes = data,
+                libraryArr = [],
+                dataArr = [],
+                valueArr = []
+
+            if (notes.length != 0) {
                 try {
+                    for(let note of notes) {
+                        libraryArr.push([JSON.parse(note.id),note.name, note.link]);
+                        for(let i = 0; i < note.data.length; i++) {
+                            dataArr.push([JSON.parse(note.id), note.data[i]]);
+                        }
+                        valueArr.push([JSON.parse(note.id), note.val1.value, note.val1.label]);
+                        valueArr.push([JSON.parse(note.id), note.val2.value, note.val2.label]);
+                    }
+                    // console.log('libraryArr',libraryArr)
+                    // console.log('dataArr',dataArr)
+                    // console.log('valueArr',valueArr)
+
+                    await connect.query(`INSERT INTO library (id, name, link) VALUES ?`, [libraryArr]);
+                    await connect.query(`INSERT INTO data (library_id, value) VALUES ?`, [dataArr]);
+                    await connect.query(`INSERT INTO value (library_id, value, label) VALUES ?`, [valueArr]);
 
                 } catch (e) {
                     console.error(e.message)
                 }
-                return [data.id]
+                // return [data.id]
             }
         },
         updateNote: async (_, {data}) => {
-            let notes = data
+            let notes = data;
             let dataArray = []
             if(notes.length != 0) { 
                 try {
