@@ -82,7 +82,7 @@ const resolvers = {
     },
     Mutation: {
         createNewNote: async (_, {data}) => {
-            console.log('createNewNote', data);
+            // console.log('createNewNote', data);
             let notes = data,
                 libraryArr = [],
                 dataArr = [],
@@ -148,6 +148,12 @@ const resolvers = {
             // console.log('Tree:', tree)
             let relations = getRelations(tree);
             console.log('Relations: ', relations)
+            try {
+                await connect.execute(`DELETE FROM tree WHERE id_note != 0`);
+                await connect.query(`INSERT INTO tree (id_note, parent_id) VALUES ?`, [relations]);
+            } catch (e) {
+                console.error(e.message);
+            }
         }
     },
     Library:{

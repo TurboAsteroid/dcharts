@@ -52,13 +52,12 @@ function getRelations(tree) {
         }
         parentId = currentTree.id;
         for(let i = 0; i < childId.length; i++) {
-            result.push([childId[i], parentId, level]);
+            result.push([childId[i], parentId]);
         }
         currentTree = queue.dequeue();
         childId = [];
         parentId = 0;
     }
-    // console.log('Result: ', result)
     return result;
 }
 
