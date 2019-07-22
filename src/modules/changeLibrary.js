@@ -4,19 +4,19 @@ function createData(library, oldLibrary) {
         create: [],
         delete: []
     },
-    arrId = []
+    arrId = [];
     
     for(let i in library) {
-        arrId.push(library[i].id)
+        arrId.push(library[i].id);
     }
 
     function findUpdate() {
         for(let j in oldLibrary) {
             if (arrId.includes(oldLibrary[j].id)) {
-                let id = arrId.find(i => i === oldLibrary[j].id)
+                let id = arrId.find(i => i === oldLibrary[j].id);
                 for(let e in library) {
                     if(id === library[e].id && JSON.stringify(library[e]) != JSON.stringify(oldLibrary[j])) {
-                        result.update.push(library[e])
+                        result.update.push(library[e]);
                     }
                 }
             }
@@ -28,20 +28,20 @@ function createData(library, oldLibrary) {
     } else if (library.length > oldLibrary.length) {
         for(let i in library) {
             if(library[i] && !oldLibrary[i]) {
-                result.create.push(library[i])
+                result.create.push(library[i]);
             }
         }
         findUpdate()
     } else if (library.length < oldLibrary.length) {
         for(let j in oldLibrary) {
             if(!arrId.includes(oldLibrary[j].id)) {
-                result.delete.push(oldLibrary[j].id)
+                result.delete.push(oldLibrary[j].id);
             }
         }
-        findUpdate()
+        findUpdate();
     }
-    return result
+    return result;
 }
 
 
-module.exports = createData
+module.exports = createData;

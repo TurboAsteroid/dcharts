@@ -1,12 +1,16 @@
 <template>
-    <div>
+    <!-- <div> -->
         <v-container>
+          <v-btn @click="goBackToLibrary" color="primary">Назад</v-btn>
+          <v-btn @click="toReport" color="success">Сохранить дерево</v-btn>
+          <v-container>
             <v-card>
                 <v-container>
                 <tree :data="report" node-text="name" layoutType="euclidean" style="height: 800px;" @clicked="onClick"/>
                 </v-container>
             </v-card>
-        </v-container>
+          </v-container>     
+        
         <!-- модальное окно выбора из библиотеки -->
         <v-layout row justify-center>
             <v-dialog v-model="dialog" persistent max-width="580">
@@ -31,7 +35,8 @@
                 </v-card>
             </v-dialog>
         </v-layout>
-    </div>
+        </v-container>
+    <!-- </div> -->
 </template>
 
 <script>
@@ -52,10 +57,17 @@ export default {
     }
   },
   methods: {
+    goBackToLibrary() {
+      this.$router.push('/');
+    },
+    toReport() {
+      this.$store.dispatch('setTree', {tree: this.report})
+    },
     onClick (evt) {
       this.dialog = true
       this.node = evt
       this.selected = []
+      // console.log('Node: ', evt)
       for (let i = 0; i < evt.data.children.length; i++) {
         let tmpNode = Object.assign({}, evt.data.children[i])
         delete tmpNode.children
@@ -83,7 +95,9 @@ export default {
           this.node.data.children.push(tmpNode)
         }
       }
-      this.$store.commit('report', this.report)
+      console.log('Report: ', this.report)
+      // this.$store.commit('report', this.report)
+      
     },
     cancel () {
       this.dialog = false

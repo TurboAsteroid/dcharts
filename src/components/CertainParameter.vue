@@ -71,6 +71,7 @@ export default {
     let routerArr = this.$route.path.split('/').slice(2)
 
     this.report = this.getTreeElement(this.$store.getters.report, routerArr.slice())
+    console.log('this.$store.getters.library', this.$store.getters.library)
 
     this.fillData(
       this.$store.getters.library.find(element => element.link === routerArr[routerArr.length - 1], this) || {},
@@ -79,11 +80,16 @@ export default {
   },
   methods: {
     fillData (libraryItem, currentReport) {
+      console.log('libraryItem:', libraryItem)
+      console.log('currentReport:', currentReport)
+
       this.datacollections = {
         name: libraryItem.name || currentReport.name,
         data: libraryItem.data || [],
         children: []
       }
+      console.log('datacollections:', this.datacollections)
+
       if (libraryItem.data && libraryItem.data.length) {
         this.datacollections = Object.assign({}, this.datacollections, {
           top: {
@@ -91,7 +97,7 @@ export default {
             backgroundColor: 'rgba(0, 255, 0, 1)',
             borderColor: 'rgba(0, 255, 0, 1)',
             borderWidth: 2,
-            data: Array(libraryItem.data.length).fill(libraryItem.val2),
+            data: Array(libraryItem.data.length).fill(libraryItem.val2.value),
             fill: false,
             type: 'line'
           },
@@ -100,7 +106,7 @@ export default {
             backgroundColor: 'rgba(255, 0, 0, 1)',
             borderColor: 'rgba(255, 0, 0, 1)',
             borderWidth: 2,
-            data: Array(libraryItem.data.length).fill(libraryItem.val1),
+            data: Array(libraryItem.data.length).fill(libraryItem.val1.value),
             fill: false,
             type: 'line'
           },
@@ -111,8 +117,9 @@ export default {
               data: libraryItem.data
             }
           ],
-          labels: this.datacollections.data
+          labels: libraryItem.labels || this.datacollections.data
         })
+        console.log('datacollections2:', this.datacollections)
       }
       for (let i in currentReport.children) {
         let child = currentReport.children[i]
@@ -120,10 +127,10 @@ export default {
           name: child.name,
           link: child.link
         }
-        if (child.data[child.data.length - 1] >= child.val2) {
+        if (child.data[child.data.length - 1] >= child.val2.value) {
           this.datacollections.children[i].st = 'check_circle'
           this.datacollections.children[i].co = 'green'
-        } else if (child.data[child.data.length - 1] < child.val1) {
+        } else if (child.data[child.data.length - 1] < child.val1.value) {
           this.datacollections.children[i].st = 'error'
           this.datacollections.children[i].co = 'red'
         } else {
