@@ -85,8 +85,8 @@ export default {
 
   }),
   computed: {
-    library () { 
-      return this.$store.state.oldLibrary 
+    library () {
+      return this.$store.state.oldLibrary
     }
   },
   methods: {
@@ -115,7 +115,7 @@ export default {
         link: 'null',
         children: []
       })
-      console.log('addArr',this.library)
+      console.log('addArr', this.library)
     },
     toStore () {
       for (let j = 0; j < this.library.length; j++) {
@@ -126,14 +126,12 @@ export default {
         this.library[j].val1.value = parseInt(this.library[j].val1.value)
         this.library[j].val2.value = parseInt(this.library[j].val2.value)
       }
-      
-      let result = findChangeLibrary(this.library, this.$store.getters.library);
+      let result = findChangeLibrary(this.library, this.$store.getters.library)
 
       // this.$store.commit('library', this.library)
-      this.$store.dispatch('setLibrary', { library: this.library, changeLibrary: result});
+      this.$store.dispatch('setLibrary', { library: this.library, changeLibrary: result })
       // this.$router.push('secondPage')
-    },
-
+    }
   }
 }
 </script>

@@ -9,6 +9,7 @@ const agent = new https.Agent({
 const createDate = require('./modules/date');
 const restructJSON = require('./modules/restructJSON');
 const getDataByParametr = require('./modules/getDataByParametr');
+const getRelations = require('./modules/getRelations');
 
 let connect
 async function mysqlDb () {
@@ -68,7 +69,7 @@ const resolvers = {
         getDataByParametr: async (_,{parametr}) => {
             try {
                 // let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=${parametr}&date=${createDate(12)}`, {agent}); // !!!!!
-                let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=company,sex,platform,byAge&date=${createDate(12)}`, {agent});
+                let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=company,sex,platform,byAge&date=${createDate(6)}`, {agent});
                 let data = await response.json();
                 let restructData = restructJSON(data);
 
@@ -81,11 +82,11 @@ const resolvers = {
     },
     Mutation: {
         createNewNote: async (_, {data}) => {
-            console.log('createNewNote', data)
+            console.log('createNewNote', data);
             let notes = data,
                 libraryArr = [],
                 dataArr = [],
-                valueArr = []
+                valueArr = [];
 
             if (notes.length != 0) {
                 try {
@@ -97,23 +98,20 @@ const resolvers = {
                         valueArr.push([JSON.parse(note.id), note.val1.value, note.val1.label]);
                         valueArr.push([JSON.parse(note.id), note.val2.value, note.val2.label]);
                     }
-                    // console.log('libraryArr',libraryArr)
-                    // console.log('dataArr',dataArr)
-                    // console.log('valueArr',valueArr)
 
                     await connect.query(`INSERT INTO library (id, name, link) VALUES ?`, [libraryArr]);
                     await connect.query(`INSERT INTO data (library_id, value) VALUES ?`, [dataArr]);
                     await connect.query(`INSERT INTO value (library_id, value, label) VALUES ?`, [valueArr]);
 
                 } catch (e) {
-                    console.error(e.message)
+                    console.error(e.message);
                 }
                 // return [data.id]
             }
         },
         updateNote: async (_, {data}) => {
             let notes = data;
-            let dataArray = []
+            let dataArray = [];
             if(notes.length != 0) { 
                 try {
                     for(let note of notes) {
@@ -129,7 +127,7 @@ const resolvers = {
                         await connect.execute(`UPDATE value SET value = ${note.val2.value} WHERE library_id = ${note.id} AND label = '${note.val2.label}'`);
                     }
                 } catch (e) {
-                    console.error(e.message)
+                    console.error(e.message);
                 }
 
                 // return [data.id] 
@@ -145,12 +143,17 @@ const resolvers = {
                 }
                 //return [data.id]
             }   
+        },
+        changeTree: async (_, {tree}) => {
+            // console.log('Tree:', tree)
+            let relations = getRelations(tree);
+            console.log('Relations: ', relations)
         }
     },
     Library:{
         children:(parent, args) => {
-            console.log('children')
-            console.log('Parent',parent)
+            console.log('children');
+            console.log('Parent',parent);
         }
     }
 }

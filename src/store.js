@@ -9,6 +9,7 @@ export default new Vuex.Store({
     library: [],
     oldLibrary: [],
     report: {
+      id: 0,
       name: 'Корневой элемент',
       children: [],
       data: []
@@ -46,7 +47,7 @@ export default new Vuex.Store({
           }`
       }).then(res => {
             let library = res.data.data.getLibrary
-            console.log(library)
+            // console.log(library)
             for (let j = 0; j < library.length; j++) {
               for (let i = 0; i < library[j].data.length; i++) {
                 library[j].data[i] = parseInt(library[j].data[i])
@@ -56,13 +57,13 @@ export default new Vuex.Store({
               library[j].val2.value = parseInt(library[j].val2.value)
             }   
             this.state.oldLibrary = JSON.parse(JSON.stringify(library));
-            console.log(library)
+            // console.log(library)
             commit('library', library)
           }
         )  
     },
     setLibrary({commit}, {library, changeLibrary}) {
-      console.log('chl',changeLibrary);
+      // console.log('chl',changeLibrary);
       
       axios.post('http://localhost:4000', {
         query:
@@ -84,6 +85,21 @@ export default new Vuex.Store({
           }
       });
       commit('library', library);
+    },
+    setTree({commit}, {tree}) {
+      // console.log('Tree: ', tree);
+      axios.post('http://localhost:4000', {
+        query:`
+          mutation ChangeTree($tree: treeInput!) {
+            changeTree(tree: $tree) {
+              id
+            }
+          }
+        `,
+        variables:{
+          tree
+        }
+      });
     }
   },
   getters: {
