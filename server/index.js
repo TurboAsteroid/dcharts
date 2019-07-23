@@ -44,21 +44,23 @@ const resolvers = {
                 `);
                 let data = []
                 for(let o of rows) {
-                    data.push({
-                        id: o.id,
-                        name: o.name,
-                        data: o.data.split(','),
-                        labels: o.labels ? o.labels.split(',') : [],
-                        val1:{
-                            value: o.val1.split(',')[0],
-                            label: o.val1.split(',')[1]
-                        },
-                        val2: {
-                            value: o.val2.split(',')[0],
-                            label: o.val2.split(',')[1]
-                        },
-                        link: o.link
-                    })
+                    if (o.id != 0) {
+                        data.push({
+                            id: o.id,
+                            name: o.name,
+                            data: o.data.split(','),
+                            labels: o.labels ? o.labels.split(',') : [],
+                            val1:{
+                                value: o.val1.split(',')[0],
+                                label: o.val1.split(',')[1]
+                            },
+                            val2: {
+                                value: o.val2.split(',')[0],
+                                label: o.val2.split(',')[1]
+                            },
+                            link: o.link
+                        });
+                    }  
                 }
                 // console.log(data)
                 return data;
@@ -77,6 +79,18 @@ const resolvers = {
                 // console.log(restructData);
             } catch (e) {
                 console.log(e.message);
+            }
+        },
+        getTree: async () => {
+            try {
+                const [rows] = await connect.execute(`
+                    SELECT * FROM library l
+                    JOIN tree t ON l.id = t.id_note
+                    WHERE t.parent_id = 1
+                `);
+                //console.log('Tree', rows)
+            } catch (e) {
+                console.error(e.message);
             }
         }
     },
@@ -145,15 +159,20 @@ const resolvers = {
             }   
         },
         changeTree: async (_, {tree}) => {
-            // console.log('Tree:', tree)
-            let relations = getRelations(tree);
-            console.log('Relations: ', relations)
-            try {
-                await connect.execute(`DELETE FROM tree WHERE id_note != 0`);
-                await connect.query(`INSERT INTO tree (id_note, parent_id) VALUES ?`, [relations]);
-            } catch (e) {
-                console.error(e.message);
-            }
+            await connect.execute(`DELETE FROM tree WHERE id_note != 0`);
+            let res = [];
+            (async function recurse(currentNode, parentId = 1) {
+                for(let i = 0, length = currentNode.children.length; i < length; i++) { 
+                    try {
+                        if(parentId && parentId != 0) {
+                            res = await connect.query(`INSERT INTO tree (id_note, parent_id) VALUES (${parseInt(currentNode.children[i].id)}, ${parentId})`)
+                            recurse(currentNode.children[i],  res[0].insertId);       
+                        }
+                    } catch (e) {
+                        console.error(e.message);
+                    }  
+                }
+            })(tree); 
         }
     },
     Library:{

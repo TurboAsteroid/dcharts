@@ -86,6 +86,18 @@ export default new Vuex.Store({
       });
       commit('library', library);
     },
+    getTree({commit}) {
+      axios.post('http://localhost:4000', {
+        query: 
+          `query {
+              getTree {
+                id
+                name
+                link
+              }
+          }`
+      }).then(res => console.log(res))
+    },
     setTree({commit}, {tree}) {
       // console.log('Tree: ', tree);
       axios.post('http://localhost:4000', {
