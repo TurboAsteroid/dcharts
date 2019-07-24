@@ -9,7 +9,7 @@ const agent = new https.Agent({
 const createDate = require('./modules/date');
 const restructJSON = require('./modules/restructJSON');
 const getDataByParametr = require('./modules/getDataByParametr');
-const getRelations = require('./modules/getRelations');
+const createTree = require('./modules/createTree');
 
 let connect
 async function mysqlDb () {
@@ -83,12 +83,30 @@ const resolvers = {
         },
         getTree: async () => {
             try {
-                const [rows] = await connect.execute(`
+                const [tree] = await connect.execute(`
                     SELECT * FROM library l
                     JOIN tree t ON l.id = t.id_note
-                    WHERE t.parent_id = 1
+                    ORDER BY parent_id
                 `);
-                //console.log('Tree', rows)
+                const [lib] = await connect.execute(`
+                    SELECT 
+                        library.id,
+                        library.name,
+                        library.link,
+                        CONCAT(v1.value, ',', v1.label) AS val1,
+                        CONCAT(v2.value, ',', v2.label) AS val2,
+                        GROUP_CONCAT(data.value,'') AS data,
+                        GROUP_CONCAT(data.label,'') AS labels
+                    FROM library
+                    LEFT JOIN value v1 ON v1.library_id = library.id AND v1.label = 'min'
+                    LEFT JOIN value v2 ON v2.library_id = library.id AND v2.label = 'max'
+                    LEFT JOIN data ON data.library_id = library.id
+                    GROUP BY library.id
+                `);
+                
+                let result = createTree(tree, lib);
+                // console.log('Result: ',result)
+                return result;
             } catch (e) {
                 console.error(e.message);
             }
@@ -166,7 +184,7 @@ const resolvers = {
                     try {
                         if(parentId && parentId != 0) {
                             res = await connect.query(`INSERT INTO tree (id_note, parent_id) VALUES (${parseInt(currentNode.children[i].id)}, ${parentId})`)
-                            recurse(currentNode.children[i],  res[0].insertId);       
+                            recurse(currentNode.children[i], res[0].insertId);       
                         }
                     } catch (e) {
                         console.error(e.message);
@@ -177,8 +195,9 @@ const resolvers = {
     },
     Library:{
         children:(parent, args) => {
-            console.log('children');
-            console.log('Parent',parent);
+            // console.log('children');
+            // console.log('Parent',parent);
+            return parent.children
         }
     }
 }

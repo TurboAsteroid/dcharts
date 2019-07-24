@@ -87,16 +87,54 @@ export default new Vuex.Store({
       commit('library', library);
     },
     getTree({commit}) {
+    
       axios.post('http://localhost:4000', {
         query: 
           `query {
-              getTree {
-                id
-                name
-                link
+            getTree {
+              id
+              name
+              data
+              children{
+                ...lib
+                children{
+                  ...lib
+                  children{
+                    ...lib
+                    children{
+                      ...lib
+                      children{
+                        ...lib
+                      }
+                    }
+                  }
+                }
               }
-          }`
-      }).then(res => console.log(res))
+            }
+        }
+        fragment lib on Library{
+          id
+          data
+          name
+          labels
+          link
+          val1{
+            value
+            label
+          }
+          val2{
+            value
+            label
+          }
+          
+        }`
+      }).then(res => {
+        let tree = res.data.data.getTree
+        
+        this.state.report = tree;
+        console.log('Tree: ', this.state.report)
+        
+      });
     },
     setTree({commit}, {tree}) {
       // console.log('Tree: ', tree);
