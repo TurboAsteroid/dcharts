@@ -1,7 +1,7 @@
  type Query {
     getLibrary: [Library]
     getDataByParametr(parametr: [String]!): [DataParametrs]
-    getTree: [Library]
+    getTree: Library
 }
 type Mutation {
     createNewNote(data: [libraryInput]!): [Library]
@@ -11,7 +11,7 @@ type Mutation {
 }
 type Library {
     id: ID!
-    data: [String!]
+    data: [String]
     labels: [String]
     name: String
     val1: Value
@@ -19,6 +19,7 @@ type Library {
     link: String
     children:[Library]
 }
+
 type Value {
     value: Int!
     label: String!
