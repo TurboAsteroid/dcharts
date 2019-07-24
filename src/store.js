@@ -17,11 +17,11 @@ export default new Vuex.Store({
   },
   mutations: {
     library (state, data) {
-      state.library = data
-      state.oldLibrary = JSON.parse(JSON.stringify(state.library))
+      state.library = data;
+      // state.oldLibrary = JSON.parse(JSON.stringify(state.library))
     },
     report (state, data) {
-      state.report = data
+      state.report = data;
     }
   },
   actions: {
@@ -46,24 +46,30 @@ export default new Vuex.Store({
               }
           }`
       }).then(res => {
+            // console.log(res.data.data.getLibrary)
             let library = res.data.data.getLibrary
-            // console.log(library)
-            for (let j = 0; j < library.length; j++) {
-              for (let i = 0; i < library[j].data.length; i++) {
-                library[j].data[i] = parseInt(library[j].data[i])
-              }
-              
-              library[j].val1.value = parseInt(library[j].val1.value)
-              library[j].val2.value = parseInt(library[j].val2.value)
-            }   
             this.state.oldLibrary = JSON.parse(JSON.stringify(library));
+            // console.log(oldLibrary)
+            // for (let j = 0; j < library.length; j++) {
+            //   for (let i = 0; i < library[j].data.length; i++) {
+            //     library[j].data[i] = parseInt(library[j].data[i]);
+            //     oldLibrary[j].data[i] = parseInt(oldLibrary[j].data[i]);
+            //   }
+              
+            //   library[j].val1.value = parseInt(library[j].val1.value)
+            //   library[j].val2.value = parseInt(library[j].val2.value)
+
+            //   oldLibrary[j].val1.value = parseInt(oldLibrary[j].val1.value)
+            //   oldLibrary[j].val2.value = parseInt(oldLibrary[j].val2.value)
+            // }   
+            
             // console.log(library)
             commit('library', library)
           }
         )  
     },
     setLibrary({commit}, {library, changeLibrary}) {
-      // console.log('chl',changeLibrary);
+      console.log('chl',changeLibrary);
       
       axios.post('http://localhost:4000', {
         query:
@@ -137,7 +143,6 @@ export default new Vuex.Store({
       });
     },
     setTree({commit}, {tree}) {
-      // console.log('Tree: ', tree);
       axios.post('http://localhost:4000', {
         query:`
           mutation ChangeTree($tree: treeInput!) {
