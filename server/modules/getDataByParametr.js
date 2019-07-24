@@ -10,10 +10,10 @@ function getData(data, parametr) {
                 for (let i in obj.children) {
                     if (obj.children[i].id) {
                         labelsArr.push(obj.children[i].id);
-                        dataArr.push(obj.children[i].values[obj.children[i].values.length - 1].value);
+                        dataArr.push(JSON.parse(obj.children[i].values[obj.children[i].values.length - 1].value));
                     } else if (!(obj.children[i].id)) {
                         labelsArr.push(obj.children[i].label);
-                        dataArr.push(obj.children[i].value);
+                        dataArr.push(JSON.parse(obj.children[i].value));
                     }            
                 }
                 result.push({
@@ -27,7 +27,7 @@ function getData(data, parametr) {
                 for(let i in obj.children) {
                     if(obj.children[i].id && parametr.includes(obj.children[i].id)) {
                         for(let j in obj.children[i].values) {
-                            dataArr.push(obj.children[i].values[j].value);
+                            dataArr.push(JSON.parse(obj.children[i].values[j].value));
                             labelsArr.push(obj.children[i].values[j].label);
                         }   
                         result.push({

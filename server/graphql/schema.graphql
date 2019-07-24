@@ -11,7 +11,7 @@ type Mutation {
 }
 type Library {
     id: ID!
-    data: [String]
+    data: [Int]
     labels: [String]
     name: String
     val1: Value
@@ -26,7 +26,7 @@ type Value {
 }
 type DataParametrs {
     id: String!
-    data: [String]
+    data: [Int]
     labels: [String]
 } 
 input libraryInput {

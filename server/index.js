@@ -48,14 +48,14 @@ const resolvers = {
                         data.push({
                             id: o.id,
                             name: o.name,
-                            data: o.data.split(','),
+                            data: o.data.split(',').map(x => JSON.parse(x)),
                             labels: o.labels ? o.labels.split(',') : [],
                             val1:{
-                                value: o.val1.split(',')[0],
+                                value: JSON.parse(o.val1.split(',')[0]),
                                 label: o.val1.split(',')[1]
                             },
                             val2: {
-                                value: o.val2.split(',')[0],
+                                value: JSON.parse(o.val2.split(',')[0]),
                                 label: o.val2.split(',')[1]
                             },
                             link: o.link
@@ -74,9 +74,9 @@ const resolvers = {
                 let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=company,sex,platform,byAge&date=${createDate(6)}`, {agent});
                 let data = await response.json();
                 let restructData = restructJSON(data);
-
+                
                 return getDataByParametr(restructData, parametr);
-                // console.log(restructData);
+                
             } catch (e) {
                 console.log(e.message);
             }
@@ -195,8 +195,6 @@ const resolvers = {
     },
     Library:{
         children:(parent, args) => {
-            // console.log('children');
-            // console.log('Parent',parent);
             return parent.children
         }
     }
