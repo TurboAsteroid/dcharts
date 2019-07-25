@@ -9,7 +9,8 @@ export default new Vuex.Store({
     dialog: false,
     currentNote: {
       id: 0,
-      data: [0],
+      data: [],
+      labels:[],
       name: 'набор данных',
       val1: {
         value: 0,
@@ -19,7 +20,7 @@ export default new Vuex.Store({
         value: 0,
         label: 'max'
       },
-      link: 'null',
+      link: '',
       children: []
     },
     library: [],
@@ -34,25 +35,25 @@ export default new Vuex.Store({
   mutations: {
     changeDialog:(state, {bool, value}) => {
       state.dialog = bool;
-      state.currentNote = {
-        id: parseInt(state.library[state.library.length - 1].id) + 1,
-        data: [0],
-        name: 'набор данных',
-        val1: {
-          value: 0,
-          label: 'min'
-        },
-        val2: {
-          value: 0,
-          label: 'max'
-        },
-        link: 'null',
-        children: []
-      };
-      
       if(value) {
         state.currentNote = state.oldLibrary.find(x => x === value);
-        console.log( state.currentNote)
+      } else {
+        state.currentNote = {
+          id: parseInt(state.library[state.library.length - 1].id) + 1,
+          data: [],
+          labels:[],
+          name: 'набор данных',
+          val1: {
+            value: 0,
+            label: 'min'
+          },
+          val2: {
+            value: 0,
+            label: 'max'
+          },
+          link: '',
+          children: []
+        };
       }
     },
     library (state, data) {
@@ -115,7 +116,6 @@ export default new Vuex.Store({
       commit('library', library);
     },
     getTree({commit}) {
-    
       axios.post('http://localhost:4000', {
         query: 
           `query {

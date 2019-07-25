@@ -143,7 +143,8 @@ export default {
       this.$router.back()
     },
     getTreeElement (root, path) {
-      if (path.length > 0) {
+      console.log(root)
+      if (path.length > 0 && root.children.length) {
         let tmpNode = path.shift()
         return this.getTreeElement(root.children.find(element => element.link === tmpNode, this), path)
       } else {
