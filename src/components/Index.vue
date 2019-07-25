@@ -2,74 +2,41 @@
   <v-container>
       <v-layout wrap>
           <v-flex xs3>
-              <v-btn @click="addArr" color="info" block>Добавить набор данных</v-btn>
+              <v-btn @click.stop="addArr()" color="info" block>Добавить набор данных</v-btn>
           </v-flex>
           <v-flex xs6></v-flex>
           <v-flex xs3>
               <v-btn @click="toStore" color="success" block>Сохранить бибилиотеку</v-btn>
           </v-flex>
       </v-layout>
+    <dialogComponent/>
     <v-layout wrap>
       <v-flex
         :key="j+'obj'"
         v-for="(obj, j) in library"
-        xl2
+        xl3 sm6
       >
         <v-container>
           <v-card>
             <v-container>
               <v-layout row>
-                <v-flex xs9>
+                <v-flex xs8>
                   <v-text-field
-                    v-model="obj.name"
-                    label="Имя набора данных"
-                  ></v-text-field>
+                  v-model="obj.name"
+                  label="Имя набора данных"
+                ></v-text-field>
                 </v-flex>
-                <v-flex xs3>
+                <v-flex xs2>
+                  <v-btn fab dark small color="orange" @click="$store.commit('changeDialog', {bool: true, value: obj})">
+                    <v-icon dark>settings</v-icon>
+                  </v-btn>
+                </v-flex>
+                <v-flex xs2>
                   <v-btn fab dark small color="red" @click="removeCol(j)">
                     <v-icon dark>close</v-icon>
                   </v-btn>
                 </v-flex>
               </v-layout>
-              <v-layout row>
-                <v-flex xs12>
-                  <v-text-field
-                    v-model="obj.link"
-                    label="link"
-                  ></v-text-field>
-                </v-flex>
-              </v-layout>
-              <v-layout row>
-                <v-flex xs6>
-                  <v-text-field
-                    v-model="obj.val1.value"
-                    label="Первый порог"
-                  ></v-text-field>
-                </v-flex>
-                <v-flex xs6>
-                <v-text-field
-                  v-model="obj.val2.value"
-                  label="Второй порог"
-                ></v-text-field>
-              </v-flex>
-              </v-layout>
-              <v-layout row
-                        v-for="(item, i) in obj.data"
-                        :key="i+'item'">
-                <v-flex xs9>
-                  <v-text-field
-                    v-model="obj.data[i]"
-                    mask="#############"
-                    label="Значение"
-                  ></v-text-field>
-                </v-flex>
-                <v-flex xs3>
-                  <v-btn fab outline dark small color="orange" @click="removeRow(j,i)">
-                    <v-icon dark>close</v-icon>
-                  </v-btn>
-                </v-flex>
-              </v-layout>
-              <v-btn @click="addField(j)" color="info">Добавить значение</v-btn>
             </v-container>
           </v-card>
         </v-container>
@@ -80,9 +47,13 @@
 
 <script>
 import findChangeLibrary from '../modules/changeLibrary'
+import dialogComponent from './Dialog'
 export default {
+  components:{
+    dialogComponent
+  },
   data: () => ({
-
+    dialog: false
   }),
   computed: {
     library () {
@@ -90,12 +61,7 @@ export default {
     }
   },
   methods: {
-    addField (j) {
-      this.library[j].data.push(0)
-    },
-    removeRow (j, i) {
-      this.library[j].data.splice(i, 1)
-    },
+    changeDialog: e => this.$store.commit("changeDialog", e),
     removeCol (j) {
       this.library.splice(j, 1)
     },
@@ -115,7 +81,7 @@ export default {
         link: 'null',
         children: []
       })
-      console.log('addArr', this.library)
+      this.$store.commit('changeDialog', {bool: true})
     },
     toStore () {
       for (let j = 0; j < this.library.length; j++) {

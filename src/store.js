@@ -6,6 +6,22 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    dialog: false,
+    currentNote: {
+      id: 0,
+      data: [0],
+      name: 'набор данных',
+      val1: {
+        value: 0,
+        label: 'min'
+      },
+      val2: {
+        value: 0,
+        label: 'max'
+      },
+      link: 'null',
+      children: []
+    },
     library: [],
     oldLibrary: [],
     report: {
@@ -16,9 +32,31 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    changeDialog:(state, {bool, value}) => {
+      state.dialog = bool;
+      state.currentNote = {
+        id: parseInt(state.library[state.library.length - 1].id) + 1,
+        data: [0],
+        name: 'набор данных',
+        val1: {
+          value: 0,
+          label: 'min'
+        },
+        val2: {
+          value: 0,
+          label: 'max'
+        },
+        link: 'null',
+        children: []
+      };
+      
+      if(value) {
+        state.currentNote = state.oldLibrary.find(x => x === value);
+        console.log( state.currentNote)
+      }
+    },
     library (state, data) {
       state.library = data;
-      // state.oldLibrary = JSON.parse(JSON.stringify(state.library))
     },
     report (state, data) {
       state.report = data;
@@ -46,31 +84,15 @@ export default new Vuex.Store({
               }
           }`
       }).then(res => {
-            // console.log(res.data.data.getLibrary)
             let library = res.data.data.getLibrary
             this.state.oldLibrary = JSON.parse(JSON.stringify(library));
-            // console.log(oldLibrary)
-            // for (let j = 0; j < library.length; j++) {
-            //   for (let i = 0; i < library[j].data.length; i++) {
-            //     library[j].data[i] = parseInt(library[j].data[i]);
-            //     oldLibrary[j].data[i] = parseInt(oldLibrary[j].data[i]);
-            //   }
-              
-            //   library[j].val1.value = parseInt(library[j].val1.value)
-            //   library[j].val2.value = parseInt(library[j].val2.value)
-
-            //   oldLibrary[j].val1.value = parseInt(oldLibrary[j].val1.value)
-            //   oldLibrary[j].val2.value = parseInt(oldLibrary[j].val2.value)
-            // }   
-            
-            // console.log(library)
             commit('library', library)
           }
         )  
     },
     setLibrary({commit}, {library, changeLibrary}) {
       console.log('chl',changeLibrary);
-      
+      this.state.oldLibrary = JSON.parse(JSON.stringify(library));
       axios.post('http://localhost:4000', {
         query:
           `mutation ChangeDatabase($update: [libraryInput]!, $create: [libraryInput]!, $delete: [Int]!) {
@@ -111,6 +133,12 @@ export default new Vuex.Store({
                       ...lib
                       children{
                         ...lib
+                        children{
+                          ...lib
+                          children{
+                            ...lib
+                          }
+                        }
                       }
                     }
                   }
@@ -158,6 +186,7 @@ export default new Vuex.Store({
     }
   },
   getters: {
+    dialog: state => state.dialog,
     library: state => Object.assign(state.library),
     report: state => Object.assign(state.report)
   }
