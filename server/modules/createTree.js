@@ -31,15 +31,15 @@ function createTree(tree, lib) {
             dataLib.push({
                 id: o.id,
                 name: o.name,
-                data: o.data.split(','),
+                data: o.data ? o.data.split(',') : [],
                 labels: o.labels ? o.labels.split(',') : [],
                 val1:{
-                    value: o.val1.split(',')[0],
-                    label: o.val1.split(',')[1]
+                    value: o.val1 ? o.val1.split(',')[0] : 0,
+                    label: o.val1 ? o.val1.split(',')[1] : ''
                 },
                 val2: {
-                    value: o.val2.split(',')[0],
-                    label: o.val2.split(',')[1]
+                    value: o.val2 ? o.val2.split(',')[0] : 0,
+                    label: o.val2 ? o.val2.split(',')[1] : ''
                 },
                 link: o.link,
                 children:[]
@@ -52,8 +52,7 @@ function createTree(tree, lib) {
         }
     }
     function getTree(parent, child) {
-        for(let ch of child.children) {
-            
+        for(let ch of child.children) {     
             let idx = parent.children.push(JSON.parse(JSON.stringify(findNote(ch))));
             if(adjList.some(x => x.parentId === ch)) {
                 getTree(parent.children[idx-1], adjList.find(x => x.parentId === ch));
@@ -63,6 +62,7 @@ function createTree(tree, lib) {
     dataLib = [],
     dataLibId = [],
     treeId = []
+    console.log('resultTree: ',result)
     return result;
 }
 function findNote(childId) {

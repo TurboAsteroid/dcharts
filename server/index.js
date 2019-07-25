@@ -42,27 +42,27 @@ const resolvers = {
                     LEFT JOIN data ON data.library_id = library.id
                     GROUP BY library.id
                 `);
+                console.log(rows)
                 let data = []
                 for(let o of rows) {
                     if (o.id != 0) {
                         data.push({
                             id: o.id,
                             name: o.name,
-                            data: o.data.split(',').map(x => JSON.parse(x)),
+                            data: o.data ? o.data.split(',').map(x => JSON.parse(x)) : [],
                             labels: o.labels ? o.labels.split(',') : [],
                             val1:{
-                                value: JSON.parse(o.val1.split(',')[0]),
-                                label: o.val1.split(',')[1]
+                                value: o.val1 ? JSON.parse(o.val1.split(',')[0]) : 0,
+                                label: o.val1 ? o.val1.split(',')[1] : ''
                             },
                             val2: {
-                                value: JSON.parse(o.val2.split(',')[0]),
-                                label: o.val2.split(',')[1]
+                                value: o.val2 ? JSON.parse(o.val2.split(',')[0]) : 0,
+                                label: o.val2 ? o.val2.split(',')[1] : ''
                             },
                             link: o.link
                         });
                     }  
                 }
-                // console.log(data)
                 return data;
             } catch (e) {
                 console.error(e.message);

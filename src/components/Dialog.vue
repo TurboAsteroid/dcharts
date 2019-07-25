@@ -1,5 +1,6 @@
 <template>
     <v-dialog
+        persistent
         v-model="$store.state.dialog"
         max-width="600"
       >
@@ -10,7 +11,7 @@
                 <span class="headline">Настройка набора данных</span>
               </v-flex>
               <v-flex xs2>
-                <v-btn fab dark small color="red" @click="$store.commit('changeDialog',{bool: false})">
+                <v-btn fab dark small color="red" @click="closeDialog()">
                   <v-icon dark>close</v-icon>
               </v-btn>
             </v-flex>
@@ -27,13 +28,30 @@
                     </v-flex>
                 </v-layout>
                 <v-layout row>
-                    <v-flex xs12>
+                  <v-flex xs4>
+                    <v-btn @click="isLink = !isLink" color="info">Выбрать link</v-btn>
+                  </v-flex>
+                  <v-flex xs12>
                     <v-text-field
                         v-model="note.link"
                         label="link"
                     ></v-text-field>
-                    </v-flex>
+                  </v-flex>
                 </v-layout>
+                <span v-if="isLink">
+                  <v-layout>
+                    <v-flex xs12>
+                      <v-treeview
+                        :items="libraryLink"
+                        active-class="primary--text"
+                      >
+                        <template slot="label" slot-scope="{ item }">
+                          <div @click="currentLink(item)">{{ item.name }}</div>
+                        </template>
+                      </v-treeview>
+                    </v-flex>
+                  </v-layout>
+                </span>
                 <v-layout row>
                     <v-flex xs6>
                     <v-text-field
@@ -41,14 +59,15 @@
                         label="Первый порог"
                     ></v-text-field>
                     </v-flex>
-                    <v-flex xs6>
+                    <v-flex xs6 ml-2>
                     <v-text-field
                     v-model="note.val2.value"
                     label="Второй порог"
                     ></v-text-field>
                 </v-flex>
                 </v-layout>
-                <v-layout row
+                <span v-if="!isLink && !note.link">
+                  <v-layout row
                     v-for="(item, i) in note.data"
                     :key="i+'item'">
                     <v-flex xs9>
@@ -63,8 +82,10 @@
                         <v-icon dark>close</v-icon>
                     </v-btn>
                     </v-flex>
-                </v-layout>
-                <v-btn @click="addField()" color="info">Добавить значение</v-btn>
+                  </v-layout>
+                  <v-btn @click="addField()" color="info">Добавить значение</v-btn>
+                </span>
+                
           </v-card-text>
 
           <!-- <v-card-actions>
@@ -91,11 +112,57 @@
 
 <script>
 export default {
+    data:() => ({
+      isLink: false,
+      libraryLink: [
+        {
+          id: 1,
+          name: 'Зарплата',
+          link:'Salary.company',
+          children: [
+            { id: 2, 
+              name: 'Пол',
+              link: 'Salary.company.sex',
+              children:[
+                {
+                  id: 5, 
+                  name: 'Мужчины',
+                  link: 'Salary.company.male',
+                },
+                {
+                  id: 6, 
+                  name: 'Женщины',
+                  link: 'Salary.company.female',
+                }
+              ]
+            },
+            { id: 3,
+              name: 'Возраст',
+              link:'Salary.company.byAge',
+            
+            },
+            { id: 4,
+              name: 'Площадка',
+              link: 'Salary.company.platform', 
+            
+            }
+          ]
+        },
+       
+      ]
+    }),
     computed:{
-        note() {
-          return this.$store.state.currentNote
-        }
+      note() {
+        return this.$store.state.currentNote
+      }
     }, methods: {
+      closeDialog() {
+        this.isLink = false
+        this.$store.commit('changeDialog',{bool: false})
+      },
+      currentLink(item){
+        this.note.link = item.link
+      },
       addField () {
         this.note.data.push(0)
       },

@@ -68,7 +68,8 @@ export default {
     addArr () {
       this.library.push({
         id: parseInt(this.library[this.library.length - 1].id) + 1,
-        data: [0],
+        data: [],
+        labels:[],
         name: 'набор данных',
         val1: {
           value: 0,
@@ -78,7 +79,7 @@ export default {
           value: 0,
           label: 'max'
         },
-        link: 'null',
+        link: '',
         children: []
       })
       this.$store.commit('changeDialog', {bool: true})

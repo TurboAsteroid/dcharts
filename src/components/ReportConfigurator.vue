@@ -61,6 +61,7 @@ export default {
       this.$router.push('/');
     },
     toReport() {
+      console.log(this.report)
       this.$store.dispatch('setTree', {tree: this.report})
     },
     onClick (evt) {
