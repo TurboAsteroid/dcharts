@@ -204,7 +204,7 @@ export default new Vuex.Store({
 
       axios.post('http://localhost:4000', {
         query:` 
-          query GetData($linkSelected: [linkInput]!){
+          query GetDataByParametr($linkSelected: [linkInput]!){
             getDataByParametr(linkSelected: $linkSelected) {
               id
               data
@@ -215,7 +215,7 @@ export default new Vuex.Store({
         variables:{
           linkSelected 
         }
-      }).then(() => console.log('getDataByParament'))
+      }).then((res) => console.log(res.data))
 
       console.log('Link: ',linkSelected)
     }

@@ -17,7 +17,7 @@ function getData(data, parametr) {
                     }            
                 }
                 result.push({
-                    id: obj[itemObj],
+                    id: `salary.${obj[itemObj]}`,
                     data: dataArr,
                     labels: labelsArr
                 });
@@ -31,7 +31,7 @@ function getData(data, parametr) {
                             labelsArr.push(obj.children[i].values[j].label);
                         }   
                         result.push({
-                            id: obj.children[i].id,
+                            id: `salary.${obj.children[i].id}`,
                             data: dataArr,
                             labels: labelsArr
                         });
