@@ -77,7 +77,7 @@ export default {
     },
     ok () {
       this.dialog = false
-
+      console.log(this.selected)
       for (let i = 0; i < this.node.data.children.length; i++) {
         if (!this.selected.find(function (element) {
           return element.id === this.node.data.children[i].id

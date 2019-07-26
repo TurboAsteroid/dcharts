@@ -183,6 +183,41 @@ export default new Vuex.Store({
           tree
         }
       });
+    },
+    getDataByParametr({}, report) {
+      // console.log('Report: ',report);
+      let linkSelected = [];
+
+      (function getLink(rep){
+        if(rep.children.length) {
+          for(let o of rep.children){
+            getLink(o);
+            if(o.link) {
+              linkSelected.push({
+                linkSource: o.link.split('.')[0],
+                linkParametr: o.link.split('.')[1]        
+              });
+            }
+          }
+        }
+      })(report);
+
+      axios.post('http://localhost:4000', {
+        query:` 
+          query GetData($linkSelected: [linkInput]!){
+            getDataByParametr(linkSelected: $linkSelected) {
+              id
+              data
+              labels
+            }
+          }
+        `,
+        variables:{
+          linkSelected 
+        }
+      }).then(() => console.log('getDataByParament'))
+
+      console.log('Link: ',linkSelected)
     }
   },
   getters: {

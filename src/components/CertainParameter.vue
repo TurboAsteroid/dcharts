@@ -23,7 +23,7 @@
             <v-flex v-for="(chart, index) in datacollections.children" v-bind:key="index">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
-                  <router-link :to="{ path: $route.path + '/' + chart.link }" class="link">
+                  <router-link :to="{ path: $route.path + '/' + chart.id }" class="link">
                     <v-avatar :color="chart.co" v-on="on">
                       <v-icon color="white">{{chart.st}}</v-icon>
                     </v-avatar>
@@ -63,24 +63,26 @@ export default {
       ]
     }
   },
-  created () {
+  mounted() {
     if (!this.$store.getters.report.name) {
       this.$router.replace('/')
     }
-
+    // console.log('dsf')
+    
     let routerArr = this.$route.path.split('/').slice(2)
-
-    this.report = this.getTreeElement(this.$store.getters.report, routerArr.slice())
-    console.log('this.$store.getters.library', this.$store.getters.library)
+    let report = this.getTreeElement(this.$store.getters.report, routerArr.slice())
 
     this.fillData(
-      this.$store.getters.library.find(element => element.link === routerArr[routerArr.length - 1], this) || {},
-      this.report
+      this.$store.getters.library.find(element => element.id === routerArr[routerArr.length - 1], this) || {},
+      report
     )
+  },
+  created () {
+    this.$store.dispatch('getDataByParametr', this.$store.getters.report)
   },
   methods: {
     fillData (libraryItem, currentReport) {
-      console.log('libraryItem:', libraryItem)
+      // console.log('libraryItem:', libraryItem)
       console.log('currentReport:', currentReport)
 
       this.datacollections = {
@@ -88,8 +90,7 @@ export default {
         data: libraryItem.data || [],
         children: []
       }
-      console.log('datacollections:', this.datacollections)
-
+      //console.log('datacollections:', this.datacollections)
       if (libraryItem.data && libraryItem.data.length) {
         this.datacollections = Object.assign({}, this.datacollections, {
           top: {
@@ -119,11 +120,11 @@ export default {
           ],
           labels: libraryItem.labels || this.datacollections.data
         })
-        console.log('datacollections2:', this.datacollections)
       }
       for (let i in currentReport.children) {
         let child = currentReport.children[i]
         this.datacollections.children[i] = {
+          id: child.id,
           name: child.name,
           link: child.link
         }
@@ -143,10 +144,9 @@ export default {
       this.$router.back()
     },
     getTreeElement (root, path) {
-      console.log(root)
       if (path.length > 0 && root.children.length) {
         let tmpNode = path.shift()
-        return this.getTreeElement(root.children.find(element => element.link === tmpNode, this), path)
+        return this.getTreeElement(root.children.find(element => element.id === tmpNode, this), path)
       } else {
         return root
       }

@@ -122,28 +122,28 @@ export default {
           children: [
             { id: 2, 
               name: 'Пол',
-              link: 'Salary.company.sex',
+              link: 'Salary.sex',
               children:[
                 {
                   id: 5, 
                   name: 'Мужчины',
-                  link: 'Salary.company.male',
+                  link: 'Salary.male',
                 },
                 {
                   id: 6, 
                   name: 'Женщины',
-                  link: 'Salary.company.female',
+                  link: 'Salary.female',
                 }
               ]
             },
             { id: 3,
               name: 'Возраст',
-              link:'Salary.company.byAge',
+              link:'Salary.byAge',
             
             },
             { id: 4,
               name: 'Площадка',
-              link: 'Salary.company.platform', 
+              link: 'Salary.platform', 
             
             }
           ]
