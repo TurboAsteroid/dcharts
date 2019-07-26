@@ -62,7 +62,7 @@ function createTree(tree, lib) {
     dataLib = [],
     dataLibId = [],
     treeId = []
-    console.log('resultTree: ',result)
+    // console.log('resultTree: ',result)
     return result;
 }
 function findNote(childId) {

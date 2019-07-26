@@ -42,7 +42,7 @@ const resolvers = {
                     LEFT JOIN data ON data.library_id = library.id
                     GROUP BY library.id
                 `);
-                console.log(rows)
+                // console.log(rows)
                 let data = []
                 for(let o of rows) {
                     if (o.id != 0) {
@@ -68,14 +68,31 @@ const resolvers = {
                 console.error(e.message);
             }
         },
-        getDataByParametr: async (_,{parametr}) => {
+        getDataByParametr: async (_,{linkSelected}) => {
+            //console.log(linkSelected)
+            let sortLinkSelected = [];
+            for(let o of linkSelected) {
+                if(sortLinkSelected && sortLinkSelected.some(x => x.linkSource === o.linkSource)) {
+                    sortLinkSelected.find(x => {
+                        if(x.linkSource === o.linkSource){
+                            x.linkParametr.push(o.linkParametr);
+                        }
+                    });
+                } else {
+                    sortLinkSelected.push({
+                        linkSource: o.linkSource,
+                        linkParametr: [o.linkParametr]
+                    });
+                }
+            }
+
             try {
                 // let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=${parametr}&date=${createDate(12)}`, {agent}); // !!!!!
                 let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=company,sex,platform,byAge&date=${createDate(6)}`, {agent});
                 let data = await response.json();
                 let restructData = restructJSON(data);
                 
-                return getDataByParametr(restructData, parametr);
+                // return getDataByParametr(restructData, parametr);
                 
             } catch (e) {
                 console.log(e.message);

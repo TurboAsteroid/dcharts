@@ -82,7 +82,7 @@ export default {
         link: '',
         children: []
       })
-      this.$store.commit('changeDialog', {bool: true})
+      this.$store.commit('changeDialog', {bool: true, value: this.library[this.library.length - 1]})
     },
     toStore () {
       for (let j = 0; j < this.library.length; j++) {
