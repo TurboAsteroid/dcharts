@@ -49,7 +49,6 @@ const getData = (obj) => {
         });
         arrChild = [];
     } 
-
     return result;
 };
 

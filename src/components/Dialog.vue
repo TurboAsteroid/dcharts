@@ -118,37 +118,36 @@ export default {
         {
           id: 1,
           name: 'Зарплата',
-          link:'Salary.company',
+          link:'salary.company',
           children: [
             { id: 2, 
               name: 'Пол',
-              link: 'Salary.sex',
+              link: 'salary.sex',
               children:[
                 {
                   id: 5, 
                   name: 'Мужчины',
-                  link: 'Salary.male',
+                  link: 'salary.male',
                 },
                 {
                   id: 6, 
                   name: 'Женщины',
-                  link: 'Salary.female',
+                  link: 'salary.female',
                 }
               ]
             },
             { id: 3,
               name: 'Возраст',
-              link:'Salary.byAge',
+              link:'salary.byAge',
             
             },
             { id: 4,
               name: 'Площадка',
-              link: 'Salary.platform', 
+              link: 'salary.platform', 
             
             }
           ]
         },
-       
       ]
     }),
     computed:{

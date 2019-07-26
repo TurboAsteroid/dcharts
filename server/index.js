@@ -69,7 +69,6 @@ const resolvers = {
             }
         },
         getDataByParametr: async (_,{linkSelected}) => {
-            //console.log(linkSelected)
             let sortLinkSelected = [];
             for(let o of linkSelected) {
                 if(sortLinkSelected && sortLinkSelected.some(x => x.linkSource === o.linkSource)) {
@@ -92,7 +91,7 @@ const resolvers = {
                 let data = await response.json();
                 let restructData = restructJSON(data);
                 
-                // return getDataByParametr(restructData, parametr);
+                return getDataByParametr(restructData, sortLinkSelected[0].linkParametr);
                 
             } catch (e) {
                 console.log(e.message);

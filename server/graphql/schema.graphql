@@ -19,13 +19,12 @@ type Library {
     link: String
     children:[Library]
 }
-
 type Value {
     value: Int!
     label: String!
 }
 type DataParametrs {
-    id: ID!
+    id: String!
     data: [Int]
     labels: [String]
 } 
