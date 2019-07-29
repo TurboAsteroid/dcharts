@@ -70,34 +70,35 @@ export default {
     // console.log('dsf')
     let routerArr = this.$route.path.split('/').slice(2)
     let report = this.getTreeElement(this.$store.getters.report, routerArr.slice())
-
     this.fillData(
       this.$store.getters.library.find(element => element.id === routerArr[routerArr.length - 1], this) || {},
       report
     )
   },
   created () {
-    console.log(this.$store.state.report)
     if(Object.keys(this.$store.state.report).length !== 0) {
       this.$store.dispatch('getDataByParametr', this.$store.state.report)
     }
   },
   methods: {
     fillData (libraryItem, currentReport) {
+      // console.log('libraryItem: ',libraryItem)
+      // console.log('currentReport: ',currentReport)
+
 
       this.datacollections = {
         name: libraryItem.name || currentReport.name,
-        data: libraryItem.data || [],
+        data: currentReport.data,
         children: []
       }
-      if (libraryItem.data && libraryItem.data.length) {
+      if (currentReport.data && currentReport.data.length) {
         this.datacollections = Object.assign({}, this.datacollections, {
           top: {
             label: 'Верхний порог',
             backgroundColor: 'rgba(0, 255, 0, 1)',
             borderColor: 'rgba(0, 255, 0, 1)',
             borderWidth: 2,
-            data: Array(libraryItem.data.length).fill(libraryItem.val2.value),
+            data: Array(currentReport.data.length).fill(libraryItem.val2.value),
             fill: false,
             type: 'line'
           },
@@ -106,18 +107,18 @@ export default {
             backgroundColor: 'rgba(255, 0, 0, 1)',
             borderColor: 'rgba(255, 0, 0, 1)',
             borderWidth: 2,
-            data: Array(libraryItem.data.length).fill(libraryItem.val1.value),
+            data: Array(currentReport.data.length).fill(libraryItem.val1.value),
             fill: false,
             type: 'line'
           },
           datasets: [
             {
-              label: libraryItem.name,
+              label: currentReport.name,
               backgroundColor: this.backgroundColors,
-              data: libraryItem.data
+              data: currentReport.data
             }
           ],
-          labels: libraryItem.labels || this.datacollections.data
+          labels: currentReport.labels || this.datacollections.data
         })
       }
       for (let i in currentReport.children) {
@@ -157,7 +158,7 @@ export default {
         let routerArr = this.$route.path.split('/').slice(2)
         let report = this.getTreeElement(this.$store.getters.report, routerArr.slice())
         this.fillData(
-          this.$store.getters.library.find(element => element.link === routerArr[routerArr.length - 1], this) || {},
+          this.$store.getters.library.find(element => element.id === routerArr[routerArr.length - 1], this) || {},
           report
         )
         return report

@@ -61,7 +61,7 @@ export default {
       this.$router.push('/');
     },
     toReport() {
-      console.log(this.report)
+      // console.log(this.report)
       this.$store.dispatch('setTree', {tree: this.report})
     },
     onClick (evt) {
@@ -70,9 +70,11 @@ export default {
       this.selected = []
       for (let i = 0; i < evt.data.children.length; i++) {
         let tmpNode = Object.assign({}, evt.data.children[i])
+      
         delete tmpNode.children
         this.selected.push(tmpNode)
       }
+      console.log(this.selected)
     },
     ok () {
       this.dialog = false
@@ -95,7 +97,7 @@ export default {
         }
       }
       console.log('Report: ', this.report)
-      // this.$store.commit('report', this.report)
+      this.$store.commit('report', this.report)
       
     },
     cancel () {

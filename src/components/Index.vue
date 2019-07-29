@@ -96,7 +96,7 @@ export default {
       let result = findChangeLibrary(this.library, this.$store.getters.library)
 
       // this.$store.commit('library', this.library)
-      
+     
       this.$store.dispatch('setLibrary', { library: this.library, changeLibrary: result })
       // this.$router.push('secondPage')
     }

@@ -214,7 +214,6 @@ const resolvers = {
     },
     dataSource: {
         getSalary: async (parent, {salary}) => {
-            console.log(salary)
             try {
                 // let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=${parametr}&date=${createDate(12)}`, {agent}); // !!!!!
                 let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=company,sex,platform,byAge&date=${createDate(6)}`, {agent});
