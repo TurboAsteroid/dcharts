@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import sortLinks from './modules/sortLinks'
+import addDataToReport from '../server/modules/addDataToReport'
 
 Vue.use(Vuex)
 
@@ -25,12 +27,7 @@ export default new Vuex.Store({
     },
     library: [],
     oldLibrary: [],
-    report: {
-      id: 0,
-      name: 'Корневой элемент',
-      children: [],
-      data: []
-    }
+    report: {}
   },
   mutations: {
     changeDialog:(state, {bool, value}) => {
@@ -185,39 +182,36 @@ export default new Vuex.Store({
       });
     },
     getDataByParametr({}, report) {
-      // console.log('Report: ',report);
-      let linkSelected = [];
-
-      (function getLink(rep){
-        if(rep.children.length) {
-          for(let o of rep.children){
-            getLink(o);
-            if(o.link) {
-              linkSelected.push({
-                linkSource: o.link.split('.')[0],
-                linkParametr: o.link.split('.')[1]        
-              });
-            }
-          }
-        }
-      })(report);
-
+      let links = sortLinks(report);
+      let param = links.find(x => x.linkSource === "Salary");
+      let result = {};
       axios.post('http://localhost:4000', {
         query:` 
-          query GetDataByParametr($linkSelected: [linkInput]!){
-            getDataByParametr(linkSelected: $linkSelected) {
-              id
-              data
-              labels
+          query GetData($salary: [String], $salaryBool: Boolean!){
+            getData(salary: $salary, salaryBool: $salaryBool) {
+              getSalary(salary: $salary) @include(if: $salaryBool){
+                id
+                data
+                labels
+              }
             }
           }
         `,
         variables:{
-          linkSelected 
+          report,
+          salary: param.linkParametr,
+          salaryBool: links.some(x => x.linkSource === "Salary")
         }
-      }).then((res) => console.log(res.data))
-
-      console.log('Link: ',linkSelected)
+      }).then((res) => {
+        let addData = res.data.data.getData
+        console.log('addData: ', addData)
+        for(let o of Object.keys(addData)) {
+          // console.log(addData[o])
+          result = addDataToReport(report, addData[o])
+          this.state.report = result;
+          // console.log(result)
+        }
+      })
     }
   },
   getters: {

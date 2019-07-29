@@ -10,8 +10,9 @@ const createDate = require('./modules/date');
 const restructJSON = require('./modules/restructJSON');
 const getDataByParametr = require('./modules/getDataByParametr');
 const createTree = require('./modules/createTree');
+const addDataToReport = require('./modules/addDataToReport');
 
-let connect
+let connect;
 async function mysqlDb () {
      connect = await mysql.createConnection({
         host: "localhost",
@@ -69,22 +70,6 @@ const resolvers = {
             }
         },
         getDataByParametr: async (_,{linkSelected}) => {
-            let sortLinkSelected = [];
-            for(let o of linkSelected) {
-                if(sortLinkSelected && sortLinkSelected.some(x => x.linkSource === o.linkSource)) {
-                    sortLinkSelected.find(x => {
-                        if(x.linkSource === o.linkSource){
-                            x.linkParametr.push(o.linkParametr);
-                        }
-                    });
-                } else {
-                    sortLinkSelected.push({
-                        linkSource: o.linkSource,
-                        linkParametr: [o.linkParametr]
-                    });
-                }
-            }
-
             try {
                 // let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=${parametr}&date=${createDate(12)}`, {agent}); // !!!!!
                 let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=company,sex,platform,byAge&date=${createDate(6)}`, {agent});
@@ -126,6 +111,9 @@ const resolvers = {
             } catch (e) {
                 console.error(e.message);
             }
+        },
+        getData: async () => {
+            return {}
         }
     },
     Mutation: {
@@ -140,16 +128,24 @@ const resolvers = {
                 try {
                     for(let note of notes) {
                         libraryArr.push([JSON.parse(note.id),note.name, note.link]);
-                        for(let i = 0; i < note.data.length; i++) {
-                            dataArr.push([JSON.parse(note.id), note.data[i]]);
+                        if(note.data.length) {
+                            for(let i = 0; i < note.data.length; i++) {
+                                dataArr.push([JSON.parse(note.id), note.data[i]]);
+                            }
                         }
-                        valueArr.push([JSON.parse(note.id), note.val1.value, note.val1.label]);
-                        valueArr.push([JSON.parse(note.id), note.val2.value, note.val2.label]);
+                        valueArr.push([JSON.parse(note.id), note.val1.value, note.val1.label], 
+                                    [JSON.parse(note.id), note.val2.value, note.val2.label]);
+                        // valueArr.push([JSON.parse(note.id), note.val2.value, note.val2.label]);
                     }
-
-                    await connect.query(`INSERT INTO library (id, name, link) VALUES ?`, [libraryArr]);
-                    await connect.query(`INSERT INTO data (library_id, value) VALUES ?`, [dataArr]);
-                    await connect.query(`INSERT INTO value (library_id, value, label) VALUES ?`, [valueArr]);
+                    if(libraryArr.length) {
+                        await connect.query(`INSERT INTO library (id, name, link) VALUES ?`, [libraryArr]);
+                    }
+                    if(dataArr.length) {
+                        await connect.query(`INSERT INTO data (library_id, value) VALUES ?`, [dataArr]);
+                    }
+                    if(valueArr.length) {
+                        await connect.query(`INSERT INTO value (library_id, value, label) VALUES ?`, [valueArr]);
+                    }
 
                 } catch (e) {
                     console.error(e.message);
@@ -168,11 +164,13 @@ const resolvers = {
                         for(let i = 0; i < note.data.length; i++) {
                             dataArray.push([JSON.parse(note.id), note.data[i]]);
                         }
-
                         await connect.execute(`DELETE FROM data WHERE library_id = ${note.id}`);
-                        await connect.query(`INSERT INTO data (library_id, value) VALUES ?`, [dataArray]);
+                        
                         await connect.execute(`UPDATE value SET value = ${note.val1.value} WHERE library_id = ${note.id} AND label = '${note.val1.label}'`);
                         await connect.execute(`UPDATE value SET value = ${note.val2.value} WHERE library_id = ${note.id} AND label = '${note.val2.label}'`);
+                    }
+                    if(dataArray.length) {
+                        await connect.query(`INSERT INTO data (library_id, value) VALUES ?`, [dataArray]);
                     }
                 } catch (e) {
                     console.error(e.message);
@@ -211,7 +209,22 @@ const resolvers = {
     },
     Library:{
         children:(parent, args) => {
-            return parent.children
+            return parent.children 
+        }
+    },
+    dataSource: {
+        getSalary: async (parent, {salary}) => {
+            console.log(salary)
+            try {
+                // let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=${parametr}&date=${createDate(12)}`, {agent}); // !!!!!
+                let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=company,sex,platform,byAge&date=${createDate(6)}`, {agent});
+                let data = await response.json();
+                let restructData = restructJSON(data);
+                let findData = getDataByParametr(restructData, salary);
+                return findData
+            } catch (e) {
+                console.log(e.message);
+            }
         }
     }
 }

@@ -68,7 +68,6 @@ export default {
       this.dialog = true
       this.node = evt
       this.selected = []
-      // console.log('Node: ', evt)
       for (let i = 0; i < evt.data.children.length; i++) {
         let tmpNode = Object.assign({}, evt.data.children[i])
         delete tmpNode.children
@@ -77,7 +76,6 @@ export default {
     },
     ok () {
       this.dialog = false
-      console.log(this.selected)
       for (let i = 0; i < this.node.data.children.length; i++) {
         if (!this.selected.find(function (element) {
           return element.id === this.node.data.children[i].id
