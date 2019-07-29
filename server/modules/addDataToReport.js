@@ -11,7 +11,6 @@ function addDataToReport(report, data) {
             }
         }
     })(report);
-    console.log(report)
     return report;
 }
 

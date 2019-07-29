@@ -110,6 +110,7 @@ export default new Vuex.Store({
             delete: changeLibrary.delete.map(e => JSON.parse(e))
           }
       });
+      console.log('library:', library)
       commit('library', library);
     },
     getTree({commit}) {
@@ -160,11 +161,9 @@ export default new Vuex.Store({
           
         }`
       }).then(res => {
-        let tree = res.data.data.getTree
-        
+        let tree = res.data.data.getTree;
         this.state.report = tree;
-        console.log('Tree: ', this.state.report)
-        
+        console.log('Tree: ',this.state.report);
       });
     },
     setTree({commit}, {tree}) {
@@ -182,36 +181,36 @@ export default new Vuex.Store({
       });
     },
     getDataByParametr({}, report) {
-      let links = sortLinks(report);
-      let param = links.find(x => x.linkSource === "Salary");
-      let result = {};
-      axios.post('http://localhost:4000', {
-        query:` 
-          query GetData($salary: [String], $salaryBool: Boolean!){
-            getData(salary: $salary, salaryBool: $salaryBool) {
-              getSalary(salary: $salary) @include(if: $salaryBool){
-                id
-                data
-                labels
+      let links = sortLinks(report),
+          param = links.find(x => x.linkSource === "Salary"),
+          result = {};
+      console.log(links)
+      if(links.length !== 0) {
+        axios.post('http://localhost:4000', {
+          query:` 
+            query GetData($salary: [String], $salaryBool: Boolean!){
+              getData(salary: $salary, salaryBool: $salaryBool) {
+                getSalary(salary: $salary) @include(if: $salaryBool){
+                  id
+                  data
+                  labels
+                }
               }
             }
+          `,
+          variables:{
+            salary: param.linkParametr,
+            salaryBool: links.some(x => x.linkSource === "Salary")
           }
-        `,
-        variables:{
-          report,
-          salary: param.linkParametr,
-          salaryBool: links.some(x => x.linkSource === "Salary")
-        }
-      }).then((res) => {
-        let addData = res.data.data.getData
-        console.log('addData: ', addData)
-        for(let o of Object.keys(addData)) {
-          // console.log(addData[o])
-          result = addDataToReport(report, addData[o])
-          this.state.report = result;
-          // console.log(result)
-        }
-      })
+        }).then(res => {
+          let addData = res.data.data.getData
+          for(let o of Object.keys(addData)) {
+            result = addDataToReport(report, addData[o])
+            this.state.report = result;
+          }
+        })
+      }
+      
     }
   },
   getters: {
