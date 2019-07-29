@@ -82,12 +82,12 @@ export default {
   },
   methods: {
     fillData (libraryItem, currentReport) {
-      // console.log('libraryItem: ',libraryItem)
-      // console.log('currentReport: ',currentReport)
+      console.log('libraryItem: ',libraryItem)
+      console.log('currentReport: ',currentReport)
 
 
       this.datacollections = {
-        name: libraryItem.name || currentReport.name,
+        name: currentReport.name,
         data: currentReport.data,
         children: []
       }

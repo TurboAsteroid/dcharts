@@ -28,7 +28,7 @@ type Value {
     label: String!
 }
 type DataParametrs {
-    id: String
+    id: ID
     data: [Int]
     labels: [String]
 } 

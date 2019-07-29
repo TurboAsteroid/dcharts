@@ -27,7 +27,8 @@ export default new Vuex.Store({
     },
     library: [],
     oldLibrary: [],
-    report: {}
+    report: {},
+    oldReport:[]
   },
   mutations: {
     changeDialog:(state, {bool, value}) => {
@@ -110,7 +111,7 @@ export default new Vuex.Store({
             delete: changeLibrary.delete.map(e => JSON.parse(e))
           }
       });
-      console.log('library:', library)
+      // console.log('library:', library)
       commit('library', library);
     },
     getTree({commit}) {
@@ -162,11 +163,13 @@ export default new Vuex.Store({
         }`
       }).then(res => {
         let tree = res.data.data.getTree;
-        this.state.report = tree;
-        console.log('Tree: ',this.state.report);
+        this.state.oldReport = JSON.parse(JSON.stringify(tree));
+        commit('report', tree)
+        // console.log('Tree: ',this.state.report);
       });
     },
     setTree({commit}, {tree}) {
+      this.state.oldReport = JSON.parse(JSON.stringify(tree));
       axios.post('http://localhost:4000', {
         query:`
           mutation ChangeTree($tree: treeInput!) {
@@ -179,12 +182,12 @@ export default new Vuex.Store({
           tree
         }
       });
+      commit('report', tree);
     },
     getDataByParametr({}, report) {
       let links = sortLinks(report),
           param = links.find(x => x.linkSource === "Salary"),
           result = {};
-      console.log(links)
       if(links.length !== 0) {
         axios.post('http://localhost:4000', {
           query:` 
@@ -206,8 +209,9 @@ export default new Vuex.Store({
           let addData = res.data.data.getData
           for(let o of Object.keys(addData)) {
             result = addDataToReport(report, addData[o])
-            this.state.report = result;
           }
+          console.log('Result: ',result)
+          this.state.report = result;
         })
       }
       
@@ -216,6 +220,7 @@ export default new Vuex.Store({
   getters: {
     dialog: state => state.dialog,
     library: state => Object.assign(state.library),
-    report: state => Object.assign(state.report)
+    report: state => state.report,
+    oldReport: state => state.oldReport
   }
 });
