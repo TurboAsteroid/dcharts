@@ -67,7 +67,7 @@ export default {
     },
     addArr () {
       this.library.push({
-        id: parseInt(this.library[this.library.length - 1].id) + 1,
+        id: JSON.stringify(parseInt(this.library[this.library.length - 1].id) + 1),
         data: [],
         labels:[],
         name: 'набор данных',
@@ -98,6 +98,7 @@ export default {
       // this.$store.commit('library', this.library)
      
       this.$store.dispatch('setLibrary', { library: this.library, changeLibrary: result })
+      this.$store.dispatch('getTree')
       // this.$router.push('secondPage')
     }
   }
