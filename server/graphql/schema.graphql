@@ -2,6 +2,7 @@
     getLibrary: [Library]
     getDataByParametr(linkSelected: [linkInput]!): [DataParametrs]
     getTree: Library
+    getData(salary: [String], salaryBool: Boolean!): dataSource
 }
 type Mutation {
     createNewNote(data: [libraryInput]!): [Library]
@@ -19,12 +20,15 @@ type Library {
     link: String
     children:[Library]
 }
+type dataSource {
+    getSalary(salary: [String]): [DataParametrs]
+}
 type Value {
     value: Int!
     label: String!
 }
 type DataParametrs {
-    id: String!
+    id: String
     data: [Int]
     labels: [String]
 } 
@@ -44,7 +48,7 @@ input valueInput {
 }
 input linkInput {
     linkSource: String
-    linkParametr: String
+    linkParametr: [String]
 }
 input treeInput {
     children: [libraryInput]

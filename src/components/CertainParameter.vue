@@ -68,7 +68,6 @@ export default {
       this.$router.replace('/')
     }
     // console.log('dsf')
-    
     let routerArr = this.$route.path.split('/').slice(2)
     let report = this.getTreeElement(this.$store.getters.report, routerArr.slice())
 
@@ -78,19 +77,19 @@ export default {
     )
   },
   created () {
-    this.$store.dispatch('getDataByParametr', this.$store.getters.report)
+    console.log(this.$store.state.report)
+    if(Object.keys(this.$store.state.report).length !== 0) {
+      this.$store.dispatch('getDataByParametr', this.$store.state.report)
+    }
   },
   methods: {
     fillData (libraryItem, currentReport) {
-      // console.log('libraryItem:', libraryItem)
-      console.log('currentReport:', currentReport)
 
       this.datacollections = {
         name: libraryItem.name || currentReport.name,
         data: libraryItem.data || [],
         children: []
       }
-      //console.log('datacollections:', this.datacollections)
       if (libraryItem.data && libraryItem.data.length) {
         this.datacollections = Object.assign({}, this.datacollections, {
           top: {
@@ -154,13 +153,15 @@ export default {
   },
   computed: {
     report: function () {
-      let routerArr = this.$route.path.split('/').slice(2)
-      let report = this.getTreeElement(this.$store.getters.report, routerArr.slice())
-      this.fillData(
-        this.$store.getters.library.find(element => element.link === routerArr[routerArr.length - 1], this) || {},
-        report
-      )
-      return report
+      if(Object.keys(this.$store.state.report).length !== 0) {
+        let routerArr = this.$route.path.split('/').slice(2)
+        let report = this.getTreeElement(this.$store.getters.report, routerArr.slice())
+        this.fillData(
+          this.$store.getters.library.find(element => element.link === routerArr[routerArr.length - 1], this) || {},
+          report
+        )
+        return report
+      }
     }
   }
 }
