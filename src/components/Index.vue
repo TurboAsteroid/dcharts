@@ -98,6 +98,7 @@ export default {
       // this.$store.commit('library', this.library)
      
       this.$store.dispatch('setLibrary', { library: this.library, changeLibrary: result })
+      // this.$store.dispatch('getLibrary')
       this.$store.dispatch('getTree')
       // this.$router.push('secondPage')
     }

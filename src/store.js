@@ -27,7 +27,13 @@ export default new Vuex.Store({
     },
     library: [],
     oldLibrary: [],
-    report: {},
+    libraryLink: [],
+    report: {
+      id: '',
+      data:[],
+      name:'',
+      children:''
+    },
     oldReport:[]
   },
   mutations: {
@@ -215,11 +221,22 @@ export default new Vuex.Store({
         })
       }
       
+    },
+    getLibraryLink() {
+      axios.post('http://localhost:4000', {
+        query: 
+          `query {
+            getLibraryLink
+          }`
+      }).then(res => {
+          this.state.libraryLink = JSON.parse(res.data.data.getLibraryLink)
+        }
+      )  
     }
   },
   getters: {
     dialog: state => state.dialog,
-    library: state => Object.assign(state.library),
+    library: state => state.library,
     report: state => state.report,
     oldReport: state => state.oldReport
   }

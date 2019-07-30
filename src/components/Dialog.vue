@@ -114,45 +114,13 @@
 export default {
     data:() => ({
       isLink: false,
-      libraryLink: [
-        {
-          id: 1,
-          name: 'Зарплата',
-          link:'Salary.company',
-          children: [
-            { id: 2, 
-              name: 'Пол',
-              link: 'Salary.sex',
-              children:[
-                {
-                  id: 5, 
-                  name: 'Мужчины',
-                  link: 'Salary.male',
-                },
-                {
-                  id: 6, 
-                  name: 'Женщины',
-                  link: 'Salary.female',
-                }
-              ]
-            },
-            { id: 3,
-              name: 'Возраст',
-              link:'Salary.byAge',
-            
-            },
-            { id: 4,
-              name: 'Площадка',
-              link: 'Salary.platform', 
-            
-            }
-          ]
-        },
-      ]
     }),
     computed:{
       note() {
         return this.$store.state.currentNote
+      },
+      libraryLink() {
+        return this.$store.state.libraryLink
       }
     }, methods: {
       closeDialog() {

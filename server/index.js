@@ -10,7 +10,8 @@ const createDate = require('./modules/date');
 const restructJSON = require('./modules/restructJSON');
 const getDataByParametr = require('./modules/getDataByParametr');
 const createTree = require('./modules/createTree');
-const addDataToReport = require('./modules/addDataToReport');
+//const addDataToReport = require('./modules/addDataToReport');
+const createLinkTree = require('./modules/createLinkTree');
 
 let connect;
 async function mysqlDb () {
@@ -114,6 +115,18 @@ const resolvers = {
         },
         getData: async () => {
             return {}
+        },
+        getLibraryLink: async () => {
+            try {
+                const [libLink] = await connect.execute(`
+                    SELECT * FROM linksalary
+                    WHERE id != 0
+                `);
+                let result = createLinkTree(libLink);
+                return JSON.stringify(result)
+            } catch (e) {
+                console.error(e.message);
+            }
         }
     },
     Mutation: {
