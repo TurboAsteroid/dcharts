@@ -8,29 +8,38 @@
             <h2 class="text-xs-center">{{report.name}}</h2>
             <v-layout row wrap v-if="report.data.length">
               <v-flex xs4>
-                <line-chart :chart-data="datacollections"></line-chart>
+                <line-chart :chart-data="collections"></line-chart>
               </v-flex>
               <v-flex xs4>
-                <Bar-chart :chart-data="datacollections"></Bar-chart>
+                <Bar-chart :chart-data="collections"></Bar-chart>
               </v-flex>
               <v-flex xs4>
-                <pie-chart :chart-data="datacollections"></pie-chart>
+                <pie-chart :chart-data="collections"></pie-chart>
               </v-flex>
             </v-layout>
           </v-container>
-          <v-divider class="my-5" v-if="report.data.length"></v-divider>
+          <v-divider class="my-2"></v-divider>
           <v-layout row wrap>
             <v-flex v-for="(chart, index) in datacollections.children" v-bind:key="index">
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <router-link :to="{ path: $route.path + '/' + chart.id }" class="link">
-                    <v-avatar :color="chart.co" v-on="on">
-                      <v-icon color="white">{{chart.st}}</v-icon>
-                    </v-avatar>
-                  </router-link>
-                </template>
-                <span>{{chart.name}}</span>
-              </v-tooltip>
+              <!-- <v-container> -->
+                <v-layout row justify-center align-center>
+                  <v-flex xs2>
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on }">
+                        <router-link :to="{ path: $route.path + '/' + chart.id }" class="link">
+                          <v-avatar :color="chart.co" v-on="on">
+                            <v-icon color="white">{{chart.st}}</v-icon>
+                          </v-avatar>
+                        </router-link>
+                      </template>
+                      <span>{{chart.name}}</span>
+                    </v-tooltip>
+                  </v-flex>
+                  <v-flex xs10>
+                    <span>{{chart.name}}</span>
+                  </v-flex>
+                </v-layout>
+              <!-- </v-container> -->
             </v-flex>
           </v-layout>
         </v-card-text>
@@ -52,7 +61,8 @@ export default {
   },
   data () {
     return {
-      datacollections: null,
+      datacollections: {},
+      collections: {},
       backgroundColors: [
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)',
@@ -63,7 +73,7 @@ export default {
       ]
     }
   },
-  mounted() {
+  mounted() { 
     if (!this.$store.getters.report.name) {
       this.$router.replace('/')
     }
@@ -76,16 +86,13 @@ export default {
     )
   },
   created () {
+    this.$store.dispatch('getLibrary')
     if(Object.keys(this.$store.state.report).length !== 0) {
       this.$store.dispatch('getDataByParametr', this.$store.state.report)
     }
   },
   methods: {
     fillData (libraryItem, currentReport) {
-      console.log('libraryItem: ',libraryItem)
-      console.log('currentReport: ',currentReport)
-
-
       this.datacollections = {
         name: currentReport.name,
         data: currentReport.data,
@@ -98,7 +105,7 @@ export default {
             backgroundColor: 'rgba(0, 255, 0, 1)',
             borderColor: 'rgba(0, 255, 0, 1)',
             borderWidth: 2,
-            data: Array(currentReport.data.length).fill(libraryItem.val2.value),
+            data: Array(currentReport.data.length).fill(currentReport.val2.value),
             fill: false,
             type: 'line'
           },
@@ -107,7 +114,7 @@ export default {
             backgroundColor: 'rgba(255, 0, 0, 1)',
             borderColor: 'rgba(255, 0, 0, 1)',
             borderWidth: 2,
-            data: Array(currentReport.data.length).fill(libraryItem.val1.value),
+            data: Array(currentReport.data.length).fill(currentReport.val1.value),
             fill: false,
             type: 'line'
           },
@@ -152,7 +159,17 @@ export default {
       }
     }
   },
+  watch:{
+    datacollections: function(val) {
+      this.collections = val
+    }
+  },
   computed: {
+    // collections:function () {
+    //   // get:() => {
+    //     return this.datacollections
+    //   // }
+    // },
     report: function () {
       if(Object.keys(this.$store.state.report).length !== 0) {
         let routerArr = this.$route.path.split('/').slice(2)

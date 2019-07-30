@@ -6,7 +6,7 @@
           <v-container>
             <v-card>
                 <v-container>
-                <tree :data="report" node-text="name" layoutType="euclidean" style="height: 800px;" @clicked="onClick"/>
+                <tree :data="report" node-text="name" layoutType="euclidean" :zoomable="true" style="height: 800px;" @clicked="onClick" @retract="onClick"/>
                 </v-container>
             </v-card>
           </v-container>     
@@ -73,7 +73,7 @@ export default {
         delete tmpNode.children
         this.selected.push(tmpNode)
       }
-      // console.log(this.selected)
+      console.log(this.selected)
     },
     ok () {
       this.dialog = false
@@ -107,7 +107,11 @@ export default {
   },
   computed: {
     report () {
-      return this.$store.state.oldReport
+      console.log('old', this.$store.state.oldReport)
+      console.log('new', this.$store.state.report)
+      if(Object.keys(this.$store.state.oldReport).length !== 0) {
+        return this.$store.state.oldReport
+      }
     }
   }
 }

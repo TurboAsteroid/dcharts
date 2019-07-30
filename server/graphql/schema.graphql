@@ -3,6 +3,7 @@
     getDataByParametr(linkSelected: [linkInput]!): [DataParametrs]
     getTree: Library
     getData(salary: [String], salaryBool: Boolean!): dataSource
+    getLibraryLink: String
 }
 type Mutation {
     createNewNote(data: [libraryInput]!): [Library]
