@@ -4,6 +4,7 @@
     getTree: Library
     getData(salary: [String], salaryBool: Boolean!): dataSource
     getLibraryLink: String
+    getLibraryTree: [libraryTree]
 }
 type Mutation {
     createNewNote(data: [libraryInput]!): [Library]
@@ -33,6 +34,11 @@ type DataParametrs {
     data: [Int]
     labels: [String]
 } 
+type libraryTree {
+    id: ID!
+    title: String!
+    date: String
+}
 input libraryInput {
     id: ID!
     data: [Int!]

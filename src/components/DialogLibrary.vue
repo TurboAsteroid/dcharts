@@ -6,7 +6,7 @@
       >
         <v-card>
           <v-card-title>
-            <v-layout row>
+            <v-layout row align-center>
               <v-flex xs10>
                 <span class="headline">Настройка набора данных</span>
               </v-flex>
@@ -17,7 +17,7 @@
             </v-flex>
             </v-layout>
           </v-card-title>
-
+          <v-divider my-2/>
           <v-card-text>
                 <v-layout row>
                     <v-flex xs9>
@@ -70,14 +70,14 @@
                   <v-layout row
                     v-for="(item, i) in note.data"
                     :key="i+'item'">
-                    <v-flex xs9>
+                    <v-flex xs10>
                     <v-text-field
                         v-model="note.data[i]"
                         mask="#############"
                         label="Значение"
                     ></v-text-field>
                     </v-flex>
-                    <v-flex xs3>
+                    <v-flex xs2>
                     <v-btn fab outline dark small color="orange" @click="removeRow(i)">
                         <v-icon dark>close</v-icon>
                     </v-btn>
@@ -122,7 +122,8 @@ export default {
       libraryLink() {
         return this.$store.state.libraryLink
       }
-    }, methods: {
+    }, 
+    methods: {
       closeDialog() {
         this.isLink = false
         this.$store.commit('changeDialog',{bool: false})

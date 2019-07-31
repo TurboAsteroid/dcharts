@@ -9,7 +9,7 @@
               <v-btn @click="toStore" color="success" block>Сохранить бибилиотеку</v-btn>
           </v-flex>
       </v-layout>
-    <dialogComponent/>
+    <dialogLibrary/>
     <v-layout wrap>
       <v-flex
         :key="j+'obj'"
@@ -47,10 +47,10 @@
 
 <script>
 import findChangeLibrary from '../modules/changeLibrary'
-import dialogComponent from './Dialog'
+import dialogLibrary from './DialogLibrary'
 export default {
   components:{
-    dialogComponent
+    dialogLibrary
   },
   data: () => ({
     dialog: false
