@@ -209,12 +209,6 @@ export default new Vuex.Store({
         boolUpdateTree = false;
       }
       if(this.state.currentTree.title) {
-        // console.log('tree',tree);
-        // console.log('currentTree', currentTree);
-        // console.log('deleteTrees', deleteTrees);
-        // console.log('boolAddTree', boolAddTree);
-        // console.log('boolUpdateTree', boolUpdateTree);
-        // console.log('boolDeleteTree', boolDeleteTree);
         if(tree) {
           this.state.oldReport = JSON.parse(JSON.stringify(tree));
         }
@@ -279,7 +273,6 @@ export default new Vuex.Store({
           for(let o of Object.keys(addData)) {
             result = addDataToReport(report, addData[o]);
           }
-          // console.log('Result: ',result);
           this.state.report = result;
         })
       }

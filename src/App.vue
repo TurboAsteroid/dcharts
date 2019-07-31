@@ -48,7 +48,7 @@ export default {
     this.$store.dispatch('getTree')
     this.$store.dispatch('getLibraryLink')
     this.$store.dispatch('getLibraryTree')
-
+    
   }
 }
 </script>

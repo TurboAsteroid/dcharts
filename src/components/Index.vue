@@ -89,18 +89,13 @@ export default {
         for (let i = 0; i < this.library[j].data.length; i++) {
           this.library[j].data[i] = parseInt(this.library[j].data[i])
         }
-        // this.library[j].id = parseInt(this.library[j].id)
         this.library[j].val1.value = parseInt(this.library[j].val1.value)
         this.library[j].val2.value = parseInt(this.library[j].val2.value)
       }
       let result = findChangeLibrary(this.library, this.$store.getters.library)
-
-      // this.$store.commit('library', this.library)
-     
       this.$store.dispatch('setLibrary', { library: this.library, changeLibrary: result })
-      // this.$store.dispatch('getLibrary')
       this.$store.dispatch('getTree')
-      // this.$router.push('secondPage')
+      this.$router.push('reportConfigurator')
     }
   }
 }

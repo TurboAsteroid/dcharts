@@ -2,8 +2,8 @@
     <!-- <div> -->
         <v-container>
           <v-btn @click="goBackToLibrary" color="primary">Назад</v-btn>
-          <v-btn @click="toReport" color="success">Сохранить дерево</v-btn>
           <v-btn @click="$store.commit('changeDialogTree', {bool: true})" color="warning">Выбрать дерево</v-btn>
+          <v-btn @click="toReport" color="success">Сохранить дерево</v-btn>
           <dialogTree/>
           <v-container>
             <v-card>
@@ -69,6 +69,9 @@ export default {
   mounted () {
     if (!this.$store.getters.library.length) {
       this.$router.replace('/')
+    }
+    if(this.$store.state.currentTree.id) {
+      this.$store.dispatch('getTree', this.$store.state.currentTree.id)
     }
   },
   methods: {

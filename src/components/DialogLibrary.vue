@@ -28,17 +28,18 @@
                     </v-flex>
                 </v-layout>
                 <v-layout row>
-                  <v-flex xs4>
-                    <v-btn @click="isLink = !isLink" color="info">Выбрать link</v-btn>
+                  <v-flex xs5>
+                    <v-btn @click="isLink = !isLink" color="info">Выбрать категорию</v-btn>
                   </v-flex>
-                  <v-flex xs12>
+                  <v-flex xs7>
                     <v-text-field
                         v-model="note.link"
-                        label="link"
+                        label="Категория"
                     ></v-text-field>
                   </v-flex>
                 </v-layout>
                 <span v-if="isLink">
+                  <v-divider my-2></v-divider>
                   <v-layout>
                     <v-flex xs12>
                       <v-treeview
@@ -51,6 +52,7 @@
                       </v-treeview>
                     </v-flex>
                   </v-layout>
+                  <v-divider></v-divider>
                 </span>
                 <v-layout row>
                     <v-flex xs6>
@@ -121,9 +123,17 @@ export default {
       },
       libraryLink() {
         return this.$store.state.libraryLink
-      }
+      },
+      // currentLinkName(link) {
+      //   let name = '';
+      //   this.findName(link)
+      //   return name;
+      // }
     }, 
     methods: {
+      findName() {
+
+      },
       closeDialog() {
         this.isLink = false
         this.$store.commit('changeDialog',{bool: false})
