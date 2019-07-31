@@ -221,14 +221,43 @@ const resolvers = {
                 //return [data.id]
             }   
         },
-        changeTree: async (_, {tree}) => {
-            await connect.execute(`DELETE FROM tree WHERE id_note != 0`);
+        addLibraryTree: async (_, {tree}) => {
+            let arr = [[tree.title,tree.date]]
+            try {
+                await connect.query(`INSERT INTO library_trees (title, date) VALUES ?`, [arr])
+            } catch(e) {
+                console.error(e.message);
+            }
+        },
+        updateLibraryTree: async (_, {tree}) => {
+        },
+        deleteLibraryTree: async (_, {trees}) => {
+            try {
+                for(let o of trees) {
+                    await connect.execute(`DELETE FROM library_trees WHERE id = ${parseInt(o.id)}`)
+                }
+            } catch(e) {
+                console.error(e.message)
+            }
+        },
+        changeTree: async (_, {tree, currentTree}) => {
+            let idTree;
+            if(currentTree.id) {
+                idTree = currentTree.id
+            }else if(!currentTree.id) {
+                const [last] = await connect.execute(`
+                    SELECT id FROM library_trees ORDER BY id DESC LIMIT 1
+                `);
+                idTree = last[0].id
+            }
+
+            await connect.execute(`DELETE FROM tree WHERE id_note != 0 AND id_tree = ${idTree}`);
             let res = [];
             (async function recurse(currentNode, parentId = 1) {
                 for(let i = 0, length = currentNode.children.length; i < length; i++) { 
                     try {
                         if(parentId && parentId != 0) {
-                            res = await connect.query(`INSERT INTO tree (id_note, parent_id) VALUES (${parseInt(currentNode.children[i].id)}, ${parentId})`)
+                            res = await connect.query(`INSERT INTO tree (id_note, parent_id, id_tree) VALUES (${parseInt(currentNode.children[i].id)}, ${parentId}, ${idTree})`)
                             recurse(currentNode.children[i], res[0].insertId);       
                         }
                     } catch (e) {
@@ -236,7 +265,7 @@ const resolvers = {
                     }  
                 }
             })(tree); 
-        }
+        },
     },
     Library:{
         children:(parent, args) => {

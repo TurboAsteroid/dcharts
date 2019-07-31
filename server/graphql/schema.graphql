@@ -10,8 +10,13 @@ type Mutation {
     createNewNote(data: [libraryInput]!): [Library]
     updateNote(data: [libraryInput]!): [Library]
     deleteNote(data: [Int]!): [Library]
-    changeTree(tree: treeInput!): Library
+
+    changeTree(tree: treeInput, currentTree: libraryTreeInput): String
+    addLibraryTree(tree: libraryTreeInput): String
+    updateLibraryTree(tree: libraryTreeInput): String
+    deleteLibraryTree(trees: [libraryTreeInput]): String
 }
+
 type Library {
     id: ID!
     data: [Int]
@@ -39,9 +44,16 @@ type libraryTree {
     title: String!
     date: String
 }
-input libraryInput {
+
+
+input libraryTreeInput {
     id: ID!
-    data: [Int!]
+    title: String!
+    date: String
+}
+input libraryInput {
+    id: ID
+    data: [Int]
     name:String
     val1: valueInput
     val2: valueInput
@@ -60,6 +72,6 @@ input linkInput {
 input treeInput {
     children: [libraryInput]
     data: [Int]
-    id: ID!
+    id: ID
     name: String
 }
