@@ -46,7 +46,9 @@ export default {
   mounted () {
     this.$store.dispatch('getLibrary')
     this.$store.dispatch('getTree')
-    this.$store.dispatch('getLibraryLink');
+    this.$store.dispatch('getLibraryLink')
+    this.$store.dispatch('getLibraryTree')
+
   }
 }
 </script>

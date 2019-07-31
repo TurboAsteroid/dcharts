@@ -9,6 +9,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     dialog: false,
+    dialogTree: false,
     currentNote: {
       id: 0,
       data: [],
@@ -25,9 +26,11 @@ export default new Vuex.Store({
       link: '',
       children: []
     },
+    currentTree: {},
     library: [],
     oldLibrary: [],
     libraryLink: [],
+    libraryTree: [],
     report: {
       id: '',
       data:[],
@@ -58,6 +61,12 @@ export default new Vuex.Store({
           link: '',
           children: []
         };
+      }
+    },
+    changeDialogTree:(state,{bool, value}) => {
+      state.dialogTree = bool;
+      if (value) {
+        state.currentTree = value;
       }
     },
     library (state, data) {
@@ -120,7 +129,10 @@ export default new Vuex.Store({
       // console.log('library:', library)
       commit('library', library);
     },
-    getTree({commit}) {
+    getTree({commit}, treeId = 1) {
+      // if(treeId) {
+      // }
+      
       axios.post('http://localhost:4000', {
         query: 
           `query {
@@ -230,6 +242,22 @@ export default new Vuex.Store({
           }`
       }).then(res => {
           this.state.libraryLink = JSON.parse(res.data.data.getLibraryLink)
+        }
+      )  
+    },
+    getLibraryTree() {
+      axios.post('http://localhost:4000', {
+        query: 
+          `query {
+            getLibraryTree {
+              id
+              title
+              date
+            }
+          }`
+      }).then(res => {
+          // console.log('Res', res.data.data.getLibraryTree)
+          this.state.libraryTree = res.data.data.getLibraryTree
         }
       )  
     }

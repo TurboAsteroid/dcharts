@@ -107,7 +107,6 @@ const resolvers = {
                 `);
                 
                 let result = createTree(tree, lib);
-                // console.log('Result: ',result)
                 return result;
             } catch (e) {
                 console.error(e.message);
@@ -119,11 +118,31 @@ const resolvers = {
         getLibraryLink: async () => {
             try {
                 const [libLink] = await connect.execute(`
-                    SELECT * FROM linksalary
+                    SELECT * FROM link_salary
                     WHERE id != 0
                 `);
                 let result = createLinkTree(libLink);
                 return JSON.stringify(result)
+            } catch (e) {
+                console.error(e.message);
+            }
+        },
+        getLibraryTree: async () => {
+            try {
+                const [libTree] = await connect.execute(`
+                    SELECT * FROM library_trees
+                    WHERE id != 0
+                `)
+                //console.log(libTree)
+                let result = []
+                for(let o of Object.keys(libTree)) {
+                    result.push({
+                        id: libTree[o].id,
+                        title: libTree[o].title,
+                        date: libTree[o].date
+                    })
+                }
+                return result;
             } catch (e) {
                 console.error(e.message);
             }

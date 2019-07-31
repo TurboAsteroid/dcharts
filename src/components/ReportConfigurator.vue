@@ -3,11 +3,24 @@
         <v-container>
           <v-btn @click="goBackToLibrary" color="primary">Назад</v-btn>
           <v-btn @click="toReport" color="success">Сохранить дерево</v-btn>
+          <v-btn @click="$store.commit('changeDialogTree', {bool: true})" color="warning">Выбрать дерево</v-btn>
+          <dialogTree/>
           <v-container>
             <v-card>
-                <v-container>
-                <tree :data="report" node-text="name" layoutType="euclidean" :zoomable="true" style="height: 800px;" @clicked="onClick" @retract="onClick"/>
-                </v-container>
+              <v-layout row>
+                <v-flex xs6 md4>
+                  <v-card-title>
+                    <v-text-field
+                      v-model="$store.state.currentTree.title"
+                      label="Имя дерева"
+                    ></v-text-field>
+                  </v-card-title>
+                </v-flex>
+              </v-layout>
+              
+              <v-container>
+              <tree :data="report" node-text="name" layoutType="euclidean" :zoomable="true" style="height: 800px;" @clicked="onClick" @retract="onClick"/>
+              </v-container>
             </v-card>
           </v-container>     
         
@@ -41,10 +54,12 @@
 
 <script>
 import { tree } from 'vued3tree'
+import dialogTree from './DialogTree'
 export default {
   name: 'reportConfigurator',
   components: {
-    tree
+    tree,
+    dialogTree
   },
   data: () => ({
     selected: [],
@@ -73,7 +88,6 @@ export default {
         delete tmpNode.children
         this.selected.push(tmpNode)
       }
-      console.log(this.selected)
     },
     ok () {
       this.dialog = false
@@ -95,11 +109,6 @@ export default {
           this.node.data.children.push(tmpNode)
         }
       }
-      console.log('newReport: ', this.report)
-      console.log('oldReport: ', this.$store.state.report)
-
-      // this.$store.commit('report', this.report)
-      
     },
     cancel () {
       this.dialog = false
@@ -107,8 +116,6 @@ export default {
   },
   computed: {
     report () {
-      console.log('old', this.$store.state.oldReport)
-      console.log('new', this.$store.state.report)
       if(Object.keys(this.$store.state.oldReport).length !== 0) {
         return this.$store.state.oldReport
       }
