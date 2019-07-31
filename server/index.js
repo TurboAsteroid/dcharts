@@ -230,6 +230,12 @@ const resolvers = {
             }
         },
         updateLibraryTree: async (_, {tree}) => {
+            let arr = [[tree.title,tree.date]]
+            try {
+                await connect.query(`UPDATE library_trees SET title=${JSON.stringify(tree.title)}, date=${JSON.stringify(tree.date)} WHERE id=${tree.id}`)
+            } catch(e) {
+                console.error(e.message);
+            }
         },
         deleteLibraryTree: async (_, {trees}) => {
             try {
