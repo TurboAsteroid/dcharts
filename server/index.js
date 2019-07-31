@@ -83,11 +83,11 @@ const resolvers = {
                 console.log(e.message);
             }
         },
-        getTree: async () => {
+        getTree: async (parent, {treeId}) => {
             try {
                 const [tree] = await connect.execute(`
                     SELECT * FROM library l
-                    JOIN tree t ON l.id = t.id_note
+                    JOIN tree t ON l.id = t.id_note AND t.id_tree = ${treeId}
                     ORDER BY parent_id
                 `);
                 const [lib] = await connect.execute(`
@@ -133,7 +133,6 @@ const resolvers = {
                     SELECT * FROM library_trees
                     WHERE id != 0
                 `)
-                //console.log(libTree)
                 let result = []
                 for(let o of Object.keys(libTree)) {
                     result.push({

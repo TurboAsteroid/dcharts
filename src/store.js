@@ -132,11 +132,11 @@ export default new Vuex.Store({
     getTree({commit}, treeId = 1) {
       // if(treeId) {
       // }
-      
+
       axios.post('http://localhost:4000', {
         query: 
-          `query {
-            getTree {
+          `query GetTree($treeId: Int!){
+            getTree(treeId: $treeId) {
               id
               name
               data
@@ -176,14 +176,15 @@ export default new Vuex.Store({
           val2{
             value
             label
-          }
-          
-        }`
+          }    
+        }`,
+        variables:{
+          treeId: parseInt(treeId)
+        }
       }).then(res => {
         let tree = res.data.data.getTree;
         this.state.oldReport = JSON.parse(JSON.stringify(tree));
         commit('report', tree)
-        // console.log('Tree: ',this.state.report);
       });
     },
     setTree({commit}, {tree}) {
@@ -256,8 +257,9 @@ export default new Vuex.Store({
             }
           }`
       }).then(res => {
-          // console.log('Res', res.data.data.getLibraryTree)
-          this.state.libraryTree = res.data.data.getLibraryTree
+          let libTree = res.data.data.getLibraryTree
+          this.state.libraryTree = libTree
+          this.state.currentTree = libTree[libTree.length - 1]
         }
       )  
     }

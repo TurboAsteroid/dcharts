@@ -1,7 +1,7 @@
  type Query {
     getLibrary: [Library]
     getDataByParametr(linkSelected: [linkInput]!): [DataParametrs]
-    getTree: Library
+    getTree(treeId: Int): Library
     getData(salary: [String], salaryBool: Boolean!): dataSource
     getLibraryLink: String
     getLibraryTree: [libraryTree]
