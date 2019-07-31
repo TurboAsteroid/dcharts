@@ -35,7 +35,7 @@ export default new Vuex.Store({
       id: '',
       data:[],
       name:'',
-      children:''
+      children:[]
     },
     oldReport:[]
   },
@@ -63,10 +63,16 @@ export default new Vuex.Store({
         };
       }
     },
-    changeDialogTree:(state,{bool, value}) => {
+    changeDialogTree:(state, {bool, value}) => {
       state.dialogTree = bool;
       if (value) {
         state.currentTree = value;
+        state.oldReport = {
+          id: 0,
+          data:[],
+          name:'Корневой элемент',
+          children:[]
+        };
       }
     },
     library (state, data) {
@@ -132,7 +138,6 @@ export default new Vuex.Store({
     getTree({commit}, treeId = 1) {
       // if(treeId) {
       // }
-
       axios.post('http://localhost:4000', {
         query: 
           `query GetTree($treeId: Int!){
@@ -187,37 +192,82 @@ export default new Vuex.Store({
         commit('report', tree)
       });
     },
-    setTree({commit}, {tree}) {
-      this.state.oldReport = JSON.parse(JSON.stringify(tree));
-      axios.post('http://localhost:4000', {
-        query:`
-          mutation ChangeTree($tree: treeInput!) {
-            changeTree(tree: $tree) {
-              id
-            }
-          }
-        `,
-        variables:{
-          tree
+    setTree({commit}, {tree, boolDelete = false, deleteTree = []}) {
+      let boolAddTree = false,
+          boolUpdateTree = true,
+          boolDeleteTree = false,
+          currentTree = this.state.currentTree,
+          deleteTrees = [];
+
+      if(boolDelete) {
+        deleteTrees = deleteTree;
+        boolDeleteTree = true;
+        boolUpdateTree = false;
+      }
+      if(!boolDelete && !this.state.libraryTree.some(x => x.id === this.state.currentTree.id)) {
+        boolAddTree = true;
+        boolUpdateTree = false;
+      }
+      if(this.state.currentTree.title) {
+        // console.log('tree',tree);
+        // console.log('currentTree', currentTree);
+        // console.log('deleteTrees', deleteTrees);
+        // console.log('boolAddTree', boolAddTree);
+        // console.log('boolUpdateTree', boolUpdateTree);
+        // console.log('boolDeleteTree', boolDeleteTree);
+        if(tree) {
+          this.state.oldReport = JSON.parse(JSON.stringify(tree));
         }
-      });
-      commit('report', tree);
+        axios.post('http://localhost:4000', {
+          query:`
+            mutation ChangeTree (
+              $tree: treeInput, 
+              $currentTree: libraryTreeInput,
+              $deleteTrees: [libraryTreeInput]
+              $boolAddTree: Boolean!,
+              $boolUpdateTree: Boolean!,
+              $boolDeleteTree: Boolean!
+            ) {
+                addLibraryTree (tree: $currentTree) @include(if: $boolAddTree)
+                updateLibraryTree (tree: $currentTree) @include(if: $boolUpdateTree)
+                deleteLibraryTree (trees: $deleteTrees) @include(if: $boolDeleteTree)
+                changeTree(tree: $tree, currentTree: $currentTree) @skip(if: $boolDeleteTree)
+            }
+          `,
+          variables:{
+            tree,
+            currentTree,
+            deleteTrees,
+            boolAddTree,
+            boolUpdateTree,
+            boolDeleteTree
+          }
+        });
+        commit('report', tree);
+      }
     },
     getDataByParametr({}, report) {
       let links = sortLinks(report),
           param = links.find(x => x.linkSource === "Salary"),
           result = {};
+
       if(links.length !== 0) {
         axios.post('http://localhost:4000', {
           query:` 
-            query GetData($salary: [String], $salaryBool: Boolean!){
-              getData(salary: $salary, salaryBool: $salaryBool) {
-                getSalary(salary: $salary) @include(if: $salaryBool){
-                  id
-                  data
-                  labels
+            query GetData (
+              $salary: [String], 
+              $salaryBool: Boolean!
+            ){
+                getData (
+                  salary: $salary, 
+                  salaryBool: $salaryBool
+                ){
+                    getSalary(salary: $salary) @include(if: $salaryBool){
+                      id
+                      data
+                      labels
+                    }
                 }
-              }
             }
           `,
           variables:{
@@ -225,11 +275,11 @@ export default new Vuex.Store({
             salaryBool: links.some(x => x.linkSource === "Salary")
           }
         }).then(res => {
-          let addData = res.data.data.getData
+          let addData = res.data.data.getData;
           for(let o of Object.keys(addData)) {
-            result = addDataToReport(report, addData[o])
+            result = addDataToReport(report, addData[o]);
           }
-          console.log('Result: ',result)
+          // console.log('Result: ',result);
           this.state.report = result;
         })
       }
