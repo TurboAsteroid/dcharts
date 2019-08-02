@@ -11,11 +11,17 @@
         <v-btn flat exact :to="{ name: 'index'}">
           Библиотека
         </v-btn>
+        <v-btn flat exact :to="{ path: '/librarys'}">
+          Библиотеки
+        </v-btn>
         <v-btn flat exact :to="{ name: 'reportConfigurator'}" :disabled="active">
           Создание отчёта
         </v-btn>
         <v-btn flat :to="{ path: '/secondPage'}" :disabled="active">
           Отчёт
+        </v-btn>
+        <v-btn flat :to="{ path: '/report'}" :disabled="active">
+          Отчёт 2v
         </v-btn>
       </v-toolbar-items>
 

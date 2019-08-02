@@ -1,5 +1,5 @@
 function getData(data, parametr) {
-
+    let source = 'Salary';
     let result = [],
         dataArr = [],
         labelsArr = [];
@@ -17,7 +17,7 @@ function getData(data, parametr) {
                     }            
                 }
                 result.push({
-                    id: `Salary.${obj[itemObj]}`,
+                    id: `${source}.${obj[itemObj]}`,
                     data: dataArr,
                     labels: labelsArr
                 });
@@ -31,7 +31,7 @@ function getData(data, parametr) {
                             labelsArr.push(obj.children[i].values[j].label);
                         }   
                         result.push({
-                            id: `Salary.${obj.children[i].id}`,
+                            id: `${source}.${obj.children[i].id}`,
                             data: dataArr,
                             labels: labelsArr
                         });

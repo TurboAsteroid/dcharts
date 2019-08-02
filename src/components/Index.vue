@@ -47,7 +47,7 @@
 
 <script>
 import findChangeLibrary from '../modules/changeLibrary'
-import dialogLibrary from './DialogLibrary'
+import dialogLibrary from './dialog/DialogLibrary'
 export default {
   components:{
     dialogLibrary

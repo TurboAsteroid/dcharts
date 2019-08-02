@@ -114,39 +114,39 @@
 
 <script>
 export default {
-    data:() => ({
-      isLink: false,
-    }),
-    computed:{
-      note() {
-        return this.$store.state.currentNote
-      },
-      libraryLink() {
-        return this.$store.state.libraryLink
-      },
-      // currentLinkName(link) {
-      //   let name = '';
-      //   this.findName(link)
-      //   return name;
-      // }
-    }, 
-    methods: {
-      findName() {
+  data:() => ({
+    isLink: false,
+  }),
+  computed:{
+    note() {
+      return this.$store.state.currentNote
+    },
+    libraryLink() {
+      return this.$store.state.libraryLink
+    },
+    // currentLinkName(link) {
+    //   let name = '';
+    //   this.findName(link)
+    //   return name;
+    // }
+  }, 
+  methods: {
+    findName() {
 
-      },
-      closeDialog() {
-        this.isLink = false
-        this.$store.commit('changeDialog',{bool: false})
-      },
-      currentLink(item){
-        this.note.link = item.link
-      },
-      addField () {
-        this.note.data.push(0)
-      },
-      removeRow (i) {
-        this.note.data.splice(i, 1)    
-      },
-    }
+    },
+    closeDialog() {
+      this.isLink = false
+      this.$store.commit('changeDialog',{bool: false})
+    },
+    currentLink(item){
+      this.note.link = item.link
+    },
+    addField () {
+      this.note.data.push(0)
+    },
+    removeRow (i) {
+      this.note.data.splice(i, 1)    
+    },
+  }
 }
 </script>
