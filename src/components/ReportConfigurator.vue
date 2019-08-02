@@ -54,7 +54,7 @@
 
 <script>
 import { tree } from 'vued3tree'
-import dialogTree from './DialogTree'
+import dialogTree from './dialog/DialogTree'
 export default {
   name: 'reportConfigurator',
   components: {
@@ -79,7 +79,7 @@ export default {
       this.$router.push('/');
     },
     toReport() {
-      this.$store.dispatch('setTree', {tree: this.report})
+      this.$store.dispatch('setTree', { tree: this.report })
     },
     onClick (evt) {
       this.dialog = true
@@ -87,7 +87,6 @@ export default {
       this.selected = []
       for (let i = 0; i < evt.data.children.length; i++) {
         let tmpNode = Object.assign({}, evt.data.children[i])
-      
         delete tmpNode.children
         this.selected.push(tmpNode)
       }
@@ -119,7 +118,7 @@ export default {
   },
   computed: {
     report () {
-      if(Object.keys(this.$store.state.oldReport).length !== 0) {
+      if (Object.keys(this.$store.state.oldReport).length !== 0) {
         return this.$store.state.oldReport
       }
     }

@@ -8,8 +8,13 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    dialog: false,
     dialogTree: false,
+    dialogAddLibrary: false,
+    dialogCreateLibrary: false,
+    librarys:[],
+    oldLibrarys: [],
+
+    dialog: false,
     currentNote: {
       id: 0,
       data: [],
@@ -40,6 +45,33 @@ export default new Vuex.Store({
     oldReport:[]
   },
   mutations: {
+    changeDialogTree:(state, {bool, value}) => {
+      state.dialogTree = bool;
+      if (value) {
+        state.currentTree = value;
+        state.oldReport = {
+          id: 0,
+          data:[],
+          name:'Корневой элемент',
+          children:[]
+        };
+      }
+    },
+    changeDialogLibrary:(state, {boolAdd, boolCreate, newLibrary}) => {
+      if(boolAdd !== undefined) {
+        state.dialogAddLibrary = boolAdd;
+      }
+      if(boolCreate !== undefined) {
+        state.dialogCreateLibrary = boolCreate;
+      }
+      if(newLibrary) {
+        state.librarys.push(newLibrary)
+      }
+    },
+    librarys: (state, data) => {
+      state.librarys = data;
+    },
+
     changeDialog:(state, {bool, value}) => {
       state.dialog = bool;
       if(value) {
@@ -60,18 +92,6 @@ export default new Vuex.Store({
           },
           link: '',
           children: []
-        };
-      }
-    },
-    changeDialogTree:(state, {bool, value}) => {
-      state.dialogTree = bool;
-      if (value) {
-        state.currentTree = value;
-        state.oldReport = {
-          id: 0,
-          data:[],
-          name:'Корневой элемент',
-          children:[]
         };
       }
     },
