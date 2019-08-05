@@ -1,14 +1,17 @@
 <template>
   <v-container>
-      <v-layout wrap>
-          <v-flex xs3>
+    <v-container grid-list-md>
+      <v-layout wrap align-center justify-center>
+          <v-flex xs2>
               <v-btn @click.stop="addArr()" color="info" block>Добавить набор данных</v-btn>
           </v-flex>
-          <v-flex xs6></v-flex>
-          <v-flex xs3>
+          <!-- <v-flex xs2></v-flex> -->
+          <v-flex xs2>
               <v-btn @click="toStore" color="success" block>Сохранить бибилиотеку</v-btn>
           </v-flex>
       </v-layout>
+      <v-divider></v-divider>
+    </v-container>
     <dialogLibrary/>
     <v-layout wrap>
       <v-flex
@@ -95,7 +98,7 @@ export default {
       let result = findChangeLibrary(this.library, this.$store.getters.library)
       this.$store.dispatch('setLibrary', { library: this.library, changeLibrary: result })
       this.$store.dispatch('getTree')
-      this.$router.push('reportConfigurator')
+      // this.$router.push('reportConfigurator')
     }
   }
 }
