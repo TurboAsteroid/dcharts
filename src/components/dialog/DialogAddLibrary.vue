@@ -11,9 +11,14 @@
                     <span class="headline">Выбор библиотек</span>
                     </v-flex>
                     <v-flex xs2>
-                    <v-btn fab dark small color="success" @click="closeDialog()">
-                        <v-icon dark >done</v-icon>
-                    </v-btn>
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-btn fab dark small v-on="on" color="success" @click="addLib()">
+                                    <v-icon dark >done</v-icon>
+                                </v-btn>
+                            </template>
+                      <span>Добавить</span>
+                    </v-tooltip>
                 </v-flex>
                 </v-layout>
             </v-card-title>
@@ -55,23 +60,17 @@
 export default {
     data:() => ({
         selectedLibrary:[],
-        librarysLinks:[
-          {
-                id: 1,
-                title: 'Зарплата',
-                source: 'Salary'
-          },
-          {
-                id: 2,
-                title: 'Продукция',
-                source: 'Production'
-          },
-        ]
     }),
     methods: {
-        closeDialog() {
+        addLib() {
             this.$store.commit('changeDialogLibrary',{ boolAdd: false })
+            this.$store.commit('addLib', { addLib: this.selectedLibrary})
         },
+    },
+    computed: {
+        librarysLinks() {
+            return this.$store.state.librarysLinks
+        }
     }
 }
 </script>

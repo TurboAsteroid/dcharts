@@ -1,24 +1,59 @@
 <template>
     <v-dialog
         persistent
-        v-model="$store.state.dialogCreateLibrary"
+        v-model="$store.state.dialogCreateSetting"
         max-width="700"
     >
         <v-card>
             <v-card-title>
-                <v-layout row align-center>
+                <v-layout row align-center v-show="!setting">
                     <v-flex xs8>
-                    <span class="headline">Создание библиотеки</span>
+                        <span class="headline">Создание библиотеки</span>
                     </v-flex>
                     <v-flex xs2>
-                        <v-btn fab dark small color="red" @click="cancel()">
-                            <v-icon dark>close</v-icon>
-                        </v-btn>
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-btn fab dark small color="red" @click="cancel()" v-on="on">
+                                    <v-icon dark>close</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Отменить</span>
+                        </v-tooltip>
                     </v-flex>
                     <v-flex xs2>
-                        <v-btn fab dark small color="success" @click="createLib()">
-                            <v-icon dark >done</v-icon>
-                        </v-btn>
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-btn fab dark small color="success" @click="createLib()" v-on="on">
+                                    <v-icon dark >done</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Сохранить</span>
+                        </v-tooltip>
+                    </v-flex>
+                </v-layout>
+                <v-layout row align-center v-if="setting">
+                    <v-flex xs8>
+                        <span class="headline">Редактирование библиотеки</span>
+                    </v-flex>
+                    <v-flex xs2>
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-btn fab dark small color="red" @click="deleteLib()" v-on="on">
+                                    <v-icon dark>delete</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Удалить библиотеку</span>
+                        </v-tooltip>
+                    </v-flex>
+                    <v-flex xs2>
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-btn fab dark small color="success" @click="saveChangeLib()" v-on="on">
+                                    <v-icon dark >done</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Сохранить</span>
+                        </v-tooltip>
                     </v-flex>
                 </v-layout>
             </v-card-title>
@@ -30,7 +65,7 @@
                     <v-flex xs8>
                         <v-text-field
                         label="Имя библиотеки"
-                        v-model="library.name"
+                        v-model="currentLibrary.name"
                         ></v-text-field>
                     </v-flex>
                     <v-flex xs4>
@@ -40,14 +75,19 @@
                 <span>
                     <v-expansion-panel v-model="currentDataSet">
                         <v-expansion-panel-content
-                        v-for="(item, i) in library.dataSet"
-                        :key="i">
+                            v-for="(item, i) in currentLibrary.dataSet"
+                            :key="i">
                             <template v-slot:actions>
                                 <v-layout row align-center>
-                                    <v-flex xs2 >
-                                        <v-btn fab outline dark small color="red" @click="deleteDataSet(i)">
-                                            <v-icon dark>delete</v-icon>
-                                        </v-btn>
+                                    <v-flex xs2 v-if="!item.link_name">
+                                        <v-tooltip bottom>
+                                            <template v-slot:activator="{ on }">
+                                                <v-btn fab outline dark small color="red" @click="deleteDataSet(i)" v-on="on">
+                                                    <v-icon dark>delete</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <span>Удалить набор</span>
+                                        </v-tooltip>
                                     </v-flex>
                                 </v-layout>
                             </template>
@@ -89,7 +129,7 @@
                                     <v-flex xs5 ml-2>
                                         <v-text-field
                                             v-model="item.labels[j]"
-                                            mask="#############"
+                                            mask="##.##.##"
                                             label=""
                                         ></v-text-field>
                                     </v-flex>
@@ -99,7 +139,7 @@
                                     </v-btn>
                                     </v-flex>
                                 </v-layout>
-                                <v-layout row justify-center>
+                                <v-layout row justify-center v-if="!item.link_name">
                                     <v-btn @click="addDataValue(i)" color="info">Добавить значение</v-btn>
                                 </v-layout>
                             </v-container>
@@ -116,60 +156,32 @@ export default {
     data: () => ({
         currentDataSet: null,
         boolSetting: false,
-        library:{
-            id: 0,
-            name: 'testLib',
-            dataSet:[
-                {
-                    id: 1,
-                    data: [1, 2],
-                    labels:[1, 2],
-                    name: 'Test1',
-                    val1: {
-                        value: 1,
-                        label: 'min'
-                    },
-                    val2: {
-                        value: 2,
-                        label: 'max'
-                    },
-                    link: '',
-                    children: [],
-                    relations: []
-                },
-                {
-                    id: 2,
-                    data: [1, 2],
-                    labels:[1, 2],
-                    name: 'Test2',
-                    val1: {
-                        value: 1,
-                        label: 'min'
-                    },
-                    val2: {
-                        value: 2,
-                        label: 'max'
-                    },
-                    link: '',
-                    children: [],
-                    relations: []
-                }
-            ]
-        }
     }),
     methods: {
         cancel() {
             this.currentDataSet = null
-            this.$store.commit('changeDialogLibrary',{ boolCreate: false })
+            this.$store.commit('changeDialogLibrary',{ boolCreateSetting: false })
         },
         createLib() {
             this.currentDataSet = null
-            this.$store.commit('changeDialogLibrary',{ boolCreate: false, newLibrary: this.library })
+            if(this.currentLibrary.name) {
+                this.$store.commit('changeDialogLibrary',{ boolCreateSetting: false, newLibrary: this.currentLibrary })
+            }
+        },
+        deleteLib() {
+            this.currentDataSet = null
+            this.$store.state.setting = false
+            this.$store.commit('changeDialogLibrary',{ boolCreateSetting: false })
+        },
+        saveChangeLib() {
+            this.currentDataSet = null
+            this.$store.state.setting = false
+            this.$store.commit('changeDialogLibrary',{ boolCreateSetting: false })
         },
         addDataSet() {
             this.currentDataSet = null
-            this.library.dataSet.push({
-                id: this.library.dataSet.length + 1,
+            this.currentLibrary.dataSet.push({
+                id: this.currentLibrary.dataSet.length + 1,
                 data: [],
                 labels:[],
                 name: '',
@@ -187,15 +199,23 @@ export default {
             })
         },
         deleteDataSet(i) {
-            this.library.dataSet.splice(i,1)
+            this.currentLibrary.dataSet.splice(i,1)
         },
         addDataValue(i) {
-            this.library.dataSet[i].data.push(0)
-            this.library.dataSet[i].labels.push(0)
+            this.currentLibrary.dataSet[i].data.push(0)
+            this.currentLibrary.dataSet[i].labels.push(0)
         },
         removeDataValue(i,j) {
-            this.library.dataSet[i].data.splice(j, 1)
-            this.library.dataSet[i].labels.splice(j, 1)
+            this.currentLibrary.dataSet[i].data.splice(j, 1)
+            this.currentLibrary.dataSet[i].labels.splice(j, 1)
+        }
+    },
+    computed: {
+        currentLibrary() {
+            return this.$store.state.currentLibrary
+        },
+        setting() {
+            return this.$store.state.setting
         }
     }
 }

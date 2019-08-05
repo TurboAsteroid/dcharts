@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 import sortLinks from './modules/sortLinks'
 import addDataToReport from '../server/modules/addDataToReport'
+import { all } from 'any-promise';
 
 Vue.use(Vuex)
 
@@ -10,10 +11,179 @@ export default new Vuex.Store({
   state: {
     dialogTree: false,
     dialogAddLibrary: false,
-    dialogCreateLibrary: false,
-    librarys:[],
-    oldLibrarys: [],
+    setting: false,
+    dialogCreateSetting: false,
+    currentLibrary: {
+      id: 0,
+      name: '',
+      dataSet:[]
+    },
+    librarysLinks:[
+      {
+            id: 1,
+            title: 'Средние зарплаты',
+            source: 'Salary'
+      },
+      {
+            id: 2,
+            title: 'Продукция.Цветная метеллургия',
+            source: 'Production'
+      },
+       {
+            id: 3,
+            title: 'Test 1',
+            source: 'test'
+      }
+    ],
 
+    librarys:[],
+    oldLibrarys:[],
+    allLib: [
+      {
+        id: 1,
+        name: 'Средние зарплаты',
+        source: 'Salary',
+        dataSet:[
+          {
+            id: 2,
+            name: 'Компания',
+            link_name: 'Salary.company',
+            val1: {
+              value: 30000,
+              label: 'min'
+            },
+            val2: {
+              value: 50000,
+              label: 'max'
+            },
+          },
+          {
+            id: 45,
+            name: 'Пол',
+            link_name: 'Salary.sex',
+            val1: {
+              value: 30000,
+              label: 'min'
+            },
+            val2: {
+              value: 50000,
+              label: 'max'
+            },
+          },
+          {
+            id: 23,
+            name: 'Мужчины',
+            link_name: 'Salary.male',
+            val1: {
+              value: 30000,
+              label: 'min'
+            },
+            val2: {
+              value: 50000,
+              label: 'max'
+            },
+          },
+          {
+            id: 200,
+            name: 'Женщины',
+            link_name: 'Salary.female',
+            val1: {
+              value: 30000,
+              label: 'min'
+            },
+            val2: {
+              value: 50000,
+              label: 'max'
+            },
+          }
+        ]
+      },
+      {
+        id: 3,
+        name: 'Продукция.Цветная метеллургия',
+        source: 'Production',
+        dataSet:[
+          {
+            id: 4,
+            name: 'Золото в слитках',
+            link_name: 'Production.au',
+            val1: {
+              value: 30000,
+              label: 'min'
+            },
+            val2: {
+              value: 50000,
+              label: 'max'
+            },
+          },
+          {
+            id: 5,
+            name: 'серебро в слитках',
+            link_name: 'Production.arg',
+            val1: {
+              value: 30000,
+              label: 'min'
+            },
+            val2: {
+              value: 50000,
+              label: 'max'
+            },
+          },
+          {
+            id: 6,
+            name: 'Катоды медные',
+            link_name: 'Production.cu',
+            val1: {
+              value: 30000,
+              label: 'min'
+            },
+            val2: {
+              value: 50000,
+              label: 'max'
+            },
+          }
+        ]
+      },
+      {
+        id:7,
+        name: 'Test 1',
+        source:'',
+        dataSet:[
+          {
+            id: 8,
+            name: 'Карандаши',
+            link_name: '',
+            val1: {
+              value: 300,
+              label: 'min'
+            },
+            val2: {
+              value: 500,
+              label: 'max'
+            },
+            data:[320,390,450],
+            labels:['03.08.19', '03.09.19', '03.10.19']
+          },
+          {
+            id: 80,
+            name: 'Настроение',
+            link_name: '',
+            val1: {
+              value: 300,
+              label: 'min'
+            },
+            val2: {
+              value: 500,
+              label: 'max'
+            },
+            data:[320,390,450],
+            labels:['03.08.19', '03.09.19', '03.10.19']
+          }
+        ]
+      }
+    ],
+    
+//////////////////////////////
     dialog: false,
     currentNote: {
       id: 0,
@@ -29,6 +199,7 @@ export default new Vuex.Store({
         label: 'max'
       },
       link: '',
+      link_name: '',
       children: []
     },
     currentTree: {},
@@ -57,16 +228,44 @@ export default new Vuex.Store({
         };
       }
     },
-    changeDialogLibrary:(state, {boolAdd, boolCreate, newLibrary}) => {
+    changeDialogLibrary:(state, {boolAdd, boolCreateSetting, newLibrary, valueSetting}) => {
       if(boolAdd !== undefined) {
         state.dialogAddLibrary = boolAdd;
       }
-      if(boolCreate !== undefined) {
-        state.dialogCreateLibrary = boolCreate;
+      if(boolCreateSetting !== undefined) {
+        state.dialogCreateSetting = boolCreateSetting;
+        state.currentLibrary = {
+          id: 0,
+          name: '',
+          dataSet:[]
+        }
+      }
+      if(valueSetting) {
+        state.setting = boolCreateSetting;
+        state.currentLibrary = valueSetting;
       }
       if(newLibrary) {
-        state.librarys.push(newLibrary)
+        // state.oldLibrarys.push(newLibrary);
+        state.allLib.push(newLibrary)
+        state.librarysLinks.push({
+          id: newLibrary.id,
+          title: newLibrary.name,
+          source: ''
+        })
+        state.currentLibrary = {
+          id: 0,
+          name: '',
+          dataSet:[]
+        }
       }
+    },
+    addLib: (state, {addLib}) => {
+      let result = []
+      for(let o of addLib) {
+        result.push(state.allLib.find(x => x.name === o.title))
+      }
+      console.log(result)
+      state.oldLibrarys = result
     },
     librarys: (state, data) => {
       state.librarys = data;
@@ -331,6 +530,6 @@ export default new Vuex.Store({
     dialog: state => state.dialog,
     library: state => state.library,
     report: state => state.report,
-    oldReport: state => state.oldReport
+    oldReport: state => state.oldReport,
   }
 });

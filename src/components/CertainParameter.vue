@@ -21,7 +21,11 @@
           <v-divider class="my-2"></v-divider>
           <v-layout row wrap>
             <v-flex v-for="(chart, index) in datacollections.children" v-bind:key="index">
-              <!-- <v-container> -->
+                <v-layout row justify-center align-center>
+                  <v-flex xs10>
+                    <span class="title">{{chart.name}}</span>
+                  </v-flex>
+                </v-layout>
                 <v-layout row justify-center align-center>
                   <v-flex xs2>
                     <v-tooltip bottom>
@@ -35,11 +39,7 @@
                       <span>{{chart.name}}</span>
                     </v-tooltip>
                   </v-flex>
-                  <v-flex xs10>
-                    <span>{{chart.name}}</span>
-                  </v-flex>
                 </v-layout>
-              <!-- </v-container> -->
             </v-flex>
           </v-layout>
         </v-card-text>

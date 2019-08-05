@@ -26,7 +26,7 @@ const getLibrary = async (_, args, {connect}) => {
             LEFT JOIN data ON data.library_id = library.id
             GROUP BY library.id
         `);
-        // console.log(rows)
+        console.log(rows)
         let data = []
         for(let o of rows) {
             if (o.id != 0) {

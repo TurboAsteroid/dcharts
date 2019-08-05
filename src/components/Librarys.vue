@@ -3,13 +3,13 @@
         <v-container grid-list-md>
             <v-layout wrap align-center justify-center>
                 <v-flex xs2>
-                <v-btn @click.stop="addLib()" color="info" block ml-2>Выброр библиотек</v-btn>
+                <v-btn @click.stop="addLib()" color="info" block ml-2>Выбор библиотек</v-btn>
                 </v-flex>
                 <v-flex xs2>
                     <v-btn @click.stop="createLib()" color="warning" block>Создание библиотеки</v-btn>
                 </v-flex>
                 <v-flex xs2>
-                    <v-btn color="success" block>Сохранение изменений</v-btn>
+                    <v-btn color="success" block>Сохранение коллекции</v-btn>
                 </v-flex>
             </v-layout>
             <v-divider></v-divider>
@@ -19,35 +19,52 @@
         <dialogCreateLibrary/>
         
         <v-container>
-            <v-layout wrap>
+            <v-layout wrap row>
                 <v-flex
                     :key="j+'obj'"
                     v-for="(obj, j) in librarys"
                     xl3 sm6
                 >
-                    <v-container>
-                        <v-card>
-                            <v-container>
-                                <v-layout row>
-                                    <v-flex xs8>
+                <v-container>
+                    <v-card>
+                        <v-card-title>
+                            <v-layout row>
+                                <v-flex xs12>
                                     <v-text-field
-                                    v-model="obj.name"
-                                    label="Имя набора данных"
+                                        :value = obj.name
+                                        readonly
                                     ></v-text-field>
-                                    </v-flex>
-                                    <v-flex xs2>
-                                    <v-btn fab dark small color="orange">
-                                        <v-icon dark>settings</v-icon>
-                                    </v-btn>
-                                    </v-flex>
-                                    <v-flex xs2>
-                                    <v-btn fab dark small color="red" @click="removeCol(j)">
-                                        <v-icon dark>close</v-icon>
-                                    </v-btn>
-                                    </v-flex>
-                                </v-layout>
-                            </v-container>
-                        </v-card>
+                                </v-flex>
+                            </v-layout>
+                        </v-card-title>
+                        
+                        <v-divider></v-divider>
+                        <v-card-actions>
+                            <v-layout row align-center justify-center>
+                                <v-flex xs2>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on }">
+                                            <v-btn fab dark small color="red" @click="closeLib(j)" v-on="on">
+                                                <v-icon dark>close</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Отключить</span>
+                                    </v-tooltip>
+                                </v-flex>
+                                <v-flex xs2></v-flex>
+                                <v-flex xs2>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on }">
+                                            <v-btn fab dark small color="orange" @click="settingLib(obj)" v-on="on">
+                                                <v-icon dark>settings</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Редактировать</span>
+                                    </v-tooltip>
+                                </v-flex>
+                            </v-layout>
+                        </v-card-actions>
+                    </v-card>
                     </v-container>
                 </v-flex>
             </v-layout>
@@ -70,7 +87,13 @@ export default {
             this.$store.commit('changeDialogLibrary', { boolAdd: true })
         },
         createLib() {
-            this.$store.commit('changeDialogLibrary', { boolCreate: true })
+            this.$store.commit('changeDialogLibrary', { boolCreateSetting: true })
+        },
+        settingLib(obj) {
+            this.$store.commit('changeDialogLibrary', { boolCreateSetting: true, valueSetting: obj })
+        },
+        closeLib(j) {
+            this.librarys.splice(j, 1);
         }
     },
     computed: {

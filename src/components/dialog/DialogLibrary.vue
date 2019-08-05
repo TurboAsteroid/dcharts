@@ -20,7 +20,7 @@
           <v-divider my-2/>
           <v-card-text>
                 <v-layout row>
-                    <v-flex xs9>
+                    <v-flex xs11>
                     <v-text-field
                         v-model="note.name"
                         label="Имя набора данных"
@@ -28,14 +28,14 @@
                     </v-flex>
                 </v-layout>
                 <v-layout row>
-                  <v-flex xs5>
-                    <v-btn @click="isLink = !isLink" color="info">Выбрать категорию</v-btn>
-                  </v-flex>
                   <v-flex xs7>
                     <v-text-field
                         v-model="note.link"
                         label="Категория"
                     ></v-text-field>
+                  </v-flex>
+                  <v-flex xs5>
+                    <v-btn @click="isLink = !isLink" color="info">Выбрать категорию</v-btn>
                   </v-flex>
                 </v-layout>
                 <span v-if="isLink">
@@ -72,20 +72,29 @@
                   <v-layout row
                     v-for="(item, i) in note.data"
                     :key="i+'item'">
-                    <v-flex xs10>
-                    <v-text-field
-                        v-model="note.data[i]"
-                        mask="#############"
-                        label="Значение"
-                    ></v-text-field>
-                    </v-flex>
+                      <v-flex xs5>
+                        <v-text-field
+                          v-model="note.data[i]"
+                          mask="#############"
+                          label="Значение"
+                        ></v-text-field>
+                      </v-flex>
+                      <v-flex xs5 ml-2>
+                        <v-text-field
+                          v-model="note.labels[j]"
+                          mask="##.##.##"
+                          label=""
+                        ></v-text-field>
+                      </v-flex>
                     <v-flex xs2>
-                    <v-btn fab outline dark small color="orange" @click="removeRow(i)">
+                      <v-btn fab outline dark small color="orange" @click="removeRow(i)">
                         <v-icon dark>close</v-icon>
-                    </v-btn>
+                      </v-btn>
                     </v-flex>
                   </v-layout>
-                  <v-btn @click="addField()" color="info">Добавить значение</v-btn>
+                  <v-layout row align-center justify-center>
+                    <v-btn @click="addField()" color="info">Добавить значение</v-btn>
+                  </v-layout>
                 </span>
                 
           </v-card-text>
@@ -140,6 +149,7 @@ export default {
     },
     currentLink(item){
       this.note.link = item.link
+      this.note.link_name = item.name
     },
     addField () {
       this.note.data.push(0)
@@ -147,6 +157,12 @@ export default {
     removeRow (i) {
       this.note.data.splice(i, 1)    
     },
-  }
+  },
+  // computed:{
+  //   // linkName(link) {
+  //   //   let name = link || this.note.name
+  //   //   return name
+  //   // }
+  // }
 }
 </script>
