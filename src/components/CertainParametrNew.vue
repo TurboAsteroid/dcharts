@@ -1,29 +1,44 @@
 <template>
     <v-app>
         <v-navigation-drawer 
-            app
-            permanent>
-            <v-list dense class="pt-0">
-                <v-treeview 
-                :items="items"
-                open-all
-                activatable
-                >
-                    <template slot="label" slot-scope="{ item }">
-                        <router-link 
-                            :to="{ path: $route.path + '/' + item.id }" 
-                            @click="currentLink(item)"
-                            class="link">
-                                {{ item.name }}
-                        </router-link>
-
-                    </template>
-                </v-treeview>
-            </v-list>
+        width="330"
+        app
+        permanent>
+          <v-toolbar>
+          </v-toolbar>
+          <v-list dense class="pt-0">
+            <v-treeview 
+            :items="items"
+            open-all
+            activatable
+            >
+              <template slot="label" slot-scope="{ item }">
+                  <router-link
+                      tag="div"
+                      :to="{ path: $route.path + '/' + item.id, query: {
+                        obj: item
+                      }}" 
+                      class="link">
+                          {{ item.name }}
+                  </router-link>
+              </template>
+              <template v-slot:prepend="{ item }" >
+                <v-icon :color="item.status">
+                  {{ status[item.status] }}
+                </v-icon>
+              </template>
+            </v-treeview>
+          </v-list>
         </v-navigation-drawer>
-        <v-content>
+        <!-- <v-content> -->
+          <v-container>
+            <!-- <v-layout> -->
             <router-view name="charts"></router-view>
-        </v-content>
+
+            <!-- </v-layout> -->
+
+          </v-container>
+        <!-- </v-content> -->
     </v-app>
 </template>
 
@@ -31,77 +46,82 @@
 export default {
     data () {
         return {
-            items: [
+          status:{
+            green:'check_circle',
+            error:'error',
+            warning:'warning'
+          },
+          items: [
         {
           id: 1,
-          name: 'Applications :',
+          name: 'Средняя зарплата',
+          status: 'warning',
           children: [
-            { id: 2, name: 'Calendar : app' },
-            { id: 3, name: 'Chrome : app' },
-            { id: 4, name: 'Webstorm : app' }
-          ]
-        },
-        {
-          id: 5,
-          name: 'Documents :',
-          children: [
-            {
-              id: 6,
-              name: 'vuetify :',
+            { 
+              id: 2, 
+              name: 'Компания',
+              status: 'warning',
               children: [
                 {
-                  id: 7,
-                  name: 'src :',
+                  id: 3,
+                  name: 'Пол',
+                  status: 'green',
+                  data: [43528, 44564],
+                  labels: ["мужчины", "женщины"],
+                  name: 'Средняя зарплата по полу',
+                  val1: 42000,
+                  val2: 45000,
+                  link: 'sex',
                   children: [
-                    { id: 8, name: 'index : ts' },
-                    { id: 9, name: 'bootstrap : ts' }
+                    {
+                      id: 4,
+                      name: 'Мужчины',
+                      status: 'green',
+                    },
+                    {
+                      id: 5,
+                      name: 'Женщины',
+                      status: 'green',
+                    }
                   ]
+                },
+                {
+                  id: 6,
+                  name: 'Возраст',
+                  status: 'error',
+                  children: []
                 }
               ]
+            },
+            // { id: , name: 'Chrome : app' },
+            // { id: , name: 'Webstorm : app' }
+          ],
+          indicators: [
+          ],
+        },
+        {
+          id: 7,
+          name: 'Продукция. Цветная металлургия',
+          status: 'error',
+          children: [
+            {
+              id: 8,
+              name: 'Золото в слитках',
+              status: 'error',
+            },
+            {
+              id: 9,
+              name: 'Серебро в слитках',
+              status: 'error',
             },
             {
               id: 10,
-              name: 'material2 :',
-              children: [
-                {
-                  id: 11,
-                  name: 'src :',
-                  children: [
-                    { id: 12, name: 'v-btn : ts' },
-                    { id: 13, name: 'v-card : ts' },
-                    { id: 14, name: 'v-window : ts' }
-                  ]
-                }
-              ]
+              name: 'Катоды медные',
+              status: 'green',
             }
           ]
-        },
-        {
-          id: 15,
-          name: 'Downloads :',
-          children: [
-            { id: 16, name: 'October : pdf' },
-            { id: 17, name: 'November : pdf' },
-            { id: 18, name: 'Tutorial : html' }
-          ]
-        },
-        {
-          id: 19,
-          name: 'Videos :',
-          children: [
-            {
-              id: 20,
-              name: 'Tutorials :',
-              children: [
-                { id: 21, name: 'Basic layouts : mp4' },
-                { id: 22, name: 'Advanced techniques : mp4' },
-                { id: 23, name: 'All about app : dir' }
-              ]
-            },
-            { id: 24, name: 'Intro : mov' },
-            { id: 25, name: 'Conference introduction : avi' }
-          ]
         }
+        
       ]
         }
     },
@@ -111,13 +131,14 @@ export default {
     methods: {
         currentLink(item) {
             console.log(item)
+            this.$store.state.currentDashbord = item
         }
     }
 }
 </script>
 
 <style>
-/* .link {
+.link {
     text-decoration: none;
-} */
+}
 </style>

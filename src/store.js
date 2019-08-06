@@ -26,7 +26,7 @@ export default new Vuex.Store({
       },
       {
             id: 2,
-            title: 'Продукция.Цветная метеллургия',
+            title: 'Продукция.Цветная металлургия',
             source: 'Production'
       },
        {
@@ -35,6 +35,8 @@ export default new Vuex.Store({
             source: 'test'
       }
     ],
+    currentDashbord: {},
+
 
     librarys:[],
     oldLibrarys:[],
@@ -100,7 +102,7 @@ export default new Vuex.Store({
       },
       {
         id: 3,
-        name: 'Продукция.Цветная метеллургия',
+        name: 'Продукция.Цветная металлургия',
         source: 'Production',
         dataSet:[
           {
@@ -228,7 +230,7 @@ export default new Vuex.Store({
         };
       }
     },
-    changeDialogLibrary:(state, {boolAdd, boolCreateSetting, newLibrary, valueSetting}) => {
+    changeDialogLibrary:(state, {boolAdd, boolCreateSetting, newLibrary, deleteLibrary, valueSetting}) => {
       if(boolAdd !== undefined) {
         state.dialogAddLibrary = boolAdd;
       }
@@ -258,13 +260,16 @@ export default new Vuex.Store({
           dataSet:[]
         }
       }
+      if(deleteLibrary) {
+        state.oldLibrarys.splice(state.oldLibrarys.indexOf(x => x.id === deleteLibrary.id), 1)
+        state.librarysLinks.splice(state.librarysLinks.indexOf(x => x.title === deleteLibrary.name), 1)
+      }
     },
     addLib: (state, {addLib}) => {
       let result = []
       for(let o of addLib) {
         result.push(state.allLib.find(x => x.name === o.title))
       }
-      console.log(result)
       state.oldLibrarys = result
     },
     librarys: (state, data) => {

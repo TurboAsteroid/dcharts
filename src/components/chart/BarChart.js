@@ -8,7 +8,7 @@ export default {
   mounted () {
     // this.chartData is created in the mixin.
     // If you want to pass options please create a local options object
-
+    
     this.renderChart({
       labels: this.chartData.labels,
       datasets: this.chartData.datasets.concat([this.chartData.top], [this.chartData.bot])

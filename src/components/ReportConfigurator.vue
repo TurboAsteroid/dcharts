@@ -3,15 +3,8 @@
         <v-container>
           <v-container grid-list-md>
             <v-layout wrap align-center justify-center>
-              <!-- <v-flex xs2> -->
-                <!-- <v-btn @click="goBackToLibrary" color="info">Назад</v-btn> -->
-              <!-- </v-flex>-->
-              <!-- <v-flex xs2> -->
                 <v-btn @click="$store.commit('changeDialogTree', {bool: true})" color="info">Выбрать дерево</v-btn>
-              <!-- </v-flex> -->
-              <!-- <v-flex xs2> -->
                 <v-btn @click="toReport" color="success">Сохранить дерево</v-btn>
-              <!-- </v-flex> -->
             </v-layout>
             <v-divider></v-divider>
           </v-container>

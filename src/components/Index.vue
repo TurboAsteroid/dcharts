@@ -69,8 +69,9 @@ export default {
       this.library.splice(j, 1)
     },
     addArr () {
+      
       this.library.push({
-        id: JSON.stringify(parseInt(this.library[this.library.length - 1].id) + 1),
+        id: JSON.stringify(parseInt(this.library[this.library.length - 1].id) + 1) || 0,
         data: [],
         labels:[],
         name: 'набор данных',
