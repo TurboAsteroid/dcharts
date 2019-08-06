@@ -47,7 +47,7 @@
                                     <v-list-tile-sub-title>{{ item.date }}</v-list-tile-sub-title>
                                 </v-list-tile-content>
                             </v-list-tile>
-                            <v-divider></v-divider>
+                            <v-divider v-if="index != librarysLinks.length - 1"></v-divider>
                         </v-flex>
                     </v-layout>
                 </v-list>

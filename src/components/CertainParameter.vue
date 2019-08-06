@@ -5,22 +5,29 @@
       <v-card>
         <v-card-text>
           <v-container>
-            <h2 class="text-xs-center">{{report.name}}</h2>
-            <v-layout row wrap v-if="report.data.length">
+            <v-layout row justify-center>
+              <v-flex>
+                <h2 class="text-xs-center">{{report.name}}</h2>
+              </v-flex>
+            </v-layout>
+            <v-divider v-if="report.data.length"></v-divider>
+            <v-layout row wrap v-if="report.data.length" mt-2>
               <v-flex xs4>
-                <line-chart :chart-data="collections"></line-chart>
+                <line-chart :chart-data="datacollections"></line-chart>
               </v-flex>
               <v-flex xs4>
-                <Bar-chart :chart-data="collections"></Bar-chart>
+                <Bar-chart :chart-data="datacollections"></Bar-chart>
               </v-flex>
               <v-flex xs4>
-                <pie-chart :chart-data="collections"></pie-chart>
+                <pie-chart :chart-data="datacollections"></pie-chart>
               </v-flex>
             </v-layout>
           </v-container>
           <v-divider class="my-2"></v-divider>
           <v-layout row wrap>
-            <v-flex v-for="(chart, index) in datacollections.children" v-bind:key="index">
+            <v-flex v-for="(chart, index) in datacollections.children" :key="index">
+              <v-layout row justify-center align-center>
+                <v-flex>
                 <v-layout row justify-center align-center>
                   <v-flex xs10>
                     <span class="title">{{chart.name}}</span>
@@ -40,6 +47,9 @@
                     </v-tooltip>
                   </v-flex>
                 </v-layout>
+                </v-flex>
+                <v-divider vertical v-if="index != datacollections.children.length - 1"></v-divider> 
+              </v-layout>
             </v-flex>
           </v-layout>
         </v-card-text>

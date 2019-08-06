@@ -40,7 +40,7 @@
                             
                         <v-flex xs2>
                             <v-btn fab outline dark small color="orange" @click="removeRow(index)">
-                                <v-icon dark>close</v-icon>
+                                <v-icon dark>delete</v-icon>
                             </v-btn>
                         </v-flex>
                     </v-layout>
