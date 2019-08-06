@@ -139,6 +139,7 @@ export default {
 
 <style>
 .link {
-    text-decoration: none;
+  text-decoration: none;
+  cursor: pointer;
 }
 </style>

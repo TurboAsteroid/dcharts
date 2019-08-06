@@ -13,7 +13,7 @@
                     <v-flex xs2>
                         <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
-                                <v-btn fab dark small v-on="on" color="success" @click="addLib()">
+                                <v-btn flat outline fab dark small v-on="on" color="success" @click="addLib()">
                                     <v-icon dark >done</v-icon>
                                 </v-btn>
                             </template>
@@ -28,7 +28,7 @@
             <v-card-text>
                 <v-list two-line>
                     <v-layout row 
-                    v-for="(item, index) in librarysLinks"
+                    v-for="(item, index) in librarysList"
                     :key="index"
                     align-center>
                         <v-flex xs12>
@@ -38,16 +38,16 @@
                             >
                                 <v-list-tile-action>
                                     <v-checkbox
-                                        v-model="selectedLibrary"
+                                        v-model="$store.state.selectedLibrary"
                                         :value="item"
                                     ></v-checkbox>
                                 </v-list-tile-action>
                                 <v-list-tile-content>
-                                    <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                                    <v-list-tile-title>{{ item.name }}</v-list-tile-title>
                                     <v-list-tile-sub-title>{{ item.date }}</v-list-tile-sub-title>
                                 </v-list-tile-content>
                             </v-list-tile>
-                            <v-divider v-if="index != librarysLinks.length - 1"></v-divider>
+                            <v-divider v-if="index != librarysList.length - 1"></v-divider>
                         </v-flex>
                     </v-layout>
                 </v-list>
@@ -59,17 +59,18 @@
 <script>
 export default {
     data:() => ({
-        selectedLibrary:[],
+        
     }),
     methods: {
         addLib() {
             this.$store.commit('changeDialogLibrary',{ boolAdd: false })
-            this.$store.commit('addLib', { addLib: this.selectedLibrary})
+            // this.selectedLibrary = []
+            // this.$store.commit('addLib', { addLib: this.selectedLibrary})
         },
     },
     computed: {
-        librarysLinks() {
-            return this.$store.state.librarysLinks
+        librarysList() {
+            return this.$store.state.librarysList
         }
     }
 }

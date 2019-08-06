@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 import sortLinks from './modules/sortLinks'
 import addDataToReport from '../server/modules/addDataToReport'
-import { all } from 'any-promise';
+import { ifError } from 'assert';
 
 Vue.use(Vuex)
 
@@ -18,23 +18,8 @@ export default new Vuex.Store({
       name: '',
       dataSet:[]
     },
-    librarysLinks:[
-      {
-            id: 1,
-            title: 'Средние зарплаты',
-            source: 'Salary'
-      },
-      {
-            id: 2,
-            title: 'Продукция.Цветная металлургия',
-            source: 'Production'
-      },
-       {
-            id: 3,
-            title: 'Test 1',
-            source: 'test'
-      }
-    ],
+    librarysList:[],
+    selectedLibrary:[],
     currentDashbord: {},
 
 
@@ -186,36 +171,36 @@ export default new Vuex.Store({
     ],
     
 //////////////////////////////
-    dialog: false,
-    currentNote: {
-      id: 0,
-      data: [],
-      labels:[],
-      name: 'набор данных',
-      val1: {
-        value: 0,
-        label: 'min'
-      },
-      val2: {
-        value: 0,
-        label: 'max'
-      },
-      link: '',
-      link_name: '',
-      children: []
-    },
-    currentTree: {},
-    library: [],
-    oldLibrary: [],
-    libraryLink: [],
-    libraryTree: [],
-    report: {
-      id: '',
-      data:[],
-      name:'',
-      children:[]
-    },
-    oldReport:[]
+    // dialog: false,
+    // currentNote: {
+    //   id: 0,
+    //   data: [],
+    //   labels:[],
+    //   name: 'набор данных',
+    //   val1: {
+    //     value: 0,
+    //     label: 'min'
+    //   },
+    //   val2: {
+    //     value: 0,
+    //     label: 'max'
+    //   },
+    //   link: '',
+    //   link_name: '',
+    //   children: []
+    // },
+    // currentTree: {},
+    // library: [],
+    // oldLibrary: [],
+    // libraryLink: [],
+    // libraryTree: [],
+    // report: {
+    //   id: '',
+    //   data:[],
+    //   name:'',
+    //   children:[]
+    // },
+    // oldReport:[]
   },
   mutations: {
     changeDialogTree:(state, {bool, value}) => {
@@ -276,37 +261,60 @@ export default new Vuex.Store({
       state.librarys = data;
     },
 
-    changeDialog:(state, {bool, value}) => {
-      state.dialog = bool;
-      if(value) {
-        state.currentNote = state.oldLibrary.find(x => x === value);
-      } else {
-        state.currentNote = {
-          id: parseInt(state.library[state.library.length - 1].id) + 1,
-          data: [],
-          labels:[],
-          name: 'набор данных',
-          val1: {
-            value: 0,
-            label: 'min'
-          },
-          val2: {
-            value: 0,
-            label: 'max'
-          },
-          link: '',
-          children: []
-        };
-      }
-    },
-    library (state, data) {
-      state.library = data;
-    },
-    report (state, data) {
-      state.report = data;
-    }
+    // changeDialog:(state, {bool, value}) => {
+    //   state.dialog = bool;
+    //   if(value) {
+    //     state.currentNote = state.oldLibrary.find(x => x === value);
+    //   } else {
+    //     state.currentNote = {
+    //       id: parseInt(state.library[state.library.length - 1].id) + 1,
+    //       data: [],
+    //       labels:[],
+    //       name: 'набор данных',
+    //       val1: {
+    //         value: 0,
+    //         label: 'min'
+    //       },
+    //       val2: {
+    //         value: 0,
+    //         label: 'max'
+    //       },
+    //       link: '',
+    //       children: []
+    //     };
+    //   }
+    // },
+    // library (state, data) {
+    //   state.library = data;
+    // },
+    // report (state, data) {
+    //   state.report = data;
+    // }
   },
   actions: {
+    getLibrarysList({commit}) {
+      axios.post('http://localhost:4000', {
+        query: 
+          `query {
+              getLibrarysList {
+                id
+                name
+                source
+                active
+              }
+          }`
+      }).then((res) => {
+        let libList = res.data.data.getLibrarysList;
+        for(let o of libList) {
+          o.id = parseInt(o.id)
+          if(o.active) {
+            this.state.selectedLibrary.push(o)
+          }
+        }
+        this.state.librarysList = libList;
+      });
+      
+    },
     getLibrary({commit}) {
       axios.post('http://localhost:4000', {
         query: 

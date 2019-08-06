@@ -9,6 +9,22 @@ const createDate = require('../../modules/date');
 const restructJSON = require('../../modules/restructJSON');
 const getDataByParametrModule = require('../../modules/getDataByParametr');
 
+const getLibrarysList = async (_, args, {connect}) => {
+    try {
+        const [libList] = await connect.execute(`
+            SELECT
+                id,
+                name,
+                source,
+                active
+            FROM librarys
+            WHERE id != 0
+        `);
+        return libList;
+    } catch(e) {
+        console.log(e.message)
+    }
+}
 const getLibrary = async (_, args, {connect}) => {
     try {
         const [rows] = await connect.execute(`
@@ -26,7 +42,7 @@ const getLibrary = async (_, args, {connect}) => {
             LEFT JOIN data ON data.library_id = library.id
             GROUP BY library.id
         `);
-        console.log(rows)
+        // console.log(rows)
         let data = []
         for(let o of rows) {
             if (o.id != 0) {
@@ -129,6 +145,8 @@ const getLibraryTree = async (_, args, {connect}) => {
     }
 };
 module.exports = {
+    getLibrarysList,
+
     getLibrary,
     getDataByParametr,
     getTree,

@@ -1,4 +1,9 @@
  type Query {
+    getLibrarysList: [Librarys]
+
+
+
+#/////////////////////////////////////////////////
     getLibrary: [Library]
     getDataByParametr(linkSelected: [linkInput]!): [DataParametrs]
     getTree(treeId: Int): Library
@@ -17,6 +22,16 @@ type Mutation {
     deleteLibraryTree(trees: [libraryTreeInput]): String
 }
 
+type Librarys {
+    id: ID!
+    name: String
+    source: String
+    active: Boolean
+}
+
+
+
+#//////////////////////////////////////////////
 type Library {
     id: ID!
     data: [Int]

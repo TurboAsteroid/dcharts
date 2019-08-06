@@ -85,6 +85,7 @@ export default {
     methods: {
         addLib() {
             this.$store.commit('changeDialogLibrary', { boolAdd: true })
+            this.$store.dispatch('getLibrarysList');
         },
         createLib() {
             this.$store.commit('changeDialogLibrary', { boolCreateSetting: true })

@@ -8,7 +8,7 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
-        <v-btn flat exact :to="{ name: 'index'}">
+        <!-- <v-btn flat exact :to="{ name: 'index'}">
           Библиотека
         </v-btn>
         <v-btn flat exact :to="{ name: 'reportConfigurator'}" :disabled="active">
@@ -16,12 +16,12 @@
         </v-btn>
         <v-btn flat :to="{ path: '/secondPage'}" :disabled="active">
           Отчёт
-        </v-btn>
+        </v-btn> -->
         <v-btn flat exact :to="{ path: '/librarys'}">
           Библиотеки
         </v-btn>
         <v-btn flat :to="{ path: '/report'}" :disabled="active">
-          Отчёт 2v
+          Отчёт
         </v-btn>
       </v-toolbar-items>
 
@@ -43,17 +43,17 @@ export default {
   },
   computed: {
     active () {
-      if (!this.$store.getters.library.length) {
-        return true
-      }
+      // if (!this.$store.getters.library.length) {
+      //   return true
+      // }
       return false
     }
   },
   mounted () {
-    this.$store.dispatch('getLibrary')
-    this.$store.dispatch('getTree')
-    this.$store.dispatch('getLibraryLink')
-    this.$store.dispatch('getLibraryTree')
+    // this.$store.dispatch('getLibrary')
+    // this.$store.dispatch('getTree')
+    // this.$store.dispatch('getLibraryLink')
+    // this.$store.dispatch('getLibraryTree')
     
   }
 }
