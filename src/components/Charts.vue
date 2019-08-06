@@ -3,6 +3,7 @@
         <v-layout wrap justify-center>
             <v-flex xs6>
                 <v-card color="gray" class="resize">
+                    <!-- <line-chart :chart-data="datacollections"></line-chart> -->
                 </v-card>
             </v-flex>
 
@@ -47,7 +48,16 @@
 </template>
 
 <script>
+import LineChart from './chart/LineChart'
+import BarChart from './chart/BarChart.js'
+import PieChart from './chart/PieChart.js'
+
 export default {
+        components: {
+        LineChart,
+        BarChart,
+        PieChart
+    },
     mounted() {
     },
     data () {
@@ -63,7 +73,7 @@ export default {
     },
     computed: {
         currentDashbord() {
-            console.log(this.$route.query.obj)
+            return this.$route.query.obj
         }
     }
 }
