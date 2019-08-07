@@ -260,36 +260,6 @@ export default new Vuex.Store({
     librarys: (state, data) => {
       state.librarys = data;
     },
-
-    // changeDialog:(state, {bool, value}) => {
-    //   state.dialog = bool;
-    //   if(value) {
-    //     state.currentNote = state.oldLibrary.find(x => x === value);
-    //   } else {
-    //     state.currentNote = {
-    //       id: parseInt(state.library[state.library.length - 1].id) + 1,
-    //       data: [],
-    //       labels:[],
-    //       name: 'набор данных',
-    //       val1: {
-    //         value: 0,
-    //         label: 'min'
-    //       },
-    //       val2: {
-    //         value: 0,
-    //         label: 'max'
-    //       },
-    //       link: '',
-    //       children: []
-    //     };
-    //   }
-    // },
-    // library (state, data) {
-    //   state.library = data;
-    // },
-    // report (state, data) {
-    //   state.report = data;
-    // }
   },
   actions: {
     getLibrarysList({commit}) {
@@ -322,8 +292,13 @@ export default new Vuex.Store({
 
       axios.post('http://localhost:4000', {
         query:
-          `query GetSelectedLibrary($LibID: [Int]) {
-            getLibrarys(LibID: $LibID) {
+          `query GetSelectedLibrary(
+              $LibID: [Int], 
+              $linkLibID: [Int], 
+              $boolLibID: Boolean!, 
+              $boolLinkLibID: Boolean!
+            ){
+            createdLib: getLibrarys(LibID: $LibID)  @include(if: $boolLibID) {
               id
               name
               active
@@ -343,15 +318,54 @@ export default new Vuex.Store({
                 }
               }  
             }
+            linksLib: getLibrarys(LibID: $linkLibID)  @include(if: $boolLinkLibID){
+              id
+              name
+              active
+              source
+              dataSets {
+                ...dataSet
+                children {
+                  ...dataSet
+                  children {
+                    ...dataSet
+                    children {
+                      ...dataSet
+                    }
+                  }
+                }
+              }  
+            }
+          }
+          fragment dataSet on DataSet {
+            id
+            data
+            name
+            labels
+            link
+            val1 {
+              value
+              label
+            }
+            val2 {
+              value
+              label
+            }    
           }`,
           variables: {
-            LibID
+            LibID,
+            boolLibID: LibID.length ? true : false,
+            linkLibID,
+            boolLinkLibID: linkLibID.length ? true : false,
           }
       }).then(res => {
-        console.log(res.data.data.getLibrarys)
-        let libs = res.data.data.getLibrarys;
-        this.state.oldLibrarys.push(...JSON.parse(JSON.stringify(libs)));
-        console.log( this.state.oldLibrarys)
+        let [createdlibs, linkLibs] = [res.data.data.createdLib, res.data.data.linksLib];
+        if(createdlibs) {
+          this.state.oldLibrarys.push(...JSON.parse(JSON.stringify(createdlibs)));
+        }
+        if(linkLibs) {
+          this.state.oldLibrarys.push(...JSON.parse(JSON.stringify(linkLibs)));
+        }
       })
     },
 

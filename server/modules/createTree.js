@@ -1,7 +1,5 @@
 
-let dataLib = [],
-dataLibId = [],
-treeId = [];
+let dataLib = []
 function createTree(tree, lib) {
     let adjList = [];
     let result = {
@@ -11,22 +9,17 @@ function createTree(tree, lib) {
         children:[]
     };
     for(let tr of Object.keys(tree)) {
-        if(tree[tr].id_note) {
-            treeId.push({id: tree[tr].id, noteId: tree[tr].id_note});
-            if(!adjList.some(x => x.parentId === tree[tr].parent_id)) {
-                adjList.push({
-                    parentId: tree[tr].parent_id,
-                    children: [tree[tr].id]
-                })
-            } else if(adjList.some(x => x.parentId === tree[tr].parent_id)) {
-                let idx = adjList.findIndex(x => x.parentId === tree[tr].parent_id);
-                adjList[idx].children.push(tree[tr].id);
-            }
+        if(!adjList.some(x => x.parentId === tree[tr].parent_id)) {
+            adjList.push({
+                parentId: tree[tr].parent_id,
+                children: [tree[tr].id]
+            })
+        } else if(adjList.some(x => x.parentId === tree[tr].parent_id)) {
+            let idx = adjList.findIndex(x => x.parentId === tree[tr].parent_id);
+            adjList[idx].children.push(tree[tr].id);
         }
-        
     }
-    for(let o of lib) {
-        dataLibId.push(o.id)
+    for(let o of tree) {
         if (o.id != 0) { 
             dataLib.push({
                 id: o.id,
@@ -41,39 +34,22 @@ function createTree(tree, lib) {
                     value: o.val2 ? o.val2.split(',')[0] : 0,
                     label: o.val2 ? o.val2.split(',')[1] : ''
                 },
-                link: o.link,
+                link: o.link_name,
                 children:[]
             });
         }  
     }
-    for(let adj of adjList) {
-        if(adj.parentId === 1) {
-            getTree(result, adj);
-        }
-    }
+    getTree(result, adjList[0]);
     function getTree(parent, child) {
         for(let ch of child.children) {     
-            let idx = parent.children.push(JSON.parse(JSON.stringify(findNote(ch))));
+            let idx = parent.children.push(JSON.parse(JSON.stringify(dataLib.find(x => x.id === ch))));
             if(adjList.some(x => x.parentId === ch)) {
                 getTree(parent.children[idx-1], adjList.find(x => x.parentId === ch));
             }
         }  
     }
-    dataLib = [],
-    dataLibId = [],
-    treeId = []
-    // console.log('resultTree: ',result)
+    dataLib = [];
     return result;
-}
-function findNote(childId) {
-    let child;
-    childId = treeId.find(x => {
-        if(x.id === childId) {
-            return x.noteId;
-        }
-    });
-    child = dataLib.find(x => x.id === childId.noteId);
-    return child;
 }
 
 module.exports = createTree;

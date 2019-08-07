@@ -9,6 +9,7 @@ const db = require('./modules/db')
 const createDate = require('./modules/date');
 const restructJSON = require('./modules/restructJSON');
 const getDataByParametr = require('./modules/getDataByParametr');
+const createTree = require('./modules/createTree');
 
 const Query = require('./graphql/resolvers/Query');
 const Mutation = require('./graphql/resolvers/Mutation');
@@ -19,47 +20,72 @@ const resolvers = {
 
     Librarys: {
         dataSets: async (parent, args, {connect}) => {
+            console.log(parent)
             try {
-                const [dataSetLib] = await connect.execute(`
-                    SELECT
-                        libDS.id,
-                        libDS.name,
-                        CONCAT(control1.value, ',', control1.label) AS val1,
-                        CONCAT(control2.value, ',', control2.label) AS val2,
-                        GROUP_CONCAT(data.value,'') AS data,
-                        GROUP_CONCAT(data.label,'') AS labels
-                    FROM dataset_library libDS
-                    LEFT JOIN control_values_datasets control1 
-                        ON control1.dataset_id = libDS.id
-                        AND control1.label = 'min'
-                    LEFT JOIN control_values_datasets control2 
-                        ON control2.dataset_id = libDS.id
-                        AND control2.label = 'max'
-                    LEFT JOIN dataset_values data
-                        ON data.dataset_id = libDS.id
-                    WHERE libDS.library_id = ${parent.id}
-                    GROUP BY libDS.id
-                `);
-                let data = []
-                for(let o of dataSetLib) {
-                    if (o.id != 0) {
-                        data.push({
-                            id: o.id,
-                            name: o.name,
-                            data: o.data ? o.data.split(',').map(x => JSON.parse(x)) : [],
-                            labels: o.labels ? o.labels.split(',') : [],
-                            val1:{
-                                value: o.val1 ? JSON.parse(o.val1.split(',')[0]) : 0,
-                                label: o.val1 ? o.val1.split(',')[1] : ''
-                            },
-                            val2: {
-                                value: o.val2 ? JSON.parse(o.val2.split(',')[0]) : 0,
-                                label: o.val2 ? o.val2.split(',')[1] : ''
-                            },
-                        });
+                if(!parent.source) {
+                    const [dataSetLib] = await connect.execute(`
+                        SELECT
+                            libDS.id,
+                            libDS.name,
+                            CONCAT(control1.value, ',', control1.label) AS val1,
+                            CONCAT(control2.value, ',', control2.label) AS val2,
+                            GROUP_CONCAT(data.value,'') AS data,
+                            GROUP_CONCAT(data.label,'') AS labels
+                        FROM dataset_library libDS
+                        LEFT JOIN control_values_datasets control1 
+                            ON control1.dataset_id = libDS.id
+                            AND control1.label = 'min'
+                        LEFT JOIN control_values_datasets control2 
+                            ON control2.dataset_id = libDS.id
+                            AND control2.label = 'max'
+                        LEFT JOIN dataset_values data
+                            ON data.dataset_id = libDS.id
+                        WHERE libDS.library_id = ${parent.id}
+                        GROUP BY libDS.id
+                    `);
+                    let data = []
+                    for(let o of dataSetLib) {
+                        if (o.id != 0) {
+                            data.push({
+                                id: o.id,
+                                name: o.name,
+                                data: o.data ? o.data.split(',').map(x => JSON.parse(x)) : [],
+                                labels: o.labels ? o.labels.split(',') : [],
+                                val1:{
+                                    value: o.val1 ? JSON.parse(o.val1.split(',')[0]) : 0,
+                                    label: o.val1 ? o.val1.split(',')[1] : ''
+                                },
+                                val2: {
+                                    value: o.val2 ? JSON.parse(o.val2.split(',')[0]) : 0,
+                                    label: o.val2 ? o.val2.split(',')[1] : ''
+                                },
+                            });
+                        }
                     }
-                }
-                return data;
+                    return data;
+                } else if(parent.source) {
+                    const [linkTree] = await connect.execute(`
+                        SELECT
+                            linklib.id,
+                            linklib.name,
+                            linklib.link_name,
+                            linklib.parent_id,
+                            CONCAT(control1.value, ',', control1.label) AS val1,
+                            CONCAT(control2.value, ',', control2.label) AS val2
+                        FROM link_library linklib
+                        LEFT JOIN control_values_links control1 
+                            ON control1.link_id = linklib.id
+                            AND control1.label = 'min'
+                        LEFT JOIN control_values_links control2 
+                            ON control2.link_id = linklib.id
+                            AND control2.label = 'max'
+                        WHERE linklib.library_id = ${parent.id}
+                        GROUP BY linklib.id
+                    `);
+                    // console.log(linkTree)
+                    let result = createTree(linkTree)
+                    return result.children
+                } 
             } catch(e) {
                 console.log(e.message)
             }
