@@ -24,7 +24,31 @@ const getLibrarysList = async (_, args, {connect}) => {
     } catch(e) {
         console.log(e.message)
     }
-}
+};
+const getLibrarys = async (_, {LibID}, {connect}) => {
+    try {
+        let libList = [];
+        for(let i of LibID) {
+            let [lib] = await connect.execute(`
+                SELECT
+                    id,
+                    name,
+                    source,
+                    active
+                FROM librarys
+                WHERE id = ${i}
+            `);
+            libList.push(lib[0])
+        }
+        // console.log(libList)
+        return libList
+        
+    } catch(e) {
+        console.log(e.message)
+    }
+};
+
+/////////////////////////////////////////////////////////
 const getLibrary = async (_, args, {connect}) => {
     try {
         const [rows] = await connect.execute(`
@@ -146,7 +170,9 @@ const getLibraryTree = async (_, args, {connect}) => {
 };
 module.exports = {
     getLibrarysList,
+    getLibrarys,
 
+//////////////////////////
     getLibrary,
     getDataByParametr,
     getTree,

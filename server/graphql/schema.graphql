@@ -1,6 +1,6 @@
  type Query {
-    getLibrarysList: [Librarys]
-
+    getLibrarysList: [LibrarysList]
+    getLibrarys(LibID: [Int]): [Librarys]
 
 
 #/////////////////////////////////////////////////
@@ -22,13 +22,33 @@ type Mutation {
     deleteLibraryTree(trees: [libraryTreeInput]): String
 }
 
-type Librarys {
+type LibrarysList {
     id: ID!
     name: String
     source: String
     active: Boolean
 }
-
+type Librarys {
+    id: ID!
+    name: String
+    source: String
+    active: Boolean
+    dataSets: [DataSet]
+}
+type DataSet {
+    id: ID!
+    data: [Int]
+    labels: [String]
+    name: String
+    val1: Value
+    val2: Value
+    link: String
+    children:[Library]
+}
+type Value {
+    value: Int
+    label: String
+}
 
 
 #//////////////////////////////////////////////
@@ -45,10 +65,7 @@ type Library {
 type dataSource {
     getSalary(salary: [String]): [DataParametrs]
 }
-type Value {
-    value: Int!
-    label: String!
-}
+
 type DataParametrs {
     id: ID
     data: [Int]

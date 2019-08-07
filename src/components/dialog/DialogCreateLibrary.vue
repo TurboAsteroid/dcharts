@@ -85,7 +85,7 @@
                 <span>
                     <v-expansion-panel v-model="currentDataSet">
                         <v-expansion-panel-content
-                            v-for="(item, i) in currentLibrary.dataSet"
+                            v-for="(item, i) in currentLibrary.dataSets"
                             :key="i">
                             <template v-slot:actions>
                                 <v-layout row>

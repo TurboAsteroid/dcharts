@@ -33,12 +33,11 @@
                     align-center>
                         <v-flex xs12>
                             <v-list-tile
-                                :key="item.title"
                                 ripple
                             >
                                 <v-list-tile-action>
                                     <v-checkbox
-                                        v-model="$store.state.selectedLibrary"
+                                        v-model="selected"
                                         :value="item"
                                     ></v-checkbox>
                                 </v-list-tile-action>
@@ -59,19 +58,21 @@
 <script>
 export default {
     data:() => ({
-        
+        selected: []
     }),
     methods: {
         addLib() {
             this.$store.commit('changeDialogLibrary',{ boolAdd: false })
-            // this.selectedLibrary = []
+            // this.selected = []
             // this.$store.commit('addLib', { addLib: this.selectedLibrary})
+
+            this.$store.dispatch('getLibrarys', {selectedLib: this.selected})
         },
     },
     computed: {
         librarysList() {
             return this.$store.state.librarysList
-        }
+        },
     }
 }
 </script>

@@ -15,8 +15,8 @@
             <v-divider></v-divider>
         </v-container>
         
-        <dialogAddLibrary/>
         <dialogCreateLibrary/>
+        <dialogAddLibrary/>
         
         <v-container>
             <v-layout wrap row>
