@@ -22,7 +22,7 @@ const getLibrarysList = async (_, args, {connect}) => {
         `);
         return libList;
     } catch(e) {
-        console.log(e.message)
+        console.log(e.message);
     }
 };
 const getLibrarys = async (_, {LibID}, {connect}) => {
@@ -38,13 +38,13 @@ const getLibrarys = async (_, {LibID}, {connect}) => {
                 FROM librarys
                 WHERE id = ${i}
             `);
-            libList.push(lib[0])
+            libList.push(lib[0]);
         }
         // console.log(libList)
-        return libList
+        return libList;
         
     } catch(e) {
-        console.log(e.message)
+        console.log(e.message);
     }
 };
 
@@ -67,7 +67,7 @@ const getLibrary = async (_, args, {connect}) => {
             GROUP BY library.id
         `);
         // console.log(rows)
-        let data = []
+        let data = [];
         for(let o of rows) {
             if (o.id != 0) {
                 data.push({
@@ -135,7 +135,7 @@ const getTree = async (parent, {treeId}, {connect}) => {
     }
 };
 const getData = async () => {
-    return {}
+    return {};
 };
 const getLibraryLink = async (_, args, {connect}) => {
     try {
@@ -144,7 +144,7 @@ const getLibraryLink = async (_, args, {connect}) => {
             WHERE id != 0
         `);
         let result = createLinkTree(libLink);
-        return JSON.stringify(result)
+        return JSON.stringify(result);
     } catch (e) {
         console.error(e.message);
     }
@@ -154,14 +154,14 @@ const getLibraryTree = async (_, args, {connect}) => {
         const [libTree] = await connect.execute(`
             SELECT * FROM library_trees
             WHERE id != 0
-        `)
-        let result = []
+        `);
+        let result = [];
         for(let o of Object.keys(libTree)) {
             result.push({
                 id: libTree[o].id,
                 title: libTree[o].title,
                 date: libTree[o].date
-            })
+            });
         }
         return result;
     } catch (e) {

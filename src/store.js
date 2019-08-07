@@ -1,11 +1,11 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import axios from 'axios'
-import sortLinks from './modules/sortLinks'
-import addDataToReport from '../server/modules/addDataToReport'
+import Vue from 'vue';
+import Vuex from 'vuex';
+import axios from 'axios';
+import sortLinks from './modules/sortLinks';
+import addDataToReport from '../server/modules/addDataToReport';
 import { ifError } from 'assert';
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
@@ -225,7 +225,7 @@ export default new Vuex.Store({
           id: 0,
           name: '',
           dataSet:[]
-        }
+        };
       }
       if(valueSetting) {
         state.setting = boolCreateSetting;
@@ -233,7 +233,7 @@ export default new Vuex.Store({
       }
       if(newLibrary) {
         // state.oldLibrarys.push(newLibrary);
-        state.allLib.push(newLibrary)
+        state.allLib.push(newLibrary);
         state.librarysLinks.push({
           id: newLibrary.id,
           title: newLibrary.name,
