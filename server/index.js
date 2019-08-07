@@ -16,6 +16,56 @@ const Mutation = require('./graphql/resolvers/Mutation');
 const resolvers = {
     Query,
     Mutation,
+
+    Librarys: {
+        dataSets: async (parent, args, {connect}) => {
+            try {
+                const [dataSetLib] = await connect.execute(`
+                    SELECT
+                        libDS.id,
+                        libDS.name,
+                        CONCAT(control1.value, ',', control1.label) AS val1,
+                        CONCAT(control2.value, ',', control2.label) AS val2,
+                        GROUP_CONCAT(data.value,'') AS data,
+                        GROUP_CONCAT(data.label,'') AS labels
+                    FROM dataset_library libDS
+                    LEFT JOIN control_values_datasets control1 
+                        ON control1.dataset_id = libDS.id
+                        AND control1.label = 'min'
+                    LEFT JOIN control_values_datasets control2 
+                        ON control2.dataset_id = libDS.id
+                        AND control2.label = 'max'
+                    LEFT JOIN dataset_values data
+                        ON data.dataset_id = libDS.id
+                    WHERE libDS.library_id = ${parent.id}
+                    GROUP BY libDS.id
+                `);
+                let data = []
+                for(let o of dataSetLib) {
+                    if (o.id != 0) {
+                        data.push({
+                            id: o.id,
+                            name: o.name,
+                            data: o.data ? o.data.split(',').map(x => JSON.parse(x)) : [],
+                            labels: o.labels ? o.labels.split(',') : [],
+                            val1:{
+                                value: o.val1 ? JSON.parse(o.val1.split(',')[0]) : 0,
+                                label: o.val1 ? o.val1.split(',')[1] : ''
+                            },
+                            val2: {
+                                value: o.val2 ? JSON.parse(o.val2.split(',')[0]) : 0,
+                                label: o.val2 ? o.val2.split(',')[1] : ''
+                            },
+                        });
+                    }
+                }
+                return data;
+            } catch(e) {
+                console.log(e.message)
+            }
+        }
+    },
+/////////////////////////////////////
     Library:{
         children:(parent, args) => {
             return parent.children 

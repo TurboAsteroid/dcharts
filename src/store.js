@@ -19,7 +19,7 @@ export default new Vuex.Store({
       dataSet:[]
     },
     librarysList:[],
-    selectedLibrary:[],
+    // selectedLibrary:[],
     currentDashbord: {},
 
 
@@ -304,17 +304,60 @@ export default new Vuex.Store({
               }
           }`
       }).then((res) => {
+        // this.state.selectedLibrary = []
         let libList = res.data.data.getLibrarysList;
         for(let o of libList) {
           o.id = parseInt(o.id)
-          if(o.active) {
-            this.state.selectedLibrary.push(o)
-          }
+          o["dataSet"] = []
+          // if(o.active) {
+          //   this.state.selectedLibrary.push(o)
+          // }
         }
         this.state.librarysList = libList;
-      });
-      
+      }); 
     },
+    getLibrarys({commit}, {selectedLib}) {
+      let LibID = selectedLib.filter(x => !x.source).map(x => x.id) || [],
+          linkLibID = selectedLib.filter(x => x.source).map(x => x.id) || [];
+
+      axios.post('http://localhost:4000', {
+        query:
+          `query GetSelectedLibrary($LibID: [Int]) {
+            getLibrarys(LibID: $LibID) {
+              id
+              name
+              active
+              source
+              dataSets {
+                id
+                data
+                name
+                labels
+                val1 {
+                  value
+                  label
+                }
+                val2 {
+                  value
+                  label
+                }
+              }  
+            }
+          }`,
+          variables: {
+            LibID
+          }
+      }).then(res => {
+        console.log(res.data.data.getLibrarys)
+        let libs = res.data.data.getLibrarys;
+        this.state.oldLibrarys.push(...JSON.parse(JSON.stringify(libs)));
+        console.log( this.state.oldLibrarys)
+      })
+    },
+
+
+
+///////////////////////////////////////
     getLibrary({commit}) {
       axios.post('http://localhost:4000', {
         query: 
