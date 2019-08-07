@@ -62,27 +62,27 @@ const updateNote = async (_, {data}, {connect}) => {
 };
 const deleteNote = async (_, {data}, {connect}) => {
     if (data.length != 0) {
-        let noteId = data.map(e => JSON.parse(e))        
+        let noteId = data.map(e => JSON.parse(e));     
         try {
             await connect.execute(`DELETE FROM library WHERE id in (${noteId})`);
         } catch (e) {
-            console.error(e.message)
+            console.error(e.message);
         }
         //return [data.id]
     }   
 };
 const addLibraryTree = async (_, {tree}, {connect}) => {
-    let arr = [[tree.title,tree.date]]
+    let arr = [[tree.title,tree.date]];
     try {
-        await connect.query(`INSERT INTO library_trees (title, date) VALUES ?`, [arr])
+        await connect.query(`INSERT INTO library_trees (title, date) VALUES ?`, [arr]);
     } catch(e) {
         console.error(e.message);
     }
 };
 const updateLibraryTree = async (_, {tree}, {connect}) => {
-    let arr = [[tree.title,tree.date]]
+    let arr = [[tree.title,tree.date]];
     try {
-        await connect.query(`UPDATE library_trees SET title=${JSON.stringify(tree.title)}, date=${JSON.stringify(tree.date)} WHERE id=${tree.id}`)
+        await connect.query(`UPDATE library_trees SET title=${JSON.stringify(tree.title)}, date=${JSON.stringify(tree.date)} WHERE id=${tree.id}`);
     } catch(e) {
         console.error(e.message);
     }
@@ -90,21 +90,21 @@ const updateLibraryTree = async (_, {tree}, {connect}) => {
 const deleteLibraryTree = async (_, {trees}, {connect}) => {
     try {
         for(let o of trees) {
-            await connect.execute(`DELETE FROM library_trees WHERE id = ${parseInt(o.id)}`)
+            await connect.execute(`DELETE FROM library_trees WHERE id = ${parseInt(o.id)}`);
         }
     } catch(e) {
-        console.error(e.message)
+        console.error(e.message);
     }
 };
 const changeTree = async (_, {tree, currentTree}, {connect}) => {
     let idTree;
     if(currentTree.id) {
-        idTree = currentTree.id
+        idTree = currentTree.id;
     }else if(!currentTree.id) {
         const [last] = await connect.execute(`
             SELECT id FROM library_trees ORDER BY id DESC LIMIT 1
         `);
-        idTree = last[0].id
+        idTree = last[0].id;
     }
 
     await connect.execute(`DELETE FROM tree WHERE id_note != 0 AND id_tree = ${idTree}`);
@@ -113,7 +113,7 @@ const changeTree = async (_, {tree, currentTree}, {connect}) => {
         for(let i = 0, length = currentNode.children.length; i < length; i++) { 
             try {
                 if(parentId && parentId != 0) {
-                    res = await connect.query(`INSERT INTO tree (id_note, parent_id, id_tree) VALUES (${parseInt(currentNode.children[i].id)}, ${parentId}, ${idTree})`)
+                    res = await connect.query(`INSERT INTO tree (id_note, parent_id, id_tree) VALUES (${parseInt(currentNode.children[i].id)}, ${parentId}, ${idTree})`);
                     recurse(currentNode.children[i], res[0].insertId);       
                 }
             } catch (e) {

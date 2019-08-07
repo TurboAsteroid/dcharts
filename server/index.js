@@ -20,7 +20,6 @@ const resolvers = {
 
     Librarys: {
         dataSets: async (parent, args, {connect}) => {
-            console.log(parent)
             try {
                 if(!parent.source) {
                     const [dataSetLib] = await connect.execute(`
@@ -82,19 +81,18 @@ const resolvers = {
                         WHERE linklib.library_id = ${parent.id}
                         GROUP BY linklib.id
                     `);
-                    // console.log(linkTree)
-                    let result = createTree(linkTree)
-                    return result.children
+                    let result = createTree(linkTree);
+                    return result.children;
                 } 
             } catch(e) {
-                console.log(e.message)
+                console.log(e.message);
             }
         }
     },
 /////////////////////////////////////
     Library:{
         children:(parent, args) => {
-            return parent.children 
+            return parent.children;
         }
     },
     dataSource: {
