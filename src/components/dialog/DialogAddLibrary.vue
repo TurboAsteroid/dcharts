@@ -63,10 +63,11 @@ export default {
     methods: {
         addLib() {
             this.$store.commit('changeDialogLibrary',{ boolAdd: false })
-            // this.selected = []
+            
             // this.$store.commit('addLib', { addLib: this.selectedLibrary})
 
             this.$store.dispatch('getLibrarys', {selectedLib: this.selected})
+            this.selected = []
         },
     },
     computed: {

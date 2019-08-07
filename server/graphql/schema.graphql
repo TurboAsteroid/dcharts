@@ -2,7 +2,6 @@
     getLibrarysList: [LibrarysList]
     getLibrarys(LibID: [Int]): [Librarys]
 
-
 #/////////////////////////////////////////////////
     getLibrary: [Library]
     getDataByParametr(linkSelected: [linkInput]!): [DataParametrs]
@@ -43,7 +42,7 @@ type DataSet {
     val1: Value
     val2: Value
     link: String
-    children:[Library]
+    children:[DataSet]
 }
 type Value {
     value: Int
