@@ -99,7 +99,7 @@ export default {
     },
     computed: {
         librarys() {
-            return this.$store.state.oldLibrarys
+            return this.$store.getters.oldLibrarys
         }
     }
 }

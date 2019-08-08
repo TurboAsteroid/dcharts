@@ -24,7 +24,7 @@ export default new Vuex.Store({
 
 
     librarys:[],
-    oldLibrarys:[],
+    oldLibrarys:[], // все выбранные библиотеки до сохранения коллекции
     allLib: [
       {
         id: 1,
@@ -215,12 +215,15 @@ export default new Vuex.Store({
         };
       }
     },
-    changeDialogLibrary:(state, {boolAdd, boolCreateSetting, newLibrary, deleteLibrary, valueSetting}) => {
+    changeDialogLibrary:(state, {boolAdd, boolCreateSetting, newLibrary, deleteLibrary, changeLibrary, valueSetting}) => {
       if(boolAdd !== undefined) {
         state.dialogAddLibrary = boolAdd;
       }
       if(boolCreateSetting !== undefined) {
         state.dialogCreateSetting = boolCreateSetting;
+        if(changeLibrary !== undefined) {
+          state.oldLibrarys[state.oldLibrarys.findIndex(x => x.id === changeLibrary.id)] = changeLibrary;
+        }
         state.currentLibrary = {
           id: 0,
           name: '',
@@ -229,7 +232,7 @@ export default new Vuex.Store({
       }
       if(valueSetting) {
         state.setting = boolCreateSetting;
-        state.currentLibrary = valueSetting;
+        state.currentLibrary = JSON.parse(JSON.stringify(valueSetting));
       }
       if(newLibrary) {
         // state.oldLibrarys.push(newLibrary);
@@ -238,7 +241,7 @@ export default new Vuex.Store({
           id: newLibrary.id,
           title: newLibrary.name,
           source: ''
-        })
+        });
         state.currentLibrary = {
           id: 0,
           name: '',
@@ -597,6 +600,8 @@ export default new Vuex.Store({
     }
   },
   getters: {
+    oldLibrarys: state => state.oldLibrarys,
+
     dialog: state => state.dialog,
     library: state => state.library,
     report: state => state.report,

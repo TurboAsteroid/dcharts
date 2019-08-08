@@ -38,7 +38,7 @@
                         v-model="currentLibrary.name"
                         ></v-text-field>
                     </v-flex>
-                    <v-flex xs1 v-if="!currentLibrary.source">
+                    <!-- <v-flex xs1 v-if="!currentLibrary.source">
                         <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
                                 <v-btn fab dark small color="red" @click="deleteLib()" v-on="on">
@@ -47,8 +47,8 @@
                             </template>
                             <span>Удалить библиотеку</span>
                         </v-tooltip>
-                    </v-flex>
-                    <v-flex xs1 v-else>
+                    </v-flex> -->
+                    <v-flex xs1>
                         <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
                                 <v-btn outline dark small color="red" @click="cancel()" v-on="on">
@@ -75,20 +75,7 @@
             <v-divider my-2/>
 
             <v-card-text>
-                <!-- <v-layout row>
-                    <v-flex xs8>
-                        <v-text-field
-                        label="Имя библиотеки"
-                        v-model="currentLibrary.name"
-                        ></v-text-field>
-                    </v-flex>
-                    <v-flex xs4>
-                        <v-btn @click="addDataSet()" color="info">Добавить набор</v-btn>
-                    </v-flex>
-                </v-layout> -->
-                <!-- <v-divider></v-divider> -->
                 <span>
-                    <!-- <v-container> -->
                     <v-layout row>     
                         <v-flex xs4 mr-2>
                             <v-layout row>
@@ -99,7 +86,7 @@
                                     <v-flex xs2>
                                         <v-tooltip bottom>
                                             <template v-slot:activator="{ on }">
-                                                <v-btn flat outline fab dark small color="orange" @click="''" v-on="on">
+                                                <v-btn flat outline fab dark small color="orange" @click="addDataSet()" v-on="on">
                                                     <v-icon dark >add</v-icon>
                                                 </v-btn>
                                             </template>
@@ -108,27 +95,28 @@
                                     </v-flex>
                                 </v-toolbar>
                             </v-layout>
-
-                            <v-treeview 
-                                :items="currentLibrary.dataSets"
-                                open-all
-                                activatable
-                            >
-                            <template slot="label" slot-scope="{ item }">
-                                <div class="link" @click="currentItem(item)">{{ item.name }}</div>
-                                <v-divider></v-divider>
-                            </template>
-                            <!-- <template v-slot:append="{ item }" >
-                                <v-btn flat fab dark small color="red" @click="''" v-on="on">
-                                    <v-icon dark>delete</v-icon>
-                                </v-btn>
-                            </template> -->
-                            </v-treeview>  
+                            <v-list dense>
+                                <v-treeview
+                                    :items="currentLibrary.dataSets"
+                                    open-all
+                                    activatable
+                                >
+                                <template slot="label" slot-scope="{ item }">
+                                    <div class="link" @click="currentItem(item)">{{ item.name }}</div>
+                                    <v-divider></v-divider>
+                                </template>
+                                <!-- <template v-slot:append="{ item }" >
+                                    <v-btn flat fab dark small color="red" @click="''" v-on="on">
+                                        <v-icon dark>delete</v-icon>
+                                    </v-btn>
+                                </template> -->
+                                </v-treeview>  
+                            </v-list>
                         </v-flex>
                         
                         <v-divider vertical></v-divider>
 
-                        <v-flex xs8 mx-2>
+                        <v-flex xs8 mx-2  v-if="Object.keys(currentDataSet).length !== 0">
                             <v-layout row>
                                 <v-toolbar card>
                                     <v-flex xs10>
@@ -141,11 +129,11 @@
                                     <v-flex xs1>
                                         <v-tooltip bottom>
                                             <template v-slot:activator="{ on }">
-                                                <v-btn outline fab dark small color="red" @click="''" v-on="on">
-                                                    <v-icon dark>close</v-icon>
+                                                <v-btn outline fab dark small color="red" @click="deleteDataSet()" v-on="on">
+                                                    <v-icon dark>delete</v-icon>
                                                 </v-btn>
                                             </template>
-                                            <span>Отменить</span>
+                                            <span>Удалить набор</span>
                                         </v-tooltip>
                                     </v-flex>
                                     <v-flex xs1>
@@ -180,7 +168,75 @@
                                     :key="item"
                                 >
                                     <v-card flat>
+                                        <v-divider></v-divider>
                                         <v-card-text>
+                                            
+                                            <span v-if="item === items[0]  && currentDataSet.val1">
+                                                <v-layout row>
+                                                    <v-flex xs6>
+                                                        <v-text-field
+                                                            v-model="currentDataSet.val1.value"
+                                                            label="Первый порог"
+                                                        ></v-text-field>
+                                                    </v-flex>
+                                                    <v-flex xs6 ml-2>
+                                                        <v-text-field
+                                                            v-model="currentDataSet.val2.value"
+                                                            label="Второй порог"
+                                                        ></v-text-field>
+                                                    </v-flex>
+                                                </v-layout>
+                                                <v-layout row
+                                                    v-for="(it, j) in currentDataSet.data"
+                                                    :key="j + 'item'">
+                                                    <v-flex xs6>
+                                                        <v-text-field
+                                                            v-model="currentDataSet.data[j]"
+                                                            mask="#############"
+                                                            label="Значение"
+                                                        ></v-text-field>
+                                                    </v-flex>
+                                                    <v-flex xs6 ml-2>
+                                                        <v-text-field
+                                                            v-model="currentDataSet.labels[j]"
+                                                            mask="##.##.##"
+                                                            label=""
+                                                        ></v-text-field>
+                                                    </v-flex>
+                                                    <!-- <v-flex xs1> -->
+                                                        <v-btn fab flat dark small color="grey" @click="removeDataValue(j)">
+                                                            <v-icon dark>close</v-icon>
+                                                        </v-btn>
+                                                    <!-- </v-flex> -->
+                                                </v-layout>
+                                                <v-divider></v-divider>
+                                                <v-layout row justify-center v-if="item.link">
+                                                    <v-btn outline @click="addDataValue()" color="grey">Добавить значение</v-btn>
+                                                </v-layout>
+                                            </span>
+
+                                            <span v-else-if="item === items[1]">
+                                                <v-layout row>
+                                                    <v-flex xs12>
+                                                        <v-list>
+                                                            <v-list-tile @click="''" v-for="(indicator, idx) in indicators" :key="idx">
+                                                                <v-list-tile-action>
+                                                                    <v-checkbox v-model="selected" :value="indicator" color="info"></v-checkbox>
+                                                                </v-list-tile-action>
+
+                                                                <v-list-tile-content>
+                                                                    <v-list-tile-title>{{indicator.name}}</v-list-tile-title>
+                                                                    <!-- <v-list-tile-sub-title>Allow not</v-list-tile-sub-title> -->
+                                                                </v-list-tile-content>
+                                                                
+                                                                <v-btn fab flat dark small color="grey" @click="''">
+                                                                    <v-icon dark>close</v-icon>
+                                                                </v-btn>
+                                                            </v-list-tile>
+                                                        </v-list>
+                                                    </v-flex>  
+                                                </v-layout>
+                                            </span>
                                             
                                         </v-card-text>
                                     </v-card>
@@ -293,6 +349,21 @@
 <script>
 export default {
     data: () => ({
+        selected: [],
+        indicators: [
+            {
+                id: 1,
+                name: 'test1',
+            },
+            {
+                id: 2,
+                name: 'test2',
+            },
+            {
+                id: 3,
+                name: 'test3',
+            },
+        ],
         currentDataSet: {},
         boolSetting: false,
         tab: null,
@@ -306,11 +377,11 @@ export default {
         settingValue() {
         },
         cancel() {
-            this.currentDataSet = null
+            this.currentDataSet = {}
             this.$store.commit('changeDialogLibrary',{ boolCreateSetting: false })
         },
         createLib() {
-            this.currentDataSet = null
+            this.currentDataSet = {}
             if(this.currentLibrary.name) {
                 this.$store.commit('changeDialogLibrary',{ boolCreateSetting: false, newLibrary: this.currentLibrary })
             }
@@ -322,17 +393,16 @@ export default {
             this.$store.commit('changeDialogLibrary',{ boolCreateSetting: false , deleteLibrary: this.currentLibrary})
         },
         saveChangeLib() {
-            this.currentDataSet = null
+            this.currentDataSet = {}
             this.$store.state.setting = false
-            this.$store.commit('changeDialogLibrary',{ boolCreateSetting: false })
+            this.$store.commit('changeDialogLibrary',{ boolCreateSetting: false, changeLibrary: this.currentLibrary })
         },
         addDataSet() {
-            this.currentDataSet = null
-            this.currentLibrary.dataSets.push({
-                id: '',
+            let idx = this.currentLibrary.dataSets.push({
+                id: Math.floor(Math.random() * 50000) + 30000, // !!!??? в дереве должны быть разные id
                 data: [],
                 labels:[],
-                name: '',
+                name: 'Новый набор',
                 val1: {
                     value: 0,
                     label: 'min'
@@ -345,17 +415,19 @@ export default {
                 children: [],
                 relations: []
             })
+            this.currentDataSet = this.currentLibrary.dataSets[idx - 1]
         },
-        deleteDataSet(i) {
-            this.currentLibrary.dataSet.splice(i,1)
+        deleteDataSet() {     
+            this.currentLibrary.dataSets.splice(this.currentLibrary.dataSets.indexOf(x => x.name === this.currentDataSet.name),1)
+            this.currentDataSet = {}
         },
-        addDataValue(i) {
-            this.currentLibrary.dataSet[i].data.push(0)
-            this.currentLibrary.dataSet[i].labels.push(0)
+        addDataValue() {
+            this.currentDataSet.data.push(0)
+            this.currentDataSet.labels.push(0)
         },
-        removeDataValue(i,j) {
-            this.currentLibrary.dataSet[i].data.splice(j, 1)
-            this.currentLibrary.dataSet[i].labels.splice(j, 1)
+        removeDataValue(j) {
+            this.currentDataSet.data.splice(j, 1)
+            this.currentDataSet.labels.splice(j, 1)
         }
     },
     computed: {
