@@ -14,24 +14,24 @@ export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
-    {
-      path: '/',
-      name: 'index',
-      component: Index,
-      meta: { nameRu: 'Библиотека' }
-    },
+    // {
+    //   path: '/',
+    //   name: 'index',
+    //   component: Index,
+    //   meta: { nameRu: 'Библиотека' }
+    // },
     {
       path: '/librarys',
       name: 'librarys',
       component: Librarys,
       meta: { nameRu: 'Библиотеки' }
     },
-    {
-      path: '/secondPage*',
-      name: 'certainparameter',
-      component: CertainParameter,
-      meta: { nameRu: 'Отчёт' }
-    },
+    // {
+    //   path: '/secondPage*',
+    //   name: 'certainparameter',
+    //   component: CertainParameter,
+    //   meta: { nameRu: 'Отчёт' }
+    // },
     {
       path: '/report*',
       name:'certainparametrnew',
