@@ -81,7 +81,46 @@ const resolvers = {
                         WHERE linklib.library_id = ${parent.id}
                         GROUP BY linklib.id
                     `);
+                    const [dataSetLib] = await connect.execute(`
+                        SELECT
+                            libDS.id,
+                            libDS.name,
+                            CONCAT(control1.value, ',', control1.label) AS val1,
+                            CONCAT(control2.value, ',', control2.label) AS val2,
+                            GROUP_CONCAT(data.value,'') AS data,
+                            GROUP_CONCAT(data.label,'') AS labels
+                        FROM dataset_library libDS
+                        LEFT JOIN control_values_datasets control1 
+                            ON control1.dataset_id = libDS.id
+                            AND control1.label = 'min'
+                        LEFT JOIN control_values_datasets control2 
+                            ON control2.dataset_id = libDS.id
+                            AND control2.label = 'max'
+                        LEFT JOIN dataset_values data
+                            ON data.dataset_id = libDS.id
+                        WHERE libDS.library_id = ${parent.id}
+                        GROUP BY libDS.id
+                    `);
                     let result = createTree(linkTree);
+                    for(let o of dataSetLib) {
+                        result.children.push({
+                            id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
+                            datasetID: o.id,
+                            name: o.name,
+                            data: o.data ? o.data.split(',') : [],
+                            labels: o.labels ? o.labels.split(',') : [],
+                            val1:{
+                                value: o.val1 ? o.val1.split(',')[0] : 0,
+                                label: o.val1 ? o.val1.split(',')[1] : ''
+                            },
+                            val2: {
+                                value: o.val2 ? o.val2.split(',')[0] : 0,
+                                label: o.val2 ? o.val2.split(',')[1] : ''
+                            },
+                            link: o.link_name || '',
+                            children:[]
+                        });
+                    }
                     return result.children;
                 } 
             } catch(e) {
