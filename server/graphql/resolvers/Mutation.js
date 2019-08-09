@@ -60,38 +60,43 @@ const changeLib = async (_, {library}, {connect}) => {
                     [ID, dataset.val2.value, dataset.val2.label]                    
                 );
             } else if(dataset.link) {
+                console.log(dataset)
                 // console.log(lib)
                 // await connect.execute(`DELETE FROM tree WHERE id_note != 0 AND id_tree = ${idTree}`);
+                // console.log(dataset.children[0])
                 let res = [];
                 (async function recurse(currentNode) {
-                    for(let i = 0, length = currentNode.children.length; i < length; i++) { 
-                        try {
-                            await connect.execute(`
-                                UPDATE link_library
-                                SET
-                                    name = ${JSON.stringify(currentNode.name)}
-                                WHERE
-                                    id = ${currentNode.id}
-                            `);
-                            await connect.execute(`
-                                UPDATE control_values_links
-                                SET
-                                    value = ${parseInt(currentNode.val1.value)}
-                                WHERE
-                                    link_id = ${currentNode.id} AND label = ${JSON.stringify(currentNode.val1.label)}
+                    try {
+                        // let id = JSON.parse(currentNode[i].id)
+                        await connect.execute(`
+                            UPDATE link_library
+                            SET
+                                name = ${JSON.stringify(currentNode.name)}
+                            WHERE
+                                id = ${JSON.parse(currentNode.id)}
+                        `);
+                        await connect.execute(`
+                            UPDATE control_values_links
+                            SET
+                                value = ${parseInt(currentNode.val1.value)}
+                            WHERE
+                                link_id = ${JSON.parse(currentNode.id)} AND label = ${JSON.stringify(currentNode.val1.label)}
 
-                            `);
-                            await connect.execute(`
-                                UPDATE control_values_links
-                                SET
-                                    value = ${parseInt(currentNode.val2.value)}
-                                WHERE
-                                    link_id = ${currentNode.id} AND label = ${JSON.stringify(currentNode.val2.label)}
-                            `);
-                            recurse(currentNode.children[i]);
-                        } catch (e) {
-                            console.error(e.message);
-                        }  
+                        `);
+                        await connect.execute(`
+                            UPDATE control_values_links
+                            SET
+                                value = ${parseInt(currentNode.val2.value)}
+                            WHERE
+                                link_id = ${JSON.parse(currentNode.id)} AND label = ${JSON.stringify(currentNode.val2.label)}
+                        `);
+                        
+                    } catch (e) {
+                        console.error(e.message);
+                    }  
+                    for(let i = 0, length = currentNode.children.length; i < length; i++) { 
+                        // console.log(currentNode)
+                        recurse(currentNode.children[i]);
                     }
                 })(dataset);
             }
