@@ -11,10 +11,14 @@
     getLibraryTree: [libraryTree]
 }
 type Mutation {
+    changeLib(library: inputLibrary) : String
+    # changeLinkLib(library: inputLibrary) : String
+
+
+#////////////////////////////////////////////////////////
     createNewNote(data: [libraryInput]!): [Library]
     updateNote(data: [libraryInput]!): [Library]
     deleteNote(data: [Int]!): [Library]
-
     changeTree(tree: treeInput, currentTree: libraryTreeInput): String
     addLibraryTree(tree: libraryTreeInput): String
     updateLibraryTree(tree: libraryTreeInput): String
@@ -22,20 +26,20 @@ type Mutation {
 }
 
 type LibrarysList {
-    id: ID!
+    id: Int!
     name: String
     source: String
     active: Boolean
 }
 type Librarys {
-    id: ID!
+    id: Int!
     name: String
     source: String
     active: Boolean
     dataSets: [DataSet]
 }
 type DataSet {
-    id: ID!
+    id: Int!
     data: [Int]
     labels: [String]
     name: String
@@ -49,7 +53,27 @@ type Value {
     label: String
 }
 
-
+input inputLibrary {
+    id: ID!
+    name: String
+    source: String
+    active: Boolean
+    dataSets: [inputDataSet]
+}
+input inputDataSet {
+    id: ID!
+    data: [Int]
+    labels: [String]
+    name: String
+    val1: inputValue
+    val2: inputValue
+    link: String
+    children:[inputDataSet]
+}
+input inputValue {
+    value: Int
+    label: String
+}
 #//////////////////////////////////////////////
 type Library {
     id: ID!

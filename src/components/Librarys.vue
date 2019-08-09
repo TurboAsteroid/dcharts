@@ -92,6 +92,7 @@ export default {
         },
         settingLib(obj) {
             this.$store.commit('changeDialogLibrary', { boolCreateSetting: true, valueSetting: obj })
+            this.$store.dispatch('getLibrarys', {currentLib: obj})
         },
         closeLib(j) {
             this.librarys.splice(j, 1);
