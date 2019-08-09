@@ -214,7 +214,7 @@
                                                     <!-- </v-flex> -->
                                                 </v-layout>
                                                 <v-divider></v-divider>
-                                                <v-layout row justify-center v-if="item.link">
+                                                <v-layout row justify-center v-if="!currentDataSet.link">
                                                     <v-btn outline @click="addDataValue()" color="grey">Добавить значение</v-btn>
                                                 </v-layout>
                                             </span>
