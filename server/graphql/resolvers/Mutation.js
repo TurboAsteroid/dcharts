@@ -33,8 +33,8 @@ const changeLib = async (_, {library}, {connect}) => {
         for(let dataset of lib.dataSets) {
             let ID;
             if(!dataset.link) {
-                if(dataset.id || dataset.datasetID) { // datasetID - id из БД набора данных добавленного к библиотеке с linkами
-                    ID = JSON.parse(dataset.id);
+                if(dataset.id || dataset.datasetID && JSON.parse(dataset.datasetID) !== 0) { // datasetID - id из БД набора данных добавленного к библиотеке с linkами
+                    ID = dataset.id ? JSON.parse(dataset.id) : JSON.parse(dataset.datasetID);
                     await connect.execute(`DELETE FROM dataset_values WHERE dataset_id = ${ID}`);
                     await connect.execute(`DELETE FROM control_values_datasets WHERE dataset_id = ${ID}`);
                 } else if(!dataset.id) {
@@ -66,32 +66,29 @@ const changeLib = async (_, {library}, {connect}) => {
                 (async function recurse(currentNode) {
                     for(let i = 0, length = currentNode.children.length; i < length; i++) { 
                         try {
-                            // if(parentId && parentId != 0) {
-                                //res = await connect.query(`INSERT INTO tree (id_note, parent_id, id_tree) VALUES (${parseInt(currentNode.children[i].id)}, ${parentId}, ${idTree})`);
-                                await connect.execute(`
-                                    UPDATE link_library
-                                    SET
-                                        name = ${JSON.stringify(currentNode.name)}
-                                    WHERE
-                                        id = ${currentNode.id}
-                                `);
-                                await connect.execute(`
-                                    UPDATE control_values_links
-                                    SET
-                                        value = ${parseInt(currentNode.val1.value)}
-                                    WHERE
-                                        link_id = ${currentNode.id} AND label = ${JSON.stringify(currentNode.val1.label)}
+                            await connect.execute(`
+                                UPDATE link_library
+                                SET
+                                    name = ${JSON.stringify(currentNode.name)}
+                                WHERE
+                                    id = ${currentNode.id}
+                            `);
+                            await connect.execute(`
+                                UPDATE control_values_links
+                                SET
+                                    value = ${parseInt(currentNode.val1.value)}
+                                WHERE
+                                    link_id = ${currentNode.id} AND label = ${JSON.stringify(currentNode.val1.label)}
 
-                                `);
-                                await connect.execute(`
-                                    UPDATE control_values_links
-                                    SET
-                                        value = ${parseInt(currentNode.val2.value)}
-                                    WHERE
-                                        link_id = ${currentNode.id} AND label = ${JSON.stringify(currentNode.val2.label)}
-                                `);
-                                recurse(currentNode.children[i]);
-                            // }
+                            `);
+                            await connect.execute(`
+                                UPDATE control_values_links
+                                SET
+                                    value = ${parseInt(currentNode.val2.value)}
+                                WHERE
+                                    link_id = ${currentNode.id} AND label = ${JSON.stringify(currentNode.val2.label)}
+                            `);
+                            recurse(currentNode.children[i]);
                         } catch (e) {
                             console.error(e.message);
                         }  
@@ -106,7 +103,6 @@ const changeLib = async (_, {library}, {connect}) => {
         if (controlValueArr.length) {
             await connect.query(`INSERT INTO control_values_datasets (dataset_id, value, label) VALUES ?`, [controlValueArr]);
         }
-        /// для link
     } catch (e) {
         console.log(e.message);
     }

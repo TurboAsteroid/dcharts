@@ -23,6 +23,7 @@ function createTree(tree, lib) {
         if (o.id != 0) { 
             dataLib.push({
                 id: o.id,
+                // datasetID: '',
                 name: o.name,
                 data: o.data ? o.data.split(',') : [],
                 labels: o.labels ? o.labels.split(',') : [],
