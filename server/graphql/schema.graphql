@@ -39,7 +39,8 @@ type Librarys {
     dataSets: [DataSet]
 }
 type DataSet {
-    id: Int!
+    id: ID!
+    datasetID: Int
     data: [Int]
     labels: [String]
     name: String

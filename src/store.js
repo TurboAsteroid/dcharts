@@ -299,6 +299,7 @@ export default new Vuex.Store({
               source
               dataSets {
                 ...dataSet
+                datasetID
                 children {
                   ...dataSet
                   children {
@@ -342,6 +343,7 @@ export default new Vuex.Store({
             .dataSets = createdlibs[0].dataSets;
         }
         if(linkLibs) {
+          console.log('linkLibs', linkLibs)
           // this.state.oldLibrarys.push(...JSON.parse(JSON.stringify(linkLibs)));
           this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => parseInt(x.id) === parseInt(linkLibs[0].id))]
             .dataSets = linkLibs[0].dataSets;

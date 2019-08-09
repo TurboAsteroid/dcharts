@@ -6,41 +6,34 @@ const changeLib = async (_, {library}, {connect}) => {
     let lastLibId;
     let lastDataSetId;
     try {
-        if(!library.source) {
-            if(library.id) {
-                await connect.execute(`
-                    INSERT INTO librarys
-                    SET
-                        id = ${parseInt(lib.id)},
-                        name = ${JSON.stringify(lib.name)},
-                        active = ${lib.active ? 1 : 0}
-                    ON DUPLICATE KEY UPDATE 
-                        name = ${JSON.stringify(lib.name)},
-                        active = ${lib.active ? 1 : 0}
-                `);
-            } 
-            // !!! Для создания библиотеки !!!
+        await connect.execute(`
+            UPDATE librarys
+            SET 
+                name = ${JSON.stringify(lib.name)}
+            WHERE 
+                id = ${parseInt(lib.id)}
+        `);
+        // !!! Для создания библиотеки !!!
 
-            // else if(!library.id) {
-            //     [lastLibId] = await connect.execute(`
-            //         SELECT MAX( id ) FROM librarys;
-            //     `);
-            //     await connect.execute(`
-            //         INSERT INTO librarys
-            //         SET
-            //             id = ${lastLibId[0]['MAX( id )'] + 1},
-            //             name = ${JSON.stringify(lib.name)},
-            //             active = ${lib.active ? 1 : 0}
-            //         ON DUPLICATE KEY UPDATE 
-            //             name = ${JSON.stringify(lib.name)},
-            //             active = ${lib.active ? 1 : 0}
-            //     `);
-            // }
-            
-            for(let dataset of lib.dataSets) {
-                let ID;
-
-                if(dataset.id) {
+        // else if(!library.id) {
+        //     [lastLibId] = await connect.execute(`
+        //         SELECT MAX( id ) FROM librarys;
+        //     `);
+        //     await connect.execute(`
+        //         INSERT INTO librarys
+        //         SET
+        //             id = ${lastLibId[0]['MAX( id )'] + 1},
+        //             name = ${JSON.stringify(lib.name)},
+        //             active = ${lib.active ? 1 : 0}
+        //         ON DUPLICATE KEY UPDATE 
+        //             name = ${JSON.stringify(lib.name)},
+        //             active = ${lib.active ? 1 : 0}
+        //     `);
+        // }
+        for(let dataset of lib.dataSets) {
+            let ID;
+            if(!dataset.link) {
+                if(dataset.id || dataset.datasetID) { // datasetID - id из БД набора данных добавленного к библиотеке с linkами
                     ID = JSON.parse(dataset.id);
                     await connect.execute(`DELETE FROM dataset_values WHERE dataset_id = ${ID}`);
                     await connect.execute(`DELETE FROM control_values_datasets WHERE dataset_id = ${ID}`);
@@ -66,16 +59,54 @@ const changeLib = async (_, {library}, {connect}) => {
                     [ID, dataset.val1.value, dataset.val1.label],
                     [ID, dataset.val2.value, dataset.val2.label]                    
                 );
+            } else if(dataset.link) {
+                // console.log(lib)
+                // await connect.execute(`DELETE FROM tree WHERE id_note != 0 AND id_tree = ${idTree}`);
+                let res = [];
+                (async function recurse(currentNode) {
+                    for(let i = 0, length = currentNode.children.length; i < length; i++) { 
+                        try {
+                            // if(parentId && parentId != 0) {
+                                //res = await connect.query(`INSERT INTO tree (id_note, parent_id, id_tree) VALUES (${parseInt(currentNode.children[i].id)}, ${parentId}, ${idTree})`);
+                                await connect.execute(`
+                                    UPDATE link_library
+                                    SET
+                                        name = ${JSON.stringify(currentNode.name)}
+                                    WHERE
+                                        id = ${currentNode.id}
+                                `);
+                                await connect.execute(`
+                                    UPDATE control_values_links
+                                    SET
+                                        value = ${parseInt(currentNode.val1.value)}
+                                    WHERE
+                                        link_id = ${currentNode.id} AND label = ${JSON.stringify(currentNode.val1.label)}
+
+                                `);
+                                await connect.execute(`
+                                    UPDATE control_values_links
+                                    SET
+                                        value = ${parseInt(currentNode.val2.value)}
+                                    WHERE
+                                        link_id = ${currentNode.id} AND label = ${JSON.stringify(currentNode.val2.label)}
+                                `);
+                                recurse(currentNode.children[i]);
+                            // }
+                        } catch (e) {
+                            console.error(e.message);
+                        }  
+                    }
+                })(dataset);
             }
-            if(dataArr.length) {
-                await connect.query(`INSERT INTO dataset_values (dataset_id, value, label) VALUES ?`, [dataArr]);
-            }
-            if (controlValueArr.length) {
-                await connect.query(`INSERT INTO control_values_datasets (dataset_id, value, label) VALUES ?`, [controlValueArr]);
-            }
-        } else if (library.source) {
-            /// для link
+            
         }
+        if(dataArr.length) {
+            await connect.query(`INSERT INTO dataset_values (dataset_id, value, label) VALUES ?`, [dataArr]);
+        }
+        if (controlValueArr.length) {
+            await connect.query(`INSERT INTO control_values_datasets (dataset_id, value, label) VALUES ?`, [controlValueArr]);
+        }
+        /// для link
     } catch (e) {
         console.log(e.message);
     }
