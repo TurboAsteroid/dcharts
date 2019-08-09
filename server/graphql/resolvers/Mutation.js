@@ -1,3 +1,88 @@
+// Изменение библиотеки в бд
+const changeLib = async (_, {library}, {connect}) => {
+    const lib = library;
+    let dataArr = [];
+    let controlValueArr = [];
+    let lastLibId;
+    let lastDataSetId;
+    try {
+        if(!library.source) {
+            if(library.id) {
+                await connect.execute(`
+                    INSERT INTO librarys
+                    SET
+                        id = ${parseInt(lib.id)},
+                        name = ${JSON.stringify(lib.name)},
+                        active = ${lib.active ? 1 : 0}
+                    ON DUPLICATE KEY UPDATE 
+                        name = ${JSON.stringify(lib.name)},
+                        active = ${lib.active ? 1 : 0}
+                `);
+            } 
+            // !!! Для создания библиотеки !!!
+
+            // else if(!library.id) {
+            //     [lastLibId] = await connect.execute(`
+            //         SELECT MAX( id ) FROM librarys;
+            //     `);
+            //     await connect.execute(`
+            //         INSERT INTO librarys
+            //         SET
+            //             id = ${lastLibId[0]['MAX( id )'] + 1},
+            //             name = ${JSON.stringify(lib.name)},
+            //             active = ${lib.active ? 1 : 0}
+            //         ON DUPLICATE KEY UPDATE 
+            //             name = ${JSON.stringify(lib.name)},
+            //             active = ${lib.active ? 1 : 0}
+            //     `);
+            // }
+            
+            for(let dataset of lib.dataSets) {
+                let ID;
+
+                if(dataset.id) {
+                    ID = JSON.parse(dataset.id);
+                    await connect.execute(`DELETE FROM dataset_values WHERE dataset_id = ${ID}`);
+                    await connect.execute(`DELETE FROM control_values_datasets WHERE dataset_id = ${ID}`);
+                } else if(!dataset.id) {
+                    [lastDataSetId] = await connect.execute(`
+                        SELECT MAX( id ) FROM dataset_library;
+                    `);
+                    ID = lastDataSetId[0]['MAX( id )'] + 1;
+                }
+                await connect.execute(`
+                    INSERT INTO dataset_library
+                    SET
+                        id = ${ID},
+                        name = ${JSON.stringify(dataset.name)},
+                        library_id = ${lib.id}
+                    ON DUPLICATE KEY UPDATE 
+                        name = ${JSON.stringify(dataset.name)}
+                `);
+                for(let i = 0; i < dataset.data.length; i++) {
+                    dataArr.push([ID, dataset.data[i], dataset.labels[i]]);
+                }
+                controlValueArr.push(
+                    [ID, dataset.val1.value, dataset.val1.label],
+                    [ID, dataset.val2.value, dataset.val2.label]                    
+                );
+            }
+            if(dataArr.length) {
+                await connect.query(`INSERT INTO dataset_values (dataset_id, value, label) VALUES ?`, [dataArr]);
+            }
+            if (controlValueArr.length) {
+                await connect.query(`INSERT INTO control_values_datasets (dataset_id, value, label) VALUES ?`, [controlValueArr]);
+            }
+        } else if (library.source) {
+            /// для link
+        }
+    } catch (e) {
+        console.log(e.message);
+    }
+};
+
+
+/////////////////////////////////////////////////////////
 const createNewNote = async (_, {data}, {connect}) => {
     // console.log('createNewNote', data);
     let notes = data,
@@ -124,6 +209,9 @@ const changeTree = async (_, {tree, currentTree}, {connect}) => {
 };
 
 module.exports = {
+    changeLib,
+
+/////////////////////
     createNewNote,
     updateNote,
     deleteNote,

@@ -52,11 +52,11 @@ const resolvers = {
                                 labels: o.labels ? o.labels.split(',') : [],
                                 val1:{
                                     value: o.val1 ? JSON.parse(o.val1.split(',')[0]) : 0,
-                                    label: o.val1 ? o.val1.split(',')[1] : ''
+                                    label: o.val1 ? o.val1.split(',')[1] : 'min'
                                 },
                                 val2: {
                                     value: o.val2 ? JSON.parse(o.val2.split(',')[0]) : 0,
-                                    label: o.val2 ? o.val2.split(',')[1] : ''
+                                    label: o.val2 ? o.val2.split(',')[1] : 'max'
                                 },
                             });
                         }

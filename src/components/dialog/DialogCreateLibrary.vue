@@ -175,14 +175,18 @@
                                                 <v-layout row>
                                                     <v-flex xs6>
                                                         <v-text-field
-                                                            v-model="currentDataSet.val1.value"
+                                                            v-model.number="currentDataSet.val1.value"
                                                             label="Первый порог"
+                                                            @keypress="onlyNumber" 
+                                                            type="text"
                                                         ></v-text-field>
                                                     </v-flex>
                                                     <v-flex xs6 ml-2>
                                                         <v-text-field
-                                                            v-model="currentDataSet.val2.value"
+                                                            v-model.number="currentDataSet.val2.value"
                                                             label="Второй порог"
+                                                            @keypress="onlyNumber" 
+                                                            type="text"
                                                         ></v-text-field>
                                                     </v-flex>
                                                 </v-layout>
@@ -191,7 +195,7 @@
                                                     :key="j + 'item'">
                                                     <v-flex xs6>
                                                         <v-text-field
-                                                            v-model="currentDataSet.data[j]"
+                                                            v-model.number="currentDataSet.data[j]"
                                                             mask="#############"
                                                             label="Значение"
                                                         ></v-text-field>
@@ -200,7 +204,7 @@
                                                         <v-text-field
                                                             v-model="currentDataSet.labels[j]"
                                                             mask="##.##.##"
-                                                            label=""
+                                                            label="Дата!?"
                                                         ></v-text-field>
                                                     </v-flex>
                                                     <!-- <v-flex xs1> -->
@@ -370,9 +374,15 @@ export default {
         items: ['Настройка значений', 'Показатели']
     }),
     methods: {
+        onlyNumber ($event) {
+            let keyCode = ($event.keyCode ? $event.keyCode : $event.which);
+            if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) { // 46 is dot
+                $event.preventDefault();
+            }
+        },
         currentItem(item) {
             this.currentDataSet = item
-            console.log(item)
+            // console.log(item)
         },
         settingValue() {
         },
@@ -396,10 +406,15 @@ export default {
             this.currentDataSet = {}
             this.$store.state.setting = false
             this.$store.commit('changeDialogLibrary',{ boolCreateSetting: false, changeLibrary: this.currentLibrary })
+            this.$store.dispatch('changeLibrarys', {
+                changeLibrary: this.currentLibrary,
+                library: this.currentLibrary
+            })
         },
         addDataSet() {
             let idx = this.currentLibrary.dataSets.push({
-                id: Math.floor(Math.random() * 50000) + 30000, // !!!??? в дереве должны быть разные id
+                // id: Math.floor(Math.random() * 50000) + 30000, // !!!??? в дереве должны быть разные id
+                id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15), // пусть будет любая строка как id, затем при записи в бд подставлю максимальный id + 1
                 data: [],
                 labels:[],
                 name: 'Новый набор',
@@ -413,7 +428,7 @@ export default {
                 },
                 link: '',
                 children: [],
-                relations: []
+                // relations: []
             })
             this.currentDataSet = this.currentLibrary.dataSets[idx - 1]
         },
@@ -423,7 +438,7 @@ export default {
         },
         addDataValue() {
             this.currentDataSet.data.push(0)
-            this.currentDataSet.labels.push(0)
+            this.currentDataSet.labels.push('0')
         },
         removeDataValue(j) {
             this.currentDataSet.data.splice(j, 1)

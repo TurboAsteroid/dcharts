@@ -170,37 +170,6 @@ export default new Vuex.Store({
       }
     ],
     
-//////////////////////////////
-    // dialog: false,
-    // currentNote: {
-    //   id: 0,
-    //   data: [],
-    //   labels:[],
-    //   name: 'набор данных',
-    //   val1: {
-    //     value: 0,
-    //     label: 'min'
-    //   },
-    //   val2: {
-    //     value: 0,
-    //     label: 'max'
-    //   },
-    //   link: '',
-    //   link_name: '',
-    //   children: []
-    // },
-    // currentTree: {},
-    // library: [],
-    // oldLibrary: [],
-    // libraryLink: [],
-    // libraryTree: [],
-    // report: {
-    //   id: '',
-    //   data:[],
-    //   name:'',
-    //   children:[]
-    // },
-    // oldReport:[]
   },
   mutations: {
     changeDialogTree:(state, {bool, value}) => {
@@ -222,17 +191,17 @@ export default new Vuex.Store({
       if(boolCreateSetting !== undefined) {
         state.dialogCreateSetting = boolCreateSetting;
         if(changeLibrary !== undefined) {
-          state.oldLibrarys[state.oldLibrarys.findIndex(x => x.id === changeLibrary.id)] = changeLibrary;
+          // state.oldLibrarys[state.oldLibrarys.findIndex(x => x.id === changeLibrary.id)] = changeLibrary;
         }
-        state.currentLibrary = {
-          id: 0,
-          name: '',
-          dataSet:[]
-        };
+        // state.currentLibrary = {
+        //   id: 0,
+        //   name: '',
+        //   dataSet:[]
+        // };
       }
       if(valueSetting) {
         state.setting = boolCreateSetting;
-        state.currentLibrary = JSON.parse(JSON.stringify(valueSetting));
+        state.currentLibrary = valueSetting;
       }
       if(newLibrary) {
         // state.oldLibrarys.push(newLibrary);
@@ -253,10 +222,10 @@ export default new Vuex.Store({
         state.librarysLinks.splice(state.librarysLinks.indexOf(x => x.title === deleteLibrary.name), 1)
       }
     },
-    addLib: (state, {addLib}) => {
+    addLibrarys: (state, {selectedLib}) => {
       let result = []
-      for(let o of addLib) {
-        result.push(state.allLib.find(x => x.name === o.title))
+      for(let o of selectedLib) {
+        result.push(o)
       }
       state.oldLibrarys = result
     },
@@ -281,7 +250,7 @@ export default new Vuex.Store({
         let libList = res.data.data.getLibrarysList;
         for(let o of libList) {
           o.id = parseInt(o.id)
-          o["dataSet"] = []
+          o["dataSets"] = []
           // if(o.active) {
           //   this.state.selectedLibrary.push(o)
           // }
@@ -289,9 +258,11 @@ export default new Vuex.Store({
         this.state.librarysList = libList;
       }); 
     },
-    getLibrarys({commit}, {selectedLib}) {
-      let LibID = selectedLib.filter(x => !x.source).map(x => x.id) || [],
-          linkLibID = selectedLib.filter(x => x.source).map(x => x.id) || [];
+    getLibrarys({commit}, {selectedLib, currentLib}) {
+      // let LibID = selectedLib.filter(x => !x.source).map(x => x.id) || [],
+      //     linkLibID = selectedLib.filter(x => x.source).map(x => x.id) || [];
+      let LibID = !currentLib.source ? [currentLib.id] : null,
+          linkLibID = currentLib.source ? [currentLib.id] : null;
 
       axios.post('http://localhost:4000', {
         query:
@@ -357,21 +328,47 @@ export default new Vuex.Store({
           }`,
           variables: {
             LibID,
-            boolLibID: LibID.length ? true : false,
+            // boolLibID: LibID.length ? true : false,
+            boolLibID: LibID ? true : false,
             linkLibID,
-            boolLinkLibID: linkLibID.length ? true : false,
+            // boolLinkLibID: linkLibID.length ? true : false,
+            boolLinkLibID: linkLibID ? true : false,
           }
       }).then(res => {
         let [createdlibs, linkLibs] = [res.data.data.createdLib, res.data.data.linksLib];
         if(createdlibs) {
-          this.state.oldLibrarys.push(...JSON.parse(JSON.stringify(createdlibs)));
+          console.log(createdlibs)
+          this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => parseInt(x.id) === parseInt(createdlibs[0].id))]
+            .dataSets = createdlibs[0].dataSets;
         }
         if(linkLibs) {
-          this.state.oldLibrarys.push(...JSON.parse(JSON.stringify(linkLibs)));
+          // this.state.oldLibrarys.push(...JSON.parse(JSON.stringify(linkLibs)));
+          this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => parseInt(x.id) === parseInt(linkLibs[0].id))]
+            .dataSets = linkLibs[0].dataSets;
         }
       })
     },
+    changeLibrarys({commit}, {library}) {
+      let lib = JSON.parse(JSON.stringify(library));
+      for(let o of lib.dataSets) { // убираю id у созданных наборов, чтобы можно было создавать записи в бд
+        if(typeof o.id === 'string') {
+          o.id = ''
+        }
+      }
+      console.log(lib)
 
+      axios.post('http://localhost:4000', {
+        query:
+          `mutation ChangeLibrary(
+            $library: inputLibrary
+          ) {
+            changeLib(library: $library) 
+          }`,
+        variables: {
+          library: lib
+        }
+      });
+    },
 
 
 ///////////////////////////////////////
