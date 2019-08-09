@@ -415,6 +415,7 @@ export default {
             let idx = this.currentLibrary.dataSets.push({
                 // id: Math.floor(Math.random() * 50000) + 30000, // !!!??? в дереве должны быть разные id
                 id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15), // пусть будет любая строка как id, затем при записи в бд подставлю максимальный id + 1
+                datasetID: 0,
                 data: [],
                 labels:[],
                 name: 'Новый набор',

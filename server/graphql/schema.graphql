@@ -63,6 +63,7 @@ input inputLibrary {
 }
 input inputDataSet {
     id: ID!
+    datasetID: ID
     data: [Int]
     labels: [String]
     name: String

@@ -279,6 +279,7 @@ export default new Vuex.Store({
               source
               dataSets {
                 id
+                datasetID
                 data
                 name
                 labels
@@ -353,7 +354,7 @@ export default new Vuex.Store({
     changeLibrarys({commit}, {library}) {
       let lib = JSON.parse(JSON.stringify(library));
       for(let o of lib.dataSets) { // убираю id у созданных наборов, чтобы можно было создавать записи в бд
-        if(typeof o.id === 'string') {
+        if(o.datasetID && typeof o.id === 'string' || o.datasetID === 0) {
           o.id = ''
         }
       }
