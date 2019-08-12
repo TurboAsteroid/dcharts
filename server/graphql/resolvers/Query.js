@@ -38,10 +38,8 @@ const getLibrarys = async (_, {LibID}, {connect}) => {
                 FROM librarys
                 WHERE id = ${i}
             `);
-            // console.log(lib)
             libList.push(lib[0]);
         }
-        // console.log(libList)
         return libList;
         
     } catch(e) {

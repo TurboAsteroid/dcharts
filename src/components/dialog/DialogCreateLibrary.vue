@@ -6,9 +6,12 @@
     >
         <v-card>
             <v-card-title>
-                <v-layout row align-center v-show="!setting">
+                <!-- <v-layout row align-center v-show="create">
                     <v-flex xs8>
-                        <span class="headline">Создание библиотеки</span>
+                        <v-text-field
+                        label="Имя библиотеки"
+                        v-model="currentLibrary.name"
+                        ></v-text-field>
                     </v-flex>
                     <v-flex xs2>
                         <v-tooltip bottom>
@@ -30,45 +33,87 @@
                             <span>Сохранить</span>
                         </v-tooltip>
                     </v-flex>
-                </v-layout>
-                <v-layout row align-center v-if="setting">
-                    <v-flex xs8>
+                </v-layout> -->
+                <v-layout row align-center >
+                    <v-flex xs5>
                         <v-text-field
                         label="Имя библиотеки"
                         v-model="currentLibrary.name"
                         ></v-text-field>
                     </v-flex>
-                    <!-- <v-flex xs1 v-if="!currentLibrary.source">
-                        <v-tooltip bottom>
-                            <template v-slot:activator="{ on }">
-                                <v-btn fab dark small color="red" @click="deleteLib()" v-on="on">
-                                    <v-icon dark>delete</v-icon>
+                    <!-- <v-flex xs7 v-if="setting"> -->
+                        <v-layout row v-if="setting">
+                        <!-- <span > -->
+                            <v-flex xs12>
+                                
+                            <!-- </v-flex>
+                            <v-flex xs> -->
+                                <v-btn outline dark small color="red" @click="''">
+                                    Удалить библиотеку
                                 </v-btn>
-                            </template>
-                            <span>Удалить библиотеку</span>
-                        </v-tooltip>
-                    </v-flex> -->
-                    <v-flex xs1>
+                            <!-- </v-flex>
+                            <v-flex xs> -->
+                                <v-btn outline dark small color="success" @click="saveChangeLib()">
+                                    Сохранить библиотеку
+                                </v-btn>
+                                <v-btn flat fab outline dark small color="grey" @click="cancel()">
+                                    <v-icon>close</v-icon>
+                                </v-btn>
+                            </v-flex>
+                            <!-- </span> -->
+                        </v-layout>
+                    <!-- </v-flex> -->
+                    <!-- <v-flex xs7 v-else-if="create"> -->
+                        <v-layout row justify-end v-if="create">
+                            <v-flex xs12>
+                                <v-btn outline dark small color="info" @click="cancel()">
+                                    Отменить
+                                </v-btn>
+                            <!-- </v-flex>
+                            <v-flex> -->
+                                <v-btn outline dark small color="success" @click="''">
+                                    Создать библиотеку
+                                </v-btn>
+                            </v-flex>
+                        </v-layout>
+                    <!-- </v-flex> -->
+                    <!-- <v-flex xs1 ml-4>
                         <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
-                                <v-btn outline dark small color="red" @click="cancel()" v-on="on">
+                                <v-btn outline dark small color="info" @click="cancel()" v-on="on">
                                     Отменить
                                 </v-btn>
                             </template>
-                            <span>Отменить</span>
                         </v-tooltip>
-                    </v-flex>
+                    </!-->
+                    <!-- <v-flex xs2 ml-4 v-if="setting">
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-btn outline dark small color="red" @click="''" v-on="on">
+                                    Удалить библиотеку
+                                </v-btn>
+                            </template>
+                        </v-tooltip>
+                    </v-flex> -->
                     <!-- <v-flex xs1></v-flex> -->
-                    <v-flex xs3 ml-4>
+                    <!-- <v-flex xs2 ml-4 v-if="setting">
                         <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
                                 <v-btn outline dark small color="success" @click="saveChangeLib()" v-on="on">
                                     Сохранить библиотеку
                                 </v-btn>
                             </template>
-                            <span>Сохранить</span>
                         </v-tooltip>
                     </v-flex>
+                    <v-flex xs2 ml-4 v-if="create">
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-btn outline dark small color="success" @click="saveChangeLib()" v-on="on">
+                                    Создать библиотеку
+                                </v-btn>
+                            </template>
+                        </v-tooltip>
+                    </v-flex>  -->
                 </v-layout>
             </v-card-title>
 
@@ -136,7 +181,7 @@
                                             <span>Удалить набор</span>
                                         </v-tooltip>
                                     </v-flex>
-                                    <v-flex xs1>
+                                    <v-flex xs1 v-if="create">
                                         <v-tooltip bottom>
                                             <template v-slot:activator="{ on }">
                                                 <v-btn outline fab dark small color="success" @click="''" v-on="on">
@@ -208,7 +253,7 @@
                                                         ></v-text-field>
                                                     </v-flex>
                                                     <!-- <v-flex xs1> -->
-                                                        <v-btn fab flat dark small color="grey" @click="removeDataValue(j)">
+                                                        <v-btn fab flat dark small color="red" @click="removeDataValue(j)">
                                                             <v-icon dark>close</v-icon>
                                                         </v-btn>
                                                     <!-- </v-flex> -->
@@ -405,9 +450,8 @@ export default {
         saveChangeLib() {
             this.currentDataSet = {}
             this.$store.state.setting = false
-            this.$store.commit('changeDialogLibrary',{ boolCreateSetting: false, changeLibrary: this.currentLibrary })
+            // this.$store.commit('changeDialogLibrary',{ boolCreateSetting: false, changeLibrary: this.currentLibrary })
             this.$store.dispatch('changeLibrarys', {
-                changeLibrary: this.currentLibrary,
                 library: this.currentLibrary
             })
         },
@@ -452,7 +496,10 @@ export default {
         },
         setting() {
             return this.$store.state.setting
-        }
+        },
+        create() {
+            return this.$store.state.create
+        },
     }
 }
 </script>

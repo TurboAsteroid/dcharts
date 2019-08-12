@@ -60,14 +60,8 @@ const changeLib = async (_, {library}, {connect}) => {
                     [ID, dataset.val2.value, dataset.val2.label]                    
                 );
             } else if(dataset.link) {
-                console.log(dataset)
-                // console.log(lib)
-                // await connect.execute(`DELETE FROM tree WHERE id_note != 0 AND id_tree = ${idTree}`);
-                // console.log(dataset.children[0])
-                let res = [];
                 (async function recurse(currentNode) {
                     try {
-                        // let id = JSON.parse(currentNode[i].id)
                         await connect.execute(`
                             UPDATE link_library
                             SET
@@ -94,8 +88,7 @@ const changeLib = async (_, {library}, {connect}) => {
                     } catch (e) {
                         console.error(e.message);
                     }  
-                    for(let i = 0, length = currentNode.children.length; i < length; i++) { 
-                        // console.log(currentNode)
+                    for(let i = 0, length = currentNode.children.length; i < length; i++) {
                         recurse(currentNode.children[i]);
                     }
                 })(dataset);

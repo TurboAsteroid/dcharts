@@ -12,6 +12,7 @@ export default new Vuex.Store({
     dialogTree: false,
     dialogAddLibrary: false,
     setting: false,
+    create: false,
     dialogCreateSetting: false,
     currentLibrary: {
       id: 0,
@@ -190,18 +191,21 @@ export default new Vuex.Store({
       }
       if(boolCreateSetting !== undefined) {
         state.dialogCreateSetting = boolCreateSetting;
-        if(changeLibrary !== undefined) {
-          // state.oldLibrarys[state.oldLibrarys.findIndex(x => x.id === changeLibrary.id)] = changeLibrary;
+        if(!valueSetting) {
+          state.create = !state.create;
+          state.setting = false;
+          state.currentLibrary = {
+            id: 0,
+            name: '',
+            dataSet:[]
+          };
+        } else if(valueSetting) {
+          state.setting = boolCreateSetting;
+          state.create = false;
+          // console.log(valueSetting)
+          // console.log(JSON.parse(JSON.stringify(valueSetting)));
+          state.currentLibrary = JSON.parse(JSON.stringify(valueSetting));
         }
-        // state.currentLibrary = {
-        //   id: 0,
-        //   name: '',
-        //   dataSet:[]
-        // };
-      }
-      if(valueSetting) {
-        state.setting = boolCreateSetting;
-        state.currentLibrary = valueSetting;
       }
       if(newLibrary) {
         // state.oldLibrarys.push(newLibrary);
@@ -215,7 +219,7 @@ export default new Vuex.Store({
           id: 0,
           name: '',
           dataSet:[]
-        }
+        };
       }
       if(deleteLibrary) {
         state.oldLibrarys.splice(state.oldLibrarys.indexOf(x => x.id === deleteLibrary.id), 1)
@@ -259,8 +263,6 @@ export default new Vuex.Store({
       }); 
     },
     getLibrarys({commit}, {selectedLib, currentLib}) {
-      // let LibID = selectedLib.filter(x => !x.source).map(x => x.id) || [],
-      //     linkLibID = selectedLib.filter(x => x.source).map(x => x.id) || [];
       let LibID = !currentLib.source ? [currentLib.id] : null,
           linkLibID = currentLib.source ? [currentLib.id] : null;
 
@@ -339,26 +341,29 @@ export default new Vuex.Store({
       }).then(res => {
         let [createdlibs, linkLibs] = [res.data.data.createdLib, res.data.data.linksLib];
         if(createdlibs) {
-          console.log(createdlibs)
-          this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => parseInt(x.id) === parseInt(createdlibs[0].id))]
-            .dataSets = createdlibs[0].dataSets;
+          console.log(createdlibs);
+          this.state.currentLibrary.dataSets = createdlibs[0].dataSets;
+          // this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => parseInt(x.id) === parseInt(createdlibs[0].id))]
+          //   .dataSets = createdlibs[0].dataSets;
         }
         if(linkLibs) {
-          console.log('linkLibs', linkLibs)
-          // this.state.oldLibrarys.push(...JSON.parse(JSON.stringify(linkLibs)));
-          this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => parseInt(x.id) === parseInt(linkLibs[0].id))]
-            .dataSets = linkLibs[0].dataSets;
+          console.log('linkLibs', linkLibs);
+          this.state.currentLibrary.dataSets = linkLibs[0].dataSets;
+          // this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => parseInt(x.id) === parseInt(linkLibs[0].id))]
+          //   .dataSets = linkLibs[0].dataSets;
         }
       })
     },
     changeLibrarys({commit}, {library}) {
       let lib = JSON.parse(JSON.stringify(library));
+      this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => x.id === lib.id)].name = lib.name;
+
+      commit('changeDialogLibrary',{ boolCreateSetting: false});
       for(let o of lib.dataSets) { // убираю id у созданных наборов, чтобы можно было создавать записи в бд
         if(o.datasetID && typeof o.id === 'string' || o.datasetID === 0) {
           o.id = ''
         }
       }
-      console.log(lib)
 
       axios.post('http://localhost:4000', {
         query:
@@ -370,6 +375,8 @@ export default new Vuex.Store({
         variables: {
           library: lib
         }
+      }).then(() => {
+        
       });
     },
 
