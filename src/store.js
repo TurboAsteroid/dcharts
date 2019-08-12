@@ -125,6 +125,7 @@ export default new Vuex.Store({
         for(let o of lib) {
           o.id = parseInt(o.id);
           o["dataSets"] = [];
+          this.state.activeLib.push({id: o.id, active: 1})
           this.state.selected.push(o.id);
           this.state.oldLibrarys.push(o);
         }

@@ -44,7 +44,7 @@
                                 <v-flex xs2>
                                     <v-tooltip bottom>
                                         <template v-slot:activator="{ on }">
-                                            <v-btn fab dark small color="red" @click="closeLib(j)" v-on="on">
+                                            <v-btn fab dark small color="red" @click="closeLib(j, obj)" v-on="on">
                                                 <v-icon dark>close</v-icon>
                                             </v-btn>
                                         </template>
@@ -85,6 +85,9 @@ export default {
     methods: {
         addLib() {
             this.$store.commit('changeDialogLibrary', { boolAdd: true })
+            if(this.librarys.length) {
+                this.$store.dispatch('activationLibrarys');
+            }
             this.$store.dispatch('getLibrarysList');
         },
         createLib() {
@@ -94,7 +97,10 @@ export default {
             this.$store.commit('changeDialogLibrary', { boolCreateSetting: true, valueSetting: obj })
             this.$store.dispatch('getLibrarys', {currentLib: obj})
         },
-        closeLib(j) {
+        closeLib(j, obj) {
+            obj.active = false;
+            this.$store.state.activeLib[this.$store.state.activeLib.findIndex(x => x.id === obj.id)].active = 0;
+            this.$store.state.selected.splice(this.$store.state.selected.findIndex(x => x.id === obj.id), 1)
             this.librarys.splice(j, 1);
         }
     },
