@@ -33,11 +33,13 @@
                     align-center>
                         <v-flex xs12>
                             <v-list-tile
-                                ripple
+                                @click="''"
                             >
                                 <v-list-tile-action>
                                     <v-checkbox
-                                        v-model="selected"
+                                        type="checkbox"
+                                        color="info"
+                                        v-model="$store.state.selected"
                                         :value="item.id"
                                     ></v-checkbox>
                                 </v-list-tile-action>
@@ -69,9 +71,13 @@ export default {
             }
         },
         addLib() {
-            console.log(this.selected)
+            
+            console.log(this.selectedLib)
+            // console.log(this.selected)
             this.$store.commit('changeDialogLibrary',{ boolAdd: false })
-            this.$store.commit('addLibrarys', {selectedLib: this.selected})
+            this.$store.commit('addLibrarys')
+            this.$store.dispatch('activationLibrarys');
+
             // this.$store.commit('addLib', { addLib: this.selectedLibrary})
 
             // this.$store.dispatch('getLibrarys', {selectedLib: this.selected})
@@ -79,12 +85,16 @@ export default {
         },
     },
     computed: {
+        selectedLib () {
+            if(this.librarysList.length) {
+                return this.librarysList.filter(l => {
+                    return l.active
+                }).map(l => {
+                    return l.id
+                })
+            }
+        },
         librarysList() {
-            // for(let o of this.$store.state.librarysList) {
-            //     if(o.active) {
-            //         this.selected.push(o.id)
-            //     }
-            // }
             return this.$store.state.librarysList
         },
     }

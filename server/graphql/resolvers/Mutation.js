@@ -1,4 +1,19 @@
 // Изменение библиотеки в бд
+const activationLib = async (_, {activeLibs}, {connect}) => {
+    try {
+        for(let l of activeLibs) {
+            await connect.execute(`
+                UPDATE librarys
+                SET
+                    active = ${l.active}
+                WHERE
+                    id = ${l.id}
+            `);
+        }
+    } catch (e) {
+        console.log(e.message);
+    }
+};
 const changeLib = async (_, {library}, {connect}) => {
     const lib = library;
     let dataArr = [];
@@ -125,7 +140,7 @@ const deleteLibrarysOrDataSets = async (_, {libID, datasetID}, {connect}) => {
             console.log(e.message);
         }
     }
-}
+};
 
 
 /////////////////////////////////////////////////////////
@@ -257,7 +272,7 @@ const changeTree = async (_, {tree, currentTree}, {connect}) => {
 module.exports = {
     changeLib,
     deleteLibrarysOrDataSets,
-
+    activationLib,
     
 /////////////////////
     createNewNote,

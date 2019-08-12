@@ -9,11 +9,15 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    selected: [],
+    activeLib: [],
+
     dialogTree: false,
     dialogAddLibrary: false,
     setting: false,
     create: false,
     dialogCreateSetting: false,
+
     currentLibrary: {
       id: 0,
       name: '',
@@ -22,10 +26,8 @@ export default new Vuex.Store({
       source: ''
     },
     librarysList:[],
-
-
     librarys:[],
-    oldLibrarys:[], // все выбранные библиотеки до сохранения коллекции
+    oldLibrarys:[], // все выбранные библиотеки
     
   },
   mutations: {
@@ -82,14 +84,25 @@ export default new Vuex.Store({
         state.librarysLinks.splice(state.librarysLinks.indexOf(x => x.title === deleteLibrary.name), 1)
       }
     },
-    addLibrarys: (state, {selectedLib}) => {
-      let result = []
-      for(let o of selectedLib) {
-        result.push(
-          state.librarysList.find(x => x.id === o)
-        );
+    addLibrarys: (state) => {
+      let result = [],
+          activeLib = [];
+
+      for(let o of state.selected) {
+        let lib = state.librarysList.find(x => x.id === o);
+        lib.active = true;
+        activeLib.push({id: lib.id, active: 1});
+        result.push(lib); 
       }
-      state.oldLibrarys = result
+      state.librarysList.forEach(lib => {
+        if(!result.some(x => x.id === lib.id)) {
+          lib.active = false;
+          activeLib.push({id: lib.id, active: 0})
+        }
+      });
+
+      state.oldLibrarys = result;
+      state.activeLib = activeLib;
     },
     librarys: (state, data) => {
       state.librarys = data;
@@ -108,11 +121,11 @@ export default new Vuex.Store({
               }
           }`
       }).then((res) => {
-        // console.log(res.data.data.getActiveLibrarys)
         let lib = res.data.data.getActiveLibrarys;
         for(let o of lib) {
           o.id = parseInt(o.id);
           o["dataSets"] = [];
+          this.state.selected.push(o.id);
           this.state.oldLibrarys.push(o);
         }
       });
@@ -138,6 +151,23 @@ export default new Vuex.Store({
         }
         this.state.librarysList = libList;
       }); 
+    },
+    activationLibrarys({commit},) {
+      axios.post('http://localhost:4000', {
+        query:
+          `mutation ActivationLibrary(
+            $activeLibs: [inputActiveLibrary]
+          ) {
+            activationLib(activeLibs: $activeLibs) 
+          }`,
+        variables: {
+          activeLibs: this.state.activeLib
+        }
+      }).then((res) => {
+        if(res.data.data.changeLib) {
+          lib.id = res.data.data.changeLib;
+        }
+      });
     },
     getLibrarys({commit}, {selectedLib, currentLib}) {
       let LibID = !currentLib.source ? [currentLib.id] : null,
