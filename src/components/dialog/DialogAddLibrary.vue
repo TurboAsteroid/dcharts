@@ -38,7 +38,7 @@
                                 <v-list-tile-action>
                                     <v-checkbox
                                         v-model="selected"
-                                        :value="item"
+                                        :value="item.id"
                                     ></v-checkbox>
                                 </v-list-tile-action>
                                 <v-list-tile-content>
@@ -61,17 +61,30 @@ export default {
         selected: []
     }),
     methods: {
+        getSelected(item) {
+            if(item.active) {
+                console.log('item',item)
+                
+                this.selected.push(item)
+            }
+        },
         addLib() {
+            console.log(this.selected)
             this.$store.commit('changeDialogLibrary',{ boolAdd: false })
             this.$store.commit('addLibrarys', {selectedLib: this.selected})
             // this.$store.commit('addLib', { addLib: this.selectedLibrary})
 
             // this.$store.dispatch('getLibrarys', {selectedLib: this.selected})
-            this.selected = []
+            // this.selected = []
         },
     },
     computed: {
         librarysList() {
+            // for(let o of this.$store.state.librarysList) {
+            //     if(o.active) {
+            //         this.selected.push(o.id)
+            //     }
+            // }
             return this.$store.state.librarysList
         },
     }

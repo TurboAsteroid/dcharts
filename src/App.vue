@@ -50,6 +50,7 @@ export default {
     }
   },
   mounted () {
+    this.$store.dispatch('getActiveLibrarys');
     // this.$store.dispatch('getLibrary')
     // this.$store.dispatch('getTree')
     // this.$store.dispatch('getLibraryLink')

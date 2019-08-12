@@ -42,8 +42,7 @@ const resolvers = {
                         WHERE libDS.library_id = ${parent.id}
                         GROUP BY libDS.id
                     `);
-                    let data = []
-                    console.log(dataSetLib)
+                    let data = [];
 
                     for(let o of dataSetLib) {
                         if (o.id != 0) {
@@ -63,7 +62,6 @@ const resolvers = {
                             });
                         }
                     }
-                    console.log(data)
                     return data;
                 } else if(parent.source) {
                     const [linkTree] = await connect.execute(`

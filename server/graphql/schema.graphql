@@ -1,4 +1,5 @@
 type Query {
+    getActiveLibrarys: [LibrarysList]
     getLibrarysList: [LibrarysList]
     getLibrarys(LibID: [Int]): [Librarys]
 
