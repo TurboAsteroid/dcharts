@@ -85,7 +85,9 @@ export default new Vuex.Store({
     addLibrarys: (state, {selectedLib}) => {
       let result = []
       for(let o of selectedLib) {
-        result.push(o)
+        result.push(
+          state.librarysList.find(x => x.id === o)
+        );
       }
       state.oldLibrarys = result
     },
@@ -94,6 +96,27 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    getActiveLibrarys({commit}) {
+      axios.post('http://localhost:4000', {
+        query: 
+          `query {
+              getActiveLibrarys {
+                id
+                name
+                source
+                active
+              }
+          }`
+      }).then((res) => {
+        // console.log(res.data.data.getActiveLibrarys)
+        let lib = res.data.data.getActiveLibrarys;
+        for(let o of lib) {
+          o.id = parseInt(o.id);
+          o["dataSets"] = [];
+          this.state.oldLibrarys.push(o);
+        }
+      });
+    },
     getLibrarysList({commit}) {
       axios.post('http://localhost:4000', {
         query: 
@@ -107,14 +130,11 @@ export default new Vuex.Store({
           }`
       }).then((res) => {
         // this.state.selectedLibrary = []
-        console.log(res)
+        // console.log(res)
         let libList = res.data.data.getLibrarysList;
         for(let o of libList) {
-          o.id = parseInt(o.id)
-          o["dataSets"] = []
-          // if(o.active) {
-          //   this.state.selectedLibrary.push(o)
-          // }
+          o.id = parseInt(o.id);
+          o["dataSets"] = [];
         }
         this.state.librarysList = libList;
       }); 
