@@ -2,9 +2,9 @@
     <v-dialog
         persistent
         v-model="$store.state.dialogCreateSetting"
-        max-width="900"
+        max-width="930"
     >
-        <v-card>
+        <v-card class="dialogHeight">
             <v-card-title>
                 <v-layout row align-center >
                     <v-flex xs6>
@@ -53,8 +53,8 @@
             <v-divider my-2/>
 
             <v-card-text>
-                <span>
-                    <v-layout row>     
+                <span >
+                    <v-layout row >     
                         <v-flex xs4 mr-2>
                             <v-layout row>
                                 <v-toolbar card>
@@ -73,30 +73,27 @@
                                     </v-flex>
                                 </v-toolbar>
                             </v-layout>
-                            <v-list dense>
+                            <v-list dense class="listHeight">
                                 <v-treeview
-                                    :items="currentLibrary.dataSets"
                                     open-all
+                                    :items="currentLibrary.dataSets"
                                     activatable
                                 >
                                     <template slot="label" slot-scope="{ item }">
                                         <div class="link" @click="currentItem(item)">{{ item.name }}</div>
-                                        <v-divider></v-divider>
+                                        <v-divider v-if="currentLibrary.dataSets"></v-divider>
                                     </template>
-                                <!-- <template v-slot:append="{ item }" >
-                                    <v-btn flat fab dark small color="red" @click="''" v-on="on">
-                                        <v-icon dark>delete</v-icon>
-                                    </v-btn>
-                                </template> -->
-                                </v-treeview>  
+                                </v-treeview> 
+                                
                             </v-list>
+                            <!-- <v-divider></v-divider>  -->
                         </v-flex>
                         
                         <v-divider vertical></v-divider>
 
-                        <v-flex xs8 mx-2  v-if="Object.keys(currentDataSet).length !== 0">
+                        <v-flex xs8 ml-2  v-if="Object.keys(currentDataSet).length !== 0">
                             <v-layout row>
-                                <v-toolbar card>
+                                <v-toolbar card mx-0 >
                                     <v-flex xs10>
                                         <v-text-field
                                             label="Имя набора данных"
@@ -116,8 +113,6 @@
                                         </v-tooltip>
                                     </v-flex>
                                 </v-toolbar>
-                                
-                                
                             </v-layout>
                             <v-tabs
                                 v-model="tab"
@@ -162,7 +157,7 @@
                                                     </v-flex>
                                                 </v-layout>
                                                 <v-divider></v-divider>
-                                                <v-layout class="maxHeight">
+                                                <v-layout mt-1 class="maxHeight">
                                                     <v-flex xs12>
                                                         <!-- <transition-group name="item" tag="div" class="items"> -->
                                                         <v-layout row
@@ -194,9 +189,9 @@
                                                 
                                                 </v-layout>
                                                 
-                                                <v-divider></v-divider>
+                                                <v-divider v-if="!currentDataSet.link"></v-divider>
                                                 <v-layout row justify-center v-if="!currentDataSet.link">
-                                                    <v-btn outline @click="addDataValue()" color="grey">Добавить значение</v-btn>
+                                                    <v-btn outline @click="addDataValue()" color="info">Добавить значение</v-btn>
                                                 </v-layout>
                                             </span>
 
@@ -362,9 +357,19 @@ export default {
 
 <style>
 .maxHeight{
+    height: 440px;
     max-height: 440px;
     overflow-y: auto;
 }
+.dialogHeight {
+    height: 843px;
+}
+.listHeight {
+    height: 640px;
+    max-height: 640px;
+    overflow-y: auto;
+}
+
 /* .item-enter-active,
 .item-leave-active {
   transition: height .5s;
