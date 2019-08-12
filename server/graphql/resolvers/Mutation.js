@@ -5,31 +5,25 @@ const changeLib = async (_, {library}, {connect}) => {
     let controlValueArr = [];
     let lastLibId;
     let lastDataSetId;
+    let newID;
     try {
-        await connect.execute(`
-            UPDATE librarys
-            SET 
-                name = ${JSON.stringify(lib.name)}
-            WHERE 
-                id = ${parseInt(lib.id)}
-        `);
-        // !!! Для создания библиотеки !!!
-
-        // else if(!library.id) {
-        //     [lastLibId] = await connect.execute(`
-        //         SELECT MAX( id ) FROM librarys;
-        //     `);
-        //     await connect.execute(`
-        //         INSERT INTO librarys
-        //         SET
-        //             id = ${lastLibId[0]['MAX( id )'] + 1},
-        //             name = ${JSON.stringify(lib.name)},
-        //             active = ${lib.active ? 1 : 0}
-        //         ON DUPLICATE KEY UPDATE 
-        //             name = ${JSON.stringify(lib.name)},
-        //             active = ${lib.active ? 1 : 0}
-        //     `);
-        // }
+        if(parseInt(lib.id) !== 0) {
+            await connect.execute(`
+                UPDATE librarys
+                SET 
+                    name = ${JSON.stringify(lib.name)}
+                WHERE 
+                    id = ${parseInt(lib.id)}
+            `);
+        } else if(parseInt(lib.id) === 0) {
+            await connect.execute(`
+                INSERT INTO librarys
+                    (name, source, active)
+                VALUES (${JSON.stringify(lib.name)},${JSON.stringify(lib.source)}, 1)
+            `).then(res => { lib.id = res[0].insertId });
+            newID = lib.id;
+        }
+        
         for(let dataset of lib.dataSets) {
             let ID;
             if(!dataset.link) {
@@ -75,7 +69,6 @@ const changeLib = async (_, {library}, {connect}) => {
                                 value = ${parseInt(currentNode.val1.value)}
                             WHERE
                                 link_id = ${JSON.parse(currentNode.id)} AND label = ${JSON.stringify(currentNode.val1.label)}
-
                         `);
                         await connect.execute(`
                             UPDATE control_values_links
@@ -104,7 +97,35 @@ const changeLib = async (_, {library}, {connect}) => {
     } catch (e) {
         console.log(e.message);
     }
+    if(newID) {
+        return newID;
+    }
 };
+const deleteLibrarysOrDataSets = async (_, {libID, datasetID}, {connect}) => {
+    if(libID) {
+        try {
+            await connect.execute(`
+                DELETE FROM librarys
+                WHERE id = ${libID}
+            `);
+        } catch (e) {
+            console.log(e.message);
+        }
+    }
+
+    if(datasetID) {
+        try {
+            for(let o of datasetID) {
+                await connect.execute(`
+                    DELETE FROM dataset_library
+                    WHERE id = ${o}
+                `);
+            }
+        } catch (e) {
+            console.log(e.message);
+        }
+    }
+}
 
 
 /////////////////////////////////////////////////////////
@@ -235,7 +256,9 @@ const changeTree = async (_, {tree, currentTree}, {connect}) => {
 
 module.exports = {
     changeLib,
+    deleteLibrarysOrDataSets,
 
+    
 /////////////////////
     createNewNote,
     updateNote,
