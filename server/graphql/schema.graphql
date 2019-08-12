@@ -10,8 +10,10 @@ type Query {
     getData(salary: [String], salaryBool: Boolean!): dataSource
     getLibraryLink: String
     getLibraryTree: [libraryTree]
+#/////////////////////////////////////////////////////////
 }
 type Mutation {
+    activationLib(activeLibs: [inputActiveLibrary]) : String
     changeLib(library: inputLibrary) : Int
     deleteLibrarysOrDataSets(libID: Int, datasetID: [Int]) : String
     # changeLinkLib(library: inputLibrary) : String
@@ -25,6 +27,7 @@ type Mutation {
     addLibraryTree(tree: libraryTreeInput): String
     updateLibraryTree(tree: libraryTreeInput): String
     deleteLibraryTree(trees: [libraryTreeInput]): String
+#/////////////////////////////////////////////////////////
 }
 
 type LibrarysList {
@@ -78,6 +81,12 @@ input inputValue {
     value: Int
     label: String
 }
+input inputActiveLibrary {
+    id: Int
+    active: Int
+}
+
+
 #//////////////////////////////////////////////
 type Library {
     id: ID!

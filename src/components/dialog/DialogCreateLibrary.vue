@@ -224,109 +224,12 @@
                                                     </v-flex>  
                                                 </v-layout>
                                             </span>
-                                        
-                                            
                                         </v-card-text>
                                     </v-card>
                                 </v-tab-item>
                             </v-tabs-items>
                         </v-flex>
-
                     </v-layout>
-                    
-                    <!-- <v-expansion-panel v-model="currentDataSet">
-                        <v-expansion-panel-content
-                            v-for="(item, i) in currentLibrary.dataSets"
-                            :key="i">
-                            <template v-slot:actions>
-                                <v-layout row>
-                                        <span v-if="!item.link">
-                                            <v-tooltip bottom>
-                                                <template v-slot:activator="{ on }">
-                                                    <v-btn fab outline dark small color="red" @click="deleteDataSet(i)" v-on="on">
-                                                        <v-icon dark>delete</v-icon>
-                                                    </v-btn>
-                                                </template>
-                                                <span>Удалить набор</span>
-                                            </v-tooltip>
-                                        </span>
-                                        <span>
-                                            <v-tooltip bottom>
-                                                <template v-slot:activator="{ on }">
-                                                    <v-btn fab outline dark small color="orange" @click="settingValue()" v-on="on">
-                                                        <v-icon dark>settings</v-icon>
-                                                    </v-btn>
-                                                </template>
-                                                <span>Настроить</span>
-                                            </v-tooltip>
-                                        </span>
-                                        <span>
-                                            <v-tooltip bottom>
-                                                <template v-slot:activator="{ on }">
-                                                    <v-btn fab outline dark small color="info" @click="''" v-on="on">
-                                                        <v-icon dark>format_list_bulleted</v-icon>
-                                                    </v-btn>
-                                                </template>
-                                                <span>Показатели</span>
-                                            </v-tooltip>
-                                        </span>
-                                </v-layout>
-                            </template>
-                            <template v-slot:header>
-                                <v-layout row align-center>
-                                    <v-flex xs10>
-                                        <v-text-field
-                                        v-model="item.name"
-                                        label="Имя набора данных"
-                                        ></v-text-field>
-                                    </v-flex>
-                                </v-layout>
-                            </template>
-                            <v-divider></v-divider>
-                            <v-container>
-                                <v-layout row>
-                                    <v-flex xs6>
-                                        <v-text-field
-                                            v-model="item.val1.value"
-                                            label="Первый порог"
-                                        ></v-text-field>
-                                        </v-flex>
-                                        <v-flex xs6 ml-2>
-                                        <v-text-field
-                                        v-model="item.val2.value"
-                                        label="Второй порог"
-                                        ></v-text-field>
-                                    </v-flex>
-                                </v-layout>
-                                <v-layout row
-                                    v-for="(it, j) in item.data"
-                                    :key="j+'item'">
-                                    <v-flex xs5>
-                                        <v-text-field
-                                            v-model="item.data[j]"
-                                            mask="#############"
-                                            label="Значение"
-                                        ></v-text-field>
-                                    </v-flex>
-                                    <v-flex xs5 ml-2>
-                                        <v-text-field
-                                            v-model="item.labels[j]"
-                                            mask="##.##.##"
-                                            label=""
-                                        ></v-text-field>
-                                    </v-flex>
-                                    <v-flex xs2>
-                                    <v-btn fab outline dark small color="red" @click="removeDataValue(i,j)">
-                                        <v-icon dark>close</v-icon>
-                                    </v-btn>
-                                    </v-flex>
-                                </v-layout>
-                                <v-layout row justify-center v-if="!item.link_name">
-                                    <v-btn @click="addDataValue(i)" color="info">Добавить значение</v-btn>
-                                </v-layout>
-                            </v-container>         
-                        </v-expansion-panel-content>
-                    </v-expansion-panel> -->
                 </span>
             </v-card-text>
         </v-card>
