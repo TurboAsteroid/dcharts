@@ -86,7 +86,7 @@ export default {
         closeLib(j, obj) {
             obj.active = false;
             this.$store.state.activeLib[this.$store.state.activeLib.findIndex(x => x.id === obj.id)].active = 0;
-            console.log(this.$store.state.selected.findIndex(x => x === obj.id))
+            // console.log(this.$store.state.selected.findIndex(x => x === obj.id))
             this.$store.state.selected.splice(this.$store.state.selected.findIndex(x => x === obj.id), 1)
             this.librarys.splice(j, 1);
             this.$store.dispatch('activationLibrarys');
