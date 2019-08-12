@@ -1,4 +1,4 @@
-// Изменение библиотеки в бд
+
 const activationLib = async (_, {activeLibs}, {connect}) => {
     try {
         for(let l of activeLibs) {
@@ -14,11 +14,11 @@ const activationLib = async (_, {activeLibs}, {connect}) => {
         console.log(e.message);
     }
 };
+// Изменение библиотеки в бд
 const changeLib = async (_, {library}, {connect}) => {
     const lib = library;
     let dataArr = [];
     let controlValueArr = [];
-    let lastLibId;
     let lastDataSetId;
     let newID;
     try {
