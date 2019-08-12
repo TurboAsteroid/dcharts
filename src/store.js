@@ -16,7 +16,9 @@ export default new Vuex.Store({
     dialogAddLibrary: false,
     setting: false,
     create: false,
-    dialogCreateSetting: false,
+    // dialogCreateSetting: false,
+    dialogCreate: false,
+    dialogSetting: false,
 
     currentLibrary: {
       id: 0,
@@ -43,27 +45,25 @@ export default new Vuex.Store({
         };
       }
     },
-    changeDialogLibrary:(state, {boolAdd, boolCreateSetting, newLibrary, deleteLibrary, changeLibrary, valueSetting}) => {
+    changeDialogLibrary:(state, {boolAdd, boolSetting, boolCreate, newLibrary, deleteLibrary, valueSetting}) => {
       if(boolAdd !== undefined) {
         state.dialogAddLibrary = boolAdd;
       }
-      if(boolCreateSetting !== undefined) {
-        state.dialogCreateSetting = boolCreateSetting;
-        if(!valueSetting) {
-          state.create = true;
-          state.setting = false;
-          state.currentLibrary = {
-            id: 0,
-            name: '',
-            dataSets:[],
-            active: true,
-            source:''
-          };
-        } else if(valueSetting) {
-          state.setting = boolCreateSetting;
-          state.create = false;
+      if(boolSetting !== undefined) {
+        state.dialogSetting = boolSetting;
+        if(valueSetting) {
           state.currentLibrary = JSON.parse(JSON.stringify(valueSetting));
         }
+      }
+      if(boolCreate !== undefined) {
+        state.dialogCreate = boolCreate;
+        state.currentLibrary = {
+          id: 0,
+          name: '',
+          dataSets:[],
+          active: true,
+          source:''
+        };
       }
       if(newLibrary) {
         // state.oldLibrarys.push(newLibrary);
@@ -267,11 +267,11 @@ export default new Vuex.Store({
       if(this.state.oldLibrarys.some(x => x.id === lib.id)) {
         this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => x.id === lib.id)].name = lib.name;
       } else {
-        console.log(lib)
+        // console.log(lib)
         this.state.oldLibrarys.push(lib)
       }
 
-      commit('changeDialogLibrary',{ boolCreateSetting: false});
+      commit('changeDialogLibrary',{ boolCreate: false, boolSetting: false});
       for(let o of lib.dataSets) { // убираю id у созданных наборов, чтобы можно было создавать записи в бд
         if(o.datasetID && typeof o.id === 'string' || o.datasetID === 0) {
           o.id = ''
