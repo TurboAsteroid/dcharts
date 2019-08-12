@@ -75,10 +75,12 @@ export default {
             this.$store.dispatch('getLibrarysList');
         },
         createLib() {
-            this.$store.commit('changeDialogLibrary', { boolCreateSetting: true })
+            this.$store.commit('changeDialogLibrary', { boolCreate: true })
+            // this.$store.commit('changeDialogLibrary', { boolCreateSetting: true })
         },
         settingLib(obj) {
-            this.$store.commit('changeDialogLibrary', { boolCreateSetting: true, valueSetting: obj })
+            this.$store.commit('changeDialogLibrary', { boolSetting: true, valueSetting: obj })
+            // this.$store.commit('changeDialogLibrary', { boolCreateSetting: true, valueSetting: obj })
             this.$store.dispatch('getLibrarys', {currentLib: obj})
         },
         closeLib(j, obj) {

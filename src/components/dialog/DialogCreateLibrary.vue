@@ -1,7 +1,7 @@
 <template>
     <v-dialog
         persistent
-        v-model="$store.state.dialogCreateSetting"
+        v-model="dialog"
         max-width="930"
     >
         <v-card class="dialogHeight">
@@ -13,7 +13,7 @@
                         v-model="currentLibrary.name"
                         ></v-text-field>
                     </v-flex>
-                    <v-flex xs6 v-if="setting">
+                    <v-flex xs6 v-if="$store.state.dialogSetting">
                         <v-layout row justify-end align-center>
                             <v-flex xs5 v-if="!currentLibrary.source">
                                 <v-btn outline dark small color="red" @click="deleteLib()">
@@ -32,7 +32,7 @@
                             </v-flex>
                         </v-layout>
                     </v-flex>
-                    <v-flex xs6 v-else-if="create">
+                    <v-flex xs6 v-else-if="$store.state.dialogCreate">
                         <v-layout row justify-end align-center>
                             
                             <v-flex xs5>
@@ -271,7 +271,9 @@ export default {
         cancel() {
             this.currentDataSet = {}
             this.deleteDataSetsID = []
-            this.$store.commit('changeDialogLibrary',{ boolCreateSetting: false })
+            this.$store.state.dialogSetting ? this.$store.commit('changeDialogLibrary',{ boolSetting: false})
+             : this.$store.commit('changeDialogLibrary',{ boolCreate: false })
+            // this.$store.commit('changeDialogLibrary',{ boolSetting: false, boolCreate: false })
         },
         createLib() {
             this.currentDataSet = {}
@@ -286,7 +288,7 @@ export default {
         },
         deleteLib() {
             this.currentDataSet = {}
-            this.$store.state.setting = false
+            this.$store.state.dialogSetting = false
             this.$store.dispatch('deleteLibrarysOrDataSets', {libID: parseInt(this.currentLibrary.id)})
         },
         saveChangeLib() {
@@ -342,15 +344,18 @@ export default {
         }
     },
     computed: {
+        dialog() {
+            return this.$store.state.dialogSetting || this.$store.state.dialogCreate
+        },
         currentLibrary() {
             return this.$store.state.currentLibrary
         },
-        setting() {
-            return this.$store.state.setting
-        },
-        create() {
-            return this.$store.state.create
-        },
+        // setting() {
+        //     return this.$store.state.setting
+        // },
+        // create() {
+        //     return this.$store.state.create
+        // },
     }
 }
 </script>
