@@ -41,27 +41,14 @@
                         <v-divider></v-divider>
                         <v-card-actions>
                             <v-layout row align-center justify-center>
-                                <v-flex xs2>
                                     <v-tooltip bottom>
                                         <template v-slot:activator="{ on }">
-                                            <v-btn fab dark small color="red" @click="closeLib(j, obj)" v-on="on">
-                                                <v-icon dark>close</v-icon>
-                                            </v-btn>
-                                        </template>
-                                        <span>Отключить</span>
-                                    </v-tooltip>
-                                </v-flex>
-                                <v-flex xs2></v-flex>
-                                <v-flex xs2>
-                                    <v-tooltip bottom>
-                                        <template v-slot:activator="{ on }">
-                                            <v-btn fab dark small color="orange" @click="settingLib(obj)" v-on="on">
+                                            <v-btn depressed dark small color="orange" @click="settingLib(obj)" v-on="on">
                                                 <v-icon dark>settings</v-icon>
                                             </v-btn>
                                         </template>
                                         <span>Редактировать</span>
                                     </v-tooltip>
-                                </v-flex>
                             </v-layout>
                         </v-card-actions>
                     </v-card>
@@ -85,9 +72,6 @@ export default {
     methods: {
         addLib() {
             this.$store.commit('changeDialogLibrary', { boolAdd: true })
-            if(this.librarys.length) {
-                this.$store.dispatch('activationLibrarys');
-            }
             this.$store.dispatch('getLibrarysList');
         },
         createLib() {
@@ -100,8 +84,10 @@ export default {
         closeLib(j, obj) {
             obj.active = false;
             this.$store.state.activeLib[this.$store.state.activeLib.findIndex(x => x.id === obj.id)].active = 0;
-            this.$store.state.selected.splice(this.$store.state.selected.findIndex(x => x.id === obj.id), 1)
+            console.log(this.$store.state.selected.findIndex(x => x === obj.id))
+            this.$store.state.selected.splice(this.$store.state.selected.findIndex(x => x === obj.id), 1)
             this.librarys.splice(j, 1);
+            this.$store.dispatch('activationLibrarys');
         }
     },
     computed: {
