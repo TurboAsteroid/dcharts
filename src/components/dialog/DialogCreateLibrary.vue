@@ -91,7 +91,7 @@
                         
                         <v-divider vertical></v-divider>
 
-                        <v-flex xs8 ml-2  v-if="Object.keys(currentDataSet).length !== 0">
+                        <v-flex xs8 ml-2 v-if="Object.keys(currentDataSet).length !== 0">
                             <v-layout row>
                                 <v-toolbar card mx-0 >
                                     <v-flex xs10>
@@ -196,6 +196,112 @@
                                             </span>
 
                                             <span v-else-if="item === items[1]">
+                                                <!-- <v-layout row >
+                                                    <v-flex xs12 >
+                                                        <v-tabs
+                                                            v-model="tabIn"
+                                                            grow
+                                                            >
+                                                            <v-tabs-slider color="info"></v-tabs-slider>
+                                                            <v-tab
+                                                                v-for="it in itemsIn"
+                                                                :key="it"
+                                                            >
+                                                                {{ it }}
+                                                            </v-tab>
+                                                        </v-tabs>
+                                                        <v-tabs-items v-model="tabIn">
+                                                            <v-tab-item
+                                                                v-for="it in itemsIn"
+                                                                :key="it"
+                                                                
+                                                            >
+                                                                    <v-divider light></v-divider>
+                                                                        <span v-if="it === itemsIn[0] && indicators.length">
+                                                                            <v-layout row class="maxHeight2">
+                                                                                <v-flex xs12>
+                                                                                    <v-list v-for="(indicator, idx) in indicators" :key="idx">
+                                                                                        <v-list-tile @click="''">
+                                                                                            <v-list-tile-action>
+                                                                                                <v-checkbox v-model="selected" :value="indicator" color="info"></v-checkbox>
+                                                                                            </v-list-tile-action>
+
+                                                                                            <v-list-tile-content>
+                                                                                                <v-list-tile-title>{{indicator.name}}</v-list-tile-title>
+                                                                                            </v-list-tile-content>
+                                                                                            
+                                                                                            <v-btn fab flat dark small color="grey" @click="''">
+                                                                                                <v-icon dark>close</v-icon>
+                                                                                            </v-btn>
+                                                                                            
+                                                                                        </v-list-tile>
+                                                                                        <v-divider></v-divider>
+                                                                                    </v-list>
+                                                                                </v-flex>  
+                                                                            </v-layout>
+                                                                            <v-divider></v-divider>
+                                                                            <v-layout row justify-center>
+                                                                                <v-btn outline @click="addIndicators()" color="info">все показатели</v-btn>
+                                                                            </v-layout>
+                                                                        </span>
+                                                                        <span v-else-if="it === itemsIn[1]">
+                                                                            <v-layout row>
+                                                                                <v-flex xs6>
+                                                                                    <v-text-field
+                                                                                        v-model.number="currentDataSet.val1.value"
+                                                                                        label="Первый порог"
+                                                                                        @keypress="onlyNumber" 
+                                                                                        type="text"
+                                                                                    ></v-text-field>
+                                                                                </v-flex>
+                                                                                <v-flex xs6 ml-2>
+                                                                                    <v-text-field
+                                                                                        v-model.number="currentDataSet.val2.value"
+                                                                                        label="Второй порог"
+                                                                                        @keypress="onlyNumber" 
+                                                                                        type="text"
+                                                                                    ></v-text-field>
+                                                                                </v-flex>
+                                                                            </v-layout>
+                                                                            <v-divider></v-divider>
+                                                                            <v-layout mt-1>
+                                                                                <v-flex xs12>
+                                                                                    <v-layout row
+                                                                                        v-for="(it, j) in currentDataSet.data"
+                                                                                        :key="j + 'item'"
+                                                                                    >
+                                                                                        <v-flex xs6>
+                                                                                            <v-text-field
+                                                                                                v-model.number="currentDataSet.data[j]"
+                                                                                                mask="#############"
+                                                                                                label="Значение"
+                                                                                            ></v-text-field>
+                                                                                        </v-flex>
+                                                                                        <v-flex xs6 ml-2>
+                                                                                            <v-text-field
+                                                                                                v-model="currentDataSet.labels[j]"
+                                                                                                mask="##.##.##"
+                                                                                                label="Дата!?"
+                                                                                            ></v-text-field>
+                                                                                        </v-flex>
+                                                                                            <v-btn fab flat dark small color="red" @click="removeDataValue(j)">
+                                                                                                <v-icon dark>close</v-icon>
+                                                                                            </v-btn>
+                                                                                    </v-layout>
+                                                                                </v-flex>
+                                                                            
+                                                                            </v-layout>
+                                                                            
+                                                                            <v-divider v-if="!currentDataSet.link"></v-divider>
+                                                                            <v-layout row justify-center v-if="!currentDataSet.link">
+                                                                                <v-btn outline @click="addDataValue()" color="info">Добавить значение</v-btn>
+                                                                            </v-layout>
+                                                                        </span>
+                                                            </v-tab-item>
+                                                        </v-tabs-items>
+                                                    </v-flex>
+                                                </v-layout> -->
+
                                                 <v-layout row>
                                                     <v-flex xs12>
                                                         <v-list v-for="(indicator, idx) in indicators" :key="idx">
@@ -206,7 +312,7 @@
 
                                                                 <v-list-tile-content>
                                                                     <v-list-tile-title>{{indicator.name}}</v-list-tile-title>
-                                                                    <!-- <v-list-tile-sub-title>Allow not</v-list-tile-sub-title> -->
+                                                                   
                                                                 </v-list-tile-content>
                                                                 
                                                                 <v-btn fab flat dark small color="grey" @click="''">
@@ -249,11 +355,39 @@ export default {
                 name: 'test3',
             },
         ],
+        allIndicators: [
+            {
+                id: 4,
+                name: 'test4',
+            },
+            {
+                id: 5,
+                name: 'test5',
+            },
+            {
+                id: 6,
+                name: 'test6',
+            },
+            {
+                id: 7,
+                name: 'test7',
+            },
+            {
+                id: 8,
+                name: 'test8',
+            },
+            {
+                id: 9,
+                name: 'test9',
+            },
+        ],
         currentDataSet: {},
         deleteDataSetsID: [],
         boolSetting: false,
-        tab: null,
-        items: ['Настройка значений', 'Показатели']
+        tab: 1,
+        tabIn: 0,
+        items: ['Настройка значений', ' Настройка Показателей'],
+        itemsIn: ['Выбор', 'Создание']
     }),
     methods: {
         onlyNumber ($event) {
@@ -341,6 +475,9 @@ export default {
         removeDataValue(j) {
             this.currentDataSet.data.splice(j, 1)
             this.currentDataSet.labels.splice(j, 1)
+        },
+        addIndicators() {
+            this.indicators.push(...this.allIndicators)
         }
     },
     computed: {
@@ -350,20 +487,19 @@ export default {
         currentLibrary() {
             return this.$store.state.currentLibrary
         },
-        // setting() {
-        //     return this.$store.state.setting
-        // },
-        // create() {
-        //     return this.$store.state.create
-        // },
     }
 }
 </script>
 
 <style>
 .maxHeight{
-    height: 440px;
+    height: 430px;
     max-height: 440px;
+    overflow-y: auto;
+}
+.maxHeight2{
+    height: 452px;
+    max-height: 452px;
     overflow-y: auto;
 }
 .dialogHeight {

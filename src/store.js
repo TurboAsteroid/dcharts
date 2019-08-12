@@ -260,7 +260,7 @@ export default new Vuex.Store({
           // this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => parseInt(x.id) === parseInt(linkLibs[0].id))]
           //   .dataSets = linkLibs[0].dataSets;
         }
-      })
+      });
     },
     changeLibrarys({commit}, {library}) {
       let lib = JSON.parse(JSON.stringify(library));
