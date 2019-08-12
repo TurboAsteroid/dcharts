@@ -17,7 +17,7 @@
         <v-btn flat :to="{ path: '/secondPage'}" :disabled="active">
           Отчёт
         </v-btn> -->
-        <v-btn flat exact :to="{ path: '/librarys'}">
+        <v-btn flat exact :to="{ path: '/'}">
           Библиотеки
         </v-btn>
         <v-btn flat :to="{ path: '/report'}" :disabled="active">

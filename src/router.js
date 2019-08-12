@@ -21,7 +21,7 @@ export default new Router({
     //   meta: { nameRu: 'Библиотека' }
     // },
     {
-      path: '/librarys',
+      path: '/',
       name: 'librarys',
       component: Librarys,
       meta: { nameRu: 'Библиотеки' }
@@ -36,7 +36,7 @@ export default new Router({
       path: '/report*',
       name:'certainparametrnew',
       component: CertainParameterNew,
-      meta: { nameRu: 'Отчёт 2v'},
+      meta: { nameRu: 'Отчёт'},
       children: [
         {
           path: ':id',
