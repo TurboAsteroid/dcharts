@@ -17,159 +17,15 @@ export default new Vuex.Store({
     currentLibrary: {
       id: 0,
       name: '',
-      dataSet:[]
+      dataSets:[],
+      active: true,
+      source: ''
     },
     librarysList:[],
-    // selectedLibrary:[],
-    currentDashbord: {},
 
 
     librarys:[],
     oldLibrarys:[], // все выбранные библиотеки до сохранения коллекции
-    allLib: [
-      {
-        id: 1,
-        name: 'Средние зарплаты',
-        source: 'Salary',
-        dataSet:[
-          {
-            id: 2,
-            name: 'Компания',
-            link_name: 'Salary.company',
-            val1: {
-              value: 30000,
-              label: 'min'
-            },
-            val2: {
-              value: 50000,
-              label: 'max'
-            },
-          },
-          {
-            id: 45,
-            name: 'Пол',
-            link_name: 'Salary.sex',
-            val1: {
-              value: 30000,
-              label: 'min'
-            },
-            val2: {
-              value: 50000,
-              label: 'max'
-            },
-          },
-          {
-            id: 23,
-            name: 'Мужчины',
-            link_name: 'Salary.male',
-            val1: {
-              value: 30000,
-              label: 'min'
-            },
-            val2: {
-              value: 50000,
-              label: 'max'
-            },
-          },
-          {
-            id: 200,
-            name: 'Женщины',
-            link_name: 'Salary.female',
-            val1: {
-              value: 30000,
-              label: 'min'
-            },
-            val2: {
-              value: 50000,
-              label: 'max'
-            },
-          }
-        ]
-      },
-      {
-        id: 3,
-        name: 'Продукция.Цветная металлургия',
-        source: 'Production',
-        dataSet:[
-          {
-            id: 4,
-            name: 'Золото в слитках',
-            link_name: 'Production.au',
-            val1: {
-              value: 30000,
-              label: 'min'
-            },
-            val2: {
-              value: 50000,
-              label: 'max'
-            },
-          },
-          {
-            id: 5,
-            name: 'серебро в слитках',
-            link_name: 'Production.arg',
-            val1: {
-              value: 30000,
-              label: 'min'
-            },
-            val2: {
-              value: 50000,
-              label: 'max'
-            },
-          },
-          {
-            id: 6,
-            name: 'Катоды медные',
-            link_name: 'Production.cu',
-            val1: {
-              value: 30000,
-              label: 'min'
-            },
-            val2: {
-              value: 50000,
-              label: 'max'
-            },
-          }
-        ]
-      },
-      {
-        id:7,
-        name: 'Test 1',
-        source:'',
-        dataSet:[
-          {
-            id: 8,
-            name: 'Карандаши',
-            link_name: '',
-            val1: {
-              value: 300,
-              label: 'min'
-            },
-            val2: {
-              value: 500,
-              label: 'max'
-            },
-            data:[320,390,450],
-            labels:['03.08.19', '03.09.19', '03.10.19']
-          },
-          {
-            id: 80,
-            name: 'Настроение',
-            link_name: '',
-            val1: {
-              value: 300,
-              label: 'min'
-            },
-            val2: {
-              value: 500,
-              label: 'max'
-            },
-            data:[320,390,450],
-            labels:['03.08.19', '03.09.19', '03.10.19']
-          }
-        ]
-      }
-    ],
     
   },
   mutations: {
@@ -192,18 +48,18 @@ export default new Vuex.Store({
       if(boolCreateSetting !== undefined) {
         state.dialogCreateSetting = boolCreateSetting;
         if(!valueSetting) {
-          state.create = !state.create;
+          state.create = true;
           state.setting = false;
           state.currentLibrary = {
             id: 0,
             name: '',
-            dataSet:[]
+            dataSets:[],
+            active: true,
+            source:''
           };
         } else if(valueSetting) {
           state.setting = boolCreateSetting;
           state.create = false;
-          // console.log(valueSetting)
-          // console.log(JSON.parse(JSON.stringify(valueSetting)));
           state.currentLibrary = JSON.parse(JSON.stringify(valueSetting));
         }
       }
@@ -251,6 +107,7 @@ export default new Vuex.Store({
           }`
       }).then((res) => {
         // this.state.selectedLibrary = []
+        console.log(res)
         let libList = res.data.data.getLibrarysList;
         for(let o of libList) {
           o.id = parseInt(o.id)
@@ -356,7 +213,12 @@ export default new Vuex.Store({
     },
     changeLibrarys({commit}, {library}) {
       let lib = JSON.parse(JSON.stringify(library));
-      this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => x.id === lib.id)].name = lib.name;
+      if(this.state.oldLibrarys.some(x => x.id === lib.id)) {
+        this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => x.id === lib.id)].name = lib.name;
+      } else {
+        console.log(lib)
+        this.state.oldLibrarys.push(lib)
+      }
 
       commit('changeDialogLibrary',{ boolCreateSetting: false});
       for(let o of lib.dataSets) { // убираю id у созданных наборов, чтобы можно было создавать записи в бд
@@ -375,8 +237,28 @@ export default new Vuex.Store({
         variables: {
           library: lib
         }
-      }).then(() => {
-        
+      }).then((res) => {
+        if(res.data.data.changeLib) {
+          lib.id = res.data.data.changeLib;
+        }
+      });
+    },
+    deleteLibrarysOrDataSets({commit}, {libID, datasetID}) {
+      if(libID) {
+        this.state.oldLibrarys.splice(this.state.oldLibrarys.findIndex(x => parseInt(x.id) === libID), 1)
+        commit('changeDialogLibrary',{ boolCreateSetting: false });
+      }
+
+      axios.post('http://localhost:4000', {
+        query: `
+          mutation DeleteLibrarysOtDataSets($libID: Int, $datasetID: [Int])  {
+            deleteLibrarysOrDataSets(libID: $libID, datasetID: $datasetID)
+          }
+        `,
+        variables: {
+          libID,
+          datasetID
+        }
       });
     },
 

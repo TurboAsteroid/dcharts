@@ -1,4 +1,4 @@
- type Query {
+type Query {
     getLibrarysList: [LibrarysList]
     getLibrarys(LibID: [Int]): [Librarys]
 
@@ -11,7 +11,8 @@
     getLibraryTree: [libraryTree]
 }
 type Mutation {
-    changeLib(library: inputLibrary) : String
+    changeLib(library: inputLibrary) : Int
+    deleteLibrarysOrDataSets(libID: Int, datasetID: [Int]) : String
     # changeLinkLib(library: inputLibrary) : String
 
 

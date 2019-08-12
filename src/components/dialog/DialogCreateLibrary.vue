@@ -6,114 +6,47 @@
     >
         <v-card>
             <v-card-title>
-                <!-- <v-layout row align-center v-show="create">
-                    <v-flex xs8>
-                        <v-text-field
-                        label="Имя библиотеки"
-                        v-model="currentLibrary.name"
-                        ></v-text-field>
-                    </v-flex>
-                    <v-flex xs2>
-                        <v-tooltip bottom>
-                            <template v-slot:activator="{ on }">
-                                <v-btn fab dark small color="red" @click="cancel()" v-on="on">
-                                    <v-icon dark>close</v-icon>
-                                </v-btn>
-                            </template>
-                            <span>Отменить</span>
-                        </v-tooltip>
-                    </v-flex>
-                    <v-flex xs2>
-                        <v-tooltip bottom>
-                            <template v-slot:activator="{ on }">
-                                <v-btn fab dark small color="success" @click="createLib()" v-on="on">
-                                    <v-icon dark >done</v-icon>
-                                </v-btn>
-                            </template>
-                            <span>Сохранить</span>
-                        </v-tooltip>
-                    </v-flex>
-                </v-layout> -->
                 <v-layout row align-center >
-                    <v-flex xs5>
+                    <v-flex xs6>
                         <v-text-field
                         label="Имя библиотеки"
                         v-model="currentLibrary.name"
                         ></v-text-field>
                     </v-flex>
-                    <!-- <v-flex xs7 v-if="setting"> -->
-                        <v-layout row v-if="setting">
-                        <!-- <span > -->
-                            <v-flex xs12>
-                                
-                            <!-- </v-flex>
-                            <v-flex xs> -->
-                                <v-btn outline dark small color="red" @click="''">
+                    <v-flex xs6 v-if="setting">
+                        <v-layout row justify-end align-center>
+                            <v-flex xs5 v-if="!currentLibrary.source">
+                                <v-btn outline dark small color="red" @click="deleteLib()">
                                     Удалить библиотеку
                                 </v-btn>
-                            <!-- </v-flex>
-                            <v-flex xs> -->
+                            </v-flex>
+                            <v-flex xs5>
                                 <v-btn outline dark small color="success" @click="saveChangeLib()">
                                     Сохранить библиотеку
                                 </v-btn>
-                                <v-btn flat fab outline dark small color="grey" @click="cancel()">
+                            </v-flex>
+                            <v-flex ml-3 xs2>
+                                <v-btn fab outline dark small color="grey" @click="cancel()">
                                     <v-icon>close</v-icon>
                                 </v-btn>
                             </v-flex>
-                            <!-- </span> -->
                         </v-layout>
-                    <!-- </v-flex> -->
-                    <!-- <v-flex xs7 v-else-if="create"> -->
-                        <v-layout row justify-end v-if="create">
-                            <v-flex xs12>
-                                <v-btn outline dark small color="info" @click="cancel()">
-                                    Отменить
-                                </v-btn>
-                            <!-- </v-flex>
-                            <v-flex> -->
-                                <v-btn outline dark small color="success" @click="''">
+                    </v-flex>
+                    <v-flex xs6 v-else-if="create">
+                        <v-layout row justify-end align-center>
+                            
+                            <v-flex xs5>
+                                <v-btn outline dark small color="success" @click="createLib()">
                                     Создать библиотеку
                                 </v-btn>
                             </v-flex>
+                            <v-flex xs2>
+                                <v-btn fab outline dark small color="grey" @click="cancel()">
+                                    <v-icon>close</v-icon>
+                                </v-btn>
+                            </v-flex>
                         </v-layout>
-                    <!-- </v-flex> -->
-                    <!-- <v-flex xs1 ml-4>
-                        <v-tooltip bottom>
-                            <template v-slot:activator="{ on }">
-                                <v-btn outline dark small color="info" @click="cancel()" v-on="on">
-                                    Отменить
-                                </v-btn>
-                            </template>
-                        </v-tooltip>
-                    </!-->
-                    <!-- <v-flex xs2 ml-4 v-if="setting">
-                        <v-tooltip bottom>
-                            <template v-slot:activator="{ on }">
-                                <v-btn outline dark small color="red" @click="''" v-on="on">
-                                    Удалить библиотеку
-                                </v-btn>
-                            </template>
-                        </v-tooltip>
-                    </v-flex> -->
-                    <!-- <v-flex xs1></v-flex> -->
-                    <!-- <v-flex xs2 ml-4 v-if="setting">
-                        <v-tooltip bottom>
-                            <template v-slot:activator="{ on }">
-                                <v-btn outline dark small color="success" @click="saveChangeLib()" v-on="on">
-                                    Сохранить библиотеку
-                                </v-btn>
-                            </template>
-                        </v-tooltip>
                     </v-flex>
-                    <v-flex xs2 ml-4 v-if="create">
-                        <v-tooltip bottom>
-                            <template v-slot:activator="{ on }">
-                                <v-btn outline dark small color="success" @click="saveChangeLib()" v-on="on">
-                                    Создать библиотеку
-                                </v-btn>
-                            </template>
-                        </v-tooltip>
-                    </v-flex>  -->
                 </v-layout>
             </v-card-title>
 
@@ -146,10 +79,10 @@
                                     open-all
                                     activatable
                                 >
-                                <template slot="label" slot-scope="{ item }">
-                                    <div class="link" @click="currentItem(item)">{{ item.name }}</div>
-                                    <v-divider></v-divider>
-                                </template>
+                                    <template slot="label" slot-scope="{ item }">
+                                        <div class="link" @click="currentItem(item)">{{ item.name }}</div>
+                                        <v-divider></v-divider>
+                                    </template>
                                 <!-- <template v-slot:append="{ item }" >
                                     <v-btn flat fab dark small color="red" @click="''" v-on="on">
                                         <v-icon dark>delete</v-icon>
@@ -169,8 +102,9 @@
                                             label="Имя набора данных"
                                             v-model="currentDataSet.name"
                                         >
-                                    </v-text-field>
+                                        </v-text-field>
                                     </v-flex>
+                                    <v-flex xs1></v-flex>
                                     <v-flex xs1>
                                         <v-tooltip bottom>
                                             <template v-slot:activator="{ on }">
@@ -179,16 +113,6 @@
                                                 </v-btn>
                                             </template>
                                             <span>Удалить набор</span>
-                                        </v-tooltip>
-                                    </v-flex>
-                                    <v-flex xs1 v-if="create">
-                                        <v-tooltip bottom>
-                                            <template v-slot:activator="{ on }">
-                                                <v-btn outline fab dark small color="success" @click="''" v-on="on">
-                                                    <v-icon dark >done</v-icon>
-                                                </v-btn>
-                                            </template>
-                                            <span>Сохранить</span>
                                         </v-tooltip>
                                     </v-flex>
                                 </v-toolbar>
@@ -214,9 +138,11 @@
                                 >
                                     <v-card flat>
                                         <v-divider></v-divider>
+                                        
                                         <v-card-text>
                                             
                                             <span v-if="item === items[0]  && currentDataSet.val1">
+                                                
                                                 <v-layout row>
                                                     <v-flex xs6>
                                                         <v-text-field
@@ -235,29 +161,39 @@
                                                         ></v-text-field>
                                                     </v-flex>
                                                 </v-layout>
-                                                <v-layout row
-                                                    v-for="(it, j) in currentDataSet.data"
-                                                    :key="j + 'item'">
-                                                    <v-flex xs6>
-                                                        <v-text-field
-                                                            v-model.number="currentDataSet.data[j]"
-                                                            mask="#############"
-                                                            label="Значение"
-                                                        ></v-text-field>
+                                                <v-divider></v-divider>
+                                                <v-layout class="maxHeight">
+                                                    <v-flex xs12>
+                                                        <!-- <transition-group name="item" tag="div" class="items"> -->
+                                                        <v-layout row
+                                                            v-for="(it, j) in currentDataSet.data"
+                                                            :key="j + 'item'"
+                                                        >
+                                                            <v-flex xs6>
+                                                                <v-text-field
+                                                                    v-model.number="currentDataSet.data[j]"
+                                                                    mask="#############"
+                                                                    label="Значение"
+                                                                ></v-text-field>
+                                                            </v-flex>
+                                                            <v-flex xs6 ml-2>
+                                                                <v-text-field
+                                                                    v-model="currentDataSet.labels[j]"
+                                                                    mask="##.##.##"
+                                                                    label="Дата!?"
+                                                                ></v-text-field>
+                                                            </v-flex>
+                                                            <!-- <v-flex xs1> -->
+                                                                <v-btn fab flat dark small color="red" @click="removeDataValue(j)">
+                                                                    <v-icon dark>close</v-icon>
+                                                                </v-btn>
+                                                            <!-- </v-flex> -->
+                                                        </v-layout>
+                                                        <!-- </transition-group> -->
                                                     </v-flex>
-                                                    <v-flex xs6 ml-2>
-                                                        <v-text-field
-                                                            v-model="currentDataSet.labels[j]"
-                                                            mask="##.##.##"
-                                                            label="Дата!?"
-                                                        ></v-text-field>
-                                                    </v-flex>
-                                                    <!-- <v-flex xs1> -->
-                                                        <v-btn fab flat dark small color="red" @click="removeDataValue(j)">
-                                                            <v-icon dark>close</v-icon>
-                                                        </v-btn>
-                                                    <!-- </v-flex> -->
+                                                
                                                 </v-layout>
+                                                
                                                 <v-divider></v-divider>
                                                 <v-layout row justify-center v-if="!currentDataSet.link">
                                                     <v-btn outline @click="addDataValue()" color="grey">Добавить значение</v-btn>
@@ -267,8 +203,8 @@
                                             <span v-else-if="item === items[1]">
                                                 <v-layout row>
                                                     <v-flex xs12>
-                                                        <v-list>
-                                                            <v-list-tile @click="''" v-for="(indicator, idx) in indicators" :key="idx">
+                                                        <v-list v-for="(indicator, idx) in indicators" :key="idx">
+                                                            <v-list-tile @click="''" >
                                                                 <v-list-tile-action>
                                                                     <v-checkbox v-model="selected" :value="indicator" color="info"></v-checkbox>
                                                                 </v-list-tile-action>
@@ -281,11 +217,14 @@
                                                                 <v-btn fab flat dark small color="grey" @click="''">
                                                                     <v-icon dark>close</v-icon>
                                                                 </v-btn>
+                                                                
                                                             </v-list-tile>
+                                                            <v-divider></v-divider>
                                                         </v-list>
                                                     </v-flex>  
                                                 </v-layout>
                                             </span>
+                                        
                                             
                                         </v-card-text>
                                     </v-card>
@@ -344,7 +283,6 @@
                                 </v-layout>
                             </template>
                             <v-divider></v-divider>
-
                             <v-container>
                                 <v-layout row>
                                     <v-flex xs6>
@@ -414,6 +352,7 @@ export default {
             },
         ],
         currentDataSet: {},
+        deleteDataSetsID: [],
         boolSetting: false,
         tab: null,
         items: ['Настройка значений', 'Показатели']
@@ -433,27 +372,35 @@ export default {
         },
         cancel() {
             this.currentDataSet = {}
+            this.deleteDataSetsID = []
             this.$store.commit('changeDialogLibrary',{ boolCreateSetting: false })
         },
         createLib() {
             this.currentDataSet = {}
-            if(this.currentLibrary.name) {
-                this.$store.commit('changeDialogLibrary',{ boolCreateSetting: false, newLibrary: this.currentLibrary })
+            // if(this.currentLibrary.name) {
+            //     this.$store.commit('changeDialogLibrary',{ boolCreateSetting: false, newLibrary: this.currentLibrary })
+            // }
+            if(this.currentLibrary.name){
+                this.$store.dispatch('changeLibrarys', {
+                    library: this.currentLibrary
+                })
             }
         },
         deleteLib() {
-            this.currentDataSet = null
+            this.currentDataSet = {}
             this.$store.state.setting = false
-            // console.log(this.currentLibrary)
-            this.$store.commit('changeDialogLibrary',{ boolCreateSetting: false , deleteLibrary: this.currentLibrary})
+            this.$store.dispatch('deleteLibrarysOrDataSets', {libID: parseInt(this.currentLibrary.id)})
         },
         saveChangeLib() {
             this.currentDataSet = {}
             this.$store.state.setting = false
-            // this.$store.commit('changeDialogLibrary',{ boolCreateSetting: false, changeLibrary: this.currentLibrary })
             this.$store.dispatch('changeLibrarys', {
                 library: this.currentLibrary
             })
+            if(this.deleteDataSetsID.length) {
+                this.$store.dispatch('deleteLibrarysOrDataSets', {datasetID: this.deleteDataSetsID})
+                this.deleteDataSetsID = []
+            }
         },
         addDataSet() {
             let idx = this.currentLibrary.dataSets.push({
@@ -478,7 +425,13 @@ export default {
             this.currentDataSet = this.currentLibrary.dataSets[idx - 1]
         },
         deleteDataSet() {     
-            this.currentLibrary.dataSets.splice(this.currentLibrary.dataSets.indexOf(x => x.name === this.currentDataSet.name),1)
+            this.currentLibrary.dataSets.splice(this.currentLibrary.dataSets.findIndex(x => x.id === this.currentDataSet.id), 1)
+            // console.log(this.currentDataSet)
+            if(this.currentDataSet.datasetID === null) {
+                this.deleteDataSetsID.push(parseInt(this.currentDataSet.id))
+            } else if (this.currentDataSet.datasetID !== 0) {
+                this.deleteDataSetsID.push(parseInt(this.currentDataSet.datasetID))
+            }
             this.currentDataSet = {}
         },
         addDataValue() {
@@ -505,4 +458,18 @@ export default {
 </script>
 
 <style>
+.maxHeight{
+    max-height: 440px;
+    overflow-y: auto;
+}
+/* .item-enter-active,
+.item-leave-active {
+  transition: height .5s;
+}
+.item-enter,
+.item-leave-to {
+  height: 0;
+  margin: 0;
+  border: 0;
+} */
 </style>

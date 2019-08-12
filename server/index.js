@@ -43,6 +43,8 @@ const resolvers = {
                         GROUP BY libDS.id
                     `);
                     let data = []
+                    console.log(dataSetLib)
+
                     for(let o of dataSetLib) {
                         if (o.id != 0) {
                             data.push({
@@ -61,6 +63,7 @@ const resolvers = {
                             });
                         }
                     }
+                    console.log(data)
                     return data;
                 } else if(parent.source) {
                     const [linkTree] = await connect.execute(`
