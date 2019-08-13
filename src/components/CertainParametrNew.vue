@@ -15,7 +15,7 @@
               <template slot="label" slot-scope="{ item }">
                   <router-link
                       tag="div"
-                      :to="{ path: $route.path + '/' + item.id, query: {
+                      :to="{ path: '/report/' + item.id, query: {
                         obj: item
                       }}" 
                       class="link">

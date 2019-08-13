@@ -384,7 +384,7 @@ export default {
         currentDataSet: {},
         deleteDataSetsID: [],
         boolSetting: false,
-        tab: 1,
+        tab: null,
         tabIn: 0,
         items: ['Настройка значений', ' Настройка Показателей'],
         itemsIn: ['Выбор', 'Создание']
@@ -405,6 +405,7 @@ export default {
         cancel() {
             this.currentDataSet = {}
             this.deleteDataSetsID = []
+            this.tab = null
             this.$store.state.dialogSetting ? this.$store.commit('changeDialogLibrary',{ boolSetting: false})
              : this.$store.commit('changeDialogLibrary',{ boolCreate: false })
             // this.$store.commit('changeDialogLibrary',{ boolSetting: false, boolCreate: false })

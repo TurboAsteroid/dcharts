@@ -30,6 +30,14 @@ export default new Vuex.Store({
     librarysList:[],
     librarys:[],
     oldLibrarys:[], // все выбранные библиотеки
+
+    report:{
+      id: 0,
+      data:[],
+      name:'Библиотеки',
+      children:[]
+    },
+    oldReport:[],
     
   },
   mutations: {
@@ -107,6 +115,10 @@ export default new Vuex.Store({
     librarys: (state, data) => {
       state.librarys = data;
     },
+    report (state, data) {
+      state.report = data;
+    }
+
   },
   actions: {
     getActiveLibrarys({commit}) {
@@ -170,7 +182,7 @@ export default new Vuex.Store({
         }
       });
     },
-    getLibrarys({commit}, {selectedLib, currentLib}) {
+    getLibrarys({commit}, {currentLib, boolTree}) {
       let LibID = !currentLib.source ? [currentLib.id] : null,
           linkLibID = currentLib.source ? [currentLib.id] : null;
 
@@ -249,14 +261,23 @@ export default new Vuex.Store({
       }).then(res => {
         let [createdlibs, linkLibs] = [res.data.data.createdLib, res.data.data.linksLib];
         if(createdlibs) {
-          console.log(createdlibs);
-          this.state.currentLibrary.dataSets = createdlibs[0].dataSets;
+          if(boolTree === undefined) {
+            // console.log('dfgf');
+            this.state.currentLibrary.dataSets = createdlibs[0].dataSets;
+          } else {
+            // console.log('createdlibs',createdlibs);
+            currentLib.dataSets = createdlibs[0].dataSets;
+          }
           // this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => parseInt(x.id) === parseInt(createdlibs[0].id))]
           //   .dataSets = createdlibs[0].dataSets;
         }
         if(linkLibs) {
-          console.log('linkLibs', linkLibs);
-          this.state.currentLibrary.dataSets = linkLibs[0].dataSets;
+          if(boolTree === undefined) {
+            this.state.currentLibrary.dataSets = linkLibs[0].dataSets;
+          } else {
+            // console.log('linkLibs', linkLibs);
+            currentLib.dataSets = linkLibs[0].dataSets;
+          }
           // this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => parseInt(x.id) === parseInt(linkLibs[0].id))]
           //   .dataSets = linkLibs[0].dataSets;
         }
@@ -312,232 +333,6 @@ export default new Vuex.Store({
         }
       });
     },
-
-
-///////////////////////////////////////
-    // getLibrary({commit}) {
-    //   axios.post('http://localhost:4000', {
-    //     query: 
-    //       `query {
-    //           getLibrary {
-    //             id
-    //             data
-    //             name
-    //             labels
-    //             val1 {
-    //               value
-    //               label
-    //             }
-    //             val2 {
-    //               value
-    //               label
-    //             }
-    //             link
-    //           }
-    //       }`
-    //   }).then(res => {
-    //         let library = res.data.data.getLibrary
-    //         this.state.oldLibrary = JSON.parse(JSON.stringify(library));
-    //         commit('library', library)
-    //       }
-    //     )  
-    // },
-    // setLibrary({commit}, {library, changeLibrary}) {
-    //   console.log('chl',changeLibrary);
-    //   this.state.oldLibrary = JSON.parse(JSON.stringify(library));
-    //   axios.post('http://localhost:4000', {
-    //     query:
-    //       `mutation ChangeDatabase($update: [libraryInput]!, $create: [libraryInput]!, $delete: [Int]!) {
-    //         updateNote(data: $update) {
-    //           id
-    //         }
-    //         createNewNote(data: $create) {
-    //           id
-    //         }
-    //         deleteNote(data: $delete) {
-    //           id
-    //         }
-    //       }`,
-    //       variables:{
-    //         update: changeLibrary.update,
-    //         create: changeLibrary.create,
-    //         delete: changeLibrary.delete.map(e => JSON.parse(e))
-    //       }
-    //   });
-    //   // console.log('library:', library)
-    //   commit('library', library);
-    // },
-    // getTree({commit}, treeId = 1) {
-    //   // if(treeId) {
-    //   // }
-    //   axios.post('http://localhost:4000', {
-    //     query: 
-    //       `query GetTree($treeId: Int!){
-    //         getTree(treeId: $treeId) {
-    //           id
-    //           name
-    //           data
-    //           children{
-    //             ...lib
-    //             children{
-    //               ...lib
-    //               children{
-    //                 ...lib
-    //                 children{
-    //                   ...lib
-    //                   children{
-    //                     ...lib
-    //                     children{
-    //                       ...lib
-    //                       children{
-    //                         ...lib
-    //                       }
-    //                     }
-    //                   }
-    //                 }
-    //               }
-    //             }
-    //           }
-    //         }
-    //     }
-    //     fragment lib on Library{
-    //       id
-    //       data
-    //       name
-    //       labels
-    //       link
-    //       val1{
-    //         value
-    //         label
-    //       }
-    //       val2{
-    //         value
-    //         label
-    //       }    
-    //     }`,
-    //     variables:{
-    //       treeId: parseInt(treeId)
-    //     }
-    //   }).then(res => {
-    //     let tree = res.data.data.getTree;
-    //     this.state.oldReport = JSON.parse(JSON.stringify(tree));
-    //     commit('report', tree)
-    //   });
-    // },
-    // setTree({commit}, {tree, boolDelete = false, deleteTree = []}) {
-    //   let boolAddTree = false,
-    //       boolUpdateTree = true,
-    //       boolDeleteTree = false,
-    //       currentTree = this.state.currentTree,
-    //       deleteTrees = [];
-
-    //   if(boolDelete) {
-    //     deleteTrees = deleteTree;
-    //     boolDeleteTree = true;
-    //     boolUpdateTree = false;
-    //   }
-    //   if(!boolDelete && !this.state.libraryTree.some(x => x.id === this.state.currentTree.id)) {
-    //     boolAddTree = true;
-    //     boolUpdateTree = false;
-    //   }
-    //   if(this.state.currentTree.title) {
-    //     if(tree) {
-    //       this.state.oldReport = JSON.parse(JSON.stringify(tree));
-    //     }
-    //     axios.post('http://localhost:4000', {
-    //       query:`
-    //         mutation ChangeTree (
-    //           $tree: treeInput, 
-    //           $currentTree: libraryTreeInput,
-    //           $deleteTrees: [libraryTreeInput]
-    //           $boolAddTree: Boolean!,
-    //           $boolUpdateTree: Boolean!,
-    //           $boolDeleteTree: Boolean!
-    //         ) {
-    //             addLibraryTree (tree: $currentTree) @include(if: $boolAddTree)
-    //             updateLibraryTree (tree: $currentTree) @include(if: $boolUpdateTree)
-    //             deleteLibraryTree (trees: $deleteTrees) @include(if: $boolDeleteTree)
-    //             changeTree(tree: $tree, currentTree: $currentTree) @skip(if: $boolDeleteTree)
-    //         }
-    //       `,
-    //       variables:{
-    //         tree,
-    //         currentTree,
-    //         deleteTrees,
-    //         boolAddTree,
-    //         boolUpdateTree,
-    //         boolDeleteTree
-    //       }
-    //     });
-    //     commit('report', tree);
-    //   }
-    // },
-    // getDataByParametr({}, report) {
-    //   let links = sortLinks(report),
-    //       param = links.find(x => x.linkSource === "Salary"),
-    //       result = {};
-
-    //   if(links.length !== 0) {
-    //     axios.post('http://localhost:4000', {
-    //       query:` 
-    //         query GetData (
-    //           $salary: [String], 
-    //           $salaryBool: Boolean!
-    //         ){
-    //             getData (
-    //               salary: $salary, 
-    //               salaryBool: $salaryBool
-    //             ){
-    //                 getSalary(salary: $salary) @include(if: $salaryBool){
-    //                   id
-    //                   data
-    //                   labels
-    //                 }
-    //             }
-    //         }
-    //       `,
-    //       variables:{
-    //         salary: param.linkParametr,
-    //         salaryBool: links.some(x => x.linkSource === "Salary")
-    //       }
-    //     }).then(res => {
-    //       let addData = res.data.data.getData;
-    //       for(let o of Object.keys(addData)) {
-    //         result = addDataToReport(report, addData[o]);
-    //       }
-    //       this.state.report = result;
-    //     })
-    //   }
-      
-    // },
-    // getLibraryLink() {
-    //   axios.post('http://localhost:4000', {
-    //     query: 
-    //       `query {
-    //         getLibraryLink
-    //       }`
-    //   }).then(res => {
-    //       this.state.libraryLink = JSON.parse(res.data.data.getLibraryLink)
-    //     }
-    //   )  
-    // },
-    // getLibraryTree() {
-    //   axios.post('http://localhost:4000', {
-    //     query: 
-    //       `query {
-    //         getLibraryTree {
-    //           id
-    //           title
-    //           date
-    //         }
-    //       }`
-    //   }).then(res => {
-    //       let libTree = res.data.data.getLibraryTree
-    //       this.state.libraryTree = libTree
-    //       this.state.currentTree = libTree[libTree.length - 1]
-    //     }
-    //   )  
-    // }
   },
   getters: {
     oldLibrarys: state => state.oldLibrarys,

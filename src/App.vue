@@ -10,15 +10,16 @@
       <v-toolbar-items class="hidden-sm-and-down">
         <!-- <v-btn flat exact :to="{ name: 'index'}">
           Библиотека
-        </v-btn>
-        <v-btn flat exact :to="{ name: 'reportConfigurator'}" :disabled="active">
-          Создание отчёта
-        </v-btn>
-        <v-btn flat :to="{ path: '/secondPage'}" :disabled="active">
+        </v-btn> -->
+        
+        <!-- <v-btn flat :to="{ path: '/secondPage'}" :disabled="active">
           Отчёт
         </v-btn> -->
         <v-btn flat exact :to="{ path: '/'}">
           Библиотеки
+        </v-btn>
+        <v-btn flat exact :to="{ name: 'reportConfigurator'}" :disabled="active">
+          Создание отчёта
         </v-btn>
         <v-btn flat :to="{ path: '/report'}" :disabled="active">
           Отчёт

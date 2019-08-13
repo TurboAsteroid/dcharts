@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Index from './components/Index.vue';
-import CertainParameter from './components/CertainParameter.vue';
+// import Index from './components/Index.vue';
+// import CertainParameter from './components/CertainParameter.vue';
 import ReportConfigurator from './components/ReportConfigurator.vue';
 
 import CertainParameterNew from './components/CertainParametrNew';
