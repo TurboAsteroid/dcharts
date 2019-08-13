@@ -39,7 +39,7 @@
                             <span class="headline">Выбор библиотек</span>
                           </v-flex>
                           <v-flex xs10 v-else-if="node && node.data.id !== 0">
-                            <span class="headline">Выбор наборов</span>
+                            <span class="headline">Набор: {{node.data.name}}</span>
                           </v-flex>
                           <v-flex xs2>
                               <v-tooltip bottom>
@@ -150,6 +150,9 @@ export default {
     selected: [],
     dialog: false,
     node: null,
+    currentChild: null,
+    child: [],
+    result:[]
   }),
   mounted () {
     // if (!this.$store.getters.library.length) {
@@ -171,10 +174,21 @@ export default {
       // if(evt.data.children) {
         this.dialog = true
         this.node = evt
-        if(this.node.data.dataSets) {
+        if(this.node.data.dataSets && this.node.data.hasOwnProperty('source') || !this.node.data.source && this.node.data.hasOwnProperty('source') ) {
+          console.log('dsf')
           this.$store.dispatch('getLibrarys', {currentLib: this.node.data, boolTree: true})
+        } else if(this.node.data.id !== 0 && !this.node.data.dataSets && this.node.data.link) {
+          for(let o of this.librarys) {
+            if (o.source) {
+              for(let i of o.dataSets) {
+                this.findCild(i);
+              }
+            }
+          }
+          this.node.data.dataSets = this.result
         }
         this.selected = []
+
         for (let i = 0; i < evt.data.children.length; i++) {
           let tmpNode = Object.assign({}, evt.data.children[i])
           delete tmpNode.children
@@ -182,6 +196,16 @@ export default {
         }
       // }
       
+    },
+    findCild(parent) {
+      if(parent.link === this.node.data.link) {
+        this.result = parent.children
+        return 0;
+      } else if (parent.children && parent.children.length) {
+        for(let o of parent.children) {
+          this.findCild(o);
+        }
+      }
     },
     ok () {
       this.dialog = false
@@ -203,6 +227,7 @@ export default {
           this.node.data.children.push(tmpNode)
         }
       }
+      this.selected = []
     },
     cancel () {
       this.dialog = false

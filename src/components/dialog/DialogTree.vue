@@ -2,7 +2,7 @@
     <v-dialog
         persistent
         v-model="$store.state.dialogTree"
-        max-width="600"
+        max-width="630"
     >
         <v-card>
             <v-card-title>
@@ -11,7 +11,7 @@
                         <span class="headline">Список отчетов</span>
                     </v-flex>
                     <v-flex xs2>
-                        <v-btn fab dark small color="red" @click="closeDialog()">
+                        <v-btn outline fab dark small color="red" @click="closeDialog()">
                             <v-icon dark>close</v-icon>
                         </v-btn>
                     </v-flex>
@@ -47,10 +47,10 @@
                     
                 </v-list>
             </v-card-text>
-            <v-layout row justify-end>
-                <v-flex xs3>
-                    <v-btn @click="addTree()" color="info">Новый отчет</v-btn>
-                </v-flex>
+            <v-layout row justify-center align-center>
+                <!-- <v-flex xs12> -->
+                    <v-btn outline dark @click="addTree()" color="info">Создать новый отчет</v-btn>
+                <!-- </v-flex> -->
             </v-layout>
         </v-card>
       </v-dialog>

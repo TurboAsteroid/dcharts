@@ -183,8 +183,8 @@ export default new Vuex.Store({
       });
     },
     getLibrarys({commit}, {currentLib, boolTree}) {
-      let LibID = !currentLib.source ? [currentLib.id] : null,
-          linkLibID = currentLib.source ? [currentLib.id] : null;
+      let LibID = !currentLib.source ? [parseInt(currentLib.id)] : null,
+          linkLibID = currentLib.source ? [parseInt(currentLib.id)] : null;
 
       axios.post('http://10.1.100.170:4000', {
         query:
@@ -260,26 +260,28 @@ export default new Vuex.Store({
           }
       }).then(res => {
         let [createdlibs, linkLibs] = [res.data.data.createdLib, res.data.data.linksLib];
-        if(createdlibs) {
+        if(createdlibs && createdlibs[0]) {
           if(boolTree === undefined) {
-            // console.log('dfgf');
             this.state.currentLibrary.dataSets = createdlibs[0].dataSets;
           } else {
-            // console.log('createdlibs',createdlibs);
-            currentLib.dataSets = createdlibs[0].dataSets;
+            // console.log(currentLib)
+            // console.log(createdlibs)
+
+            currentLib.dataSets = createdlibs[0].dataSets || [];
+            this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => parseInt(x.id) === parseInt(createdlibs[0].id))]
+            .dataSets = createdlibs[0].dataSets;
           }
-          // this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => parseInt(x.id) === parseInt(createdlibs[0].id))]
-          //   .dataSets = createdlibs[0].dataSets;
+          
         }
         if(linkLibs) {
           if(boolTree === undefined) {
             this.state.currentLibrary.dataSets = linkLibs[0].dataSets;
           } else {
-            // console.log('linkLibs', linkLibs);
             currentLib.dataSets = linkLibs[0].dataSets;
+            this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => parseInt(x.id) === parseInt(linkLibs[0].id))]
+            .dataSets = linkLibs[0].dataSets;
           }
-          // this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => parseInt(x.id) === parseInt(linkLibs[0].id))]
-          //   .dataSets = linkLibs[0].dataSets;
+          
         }
       });
     },
