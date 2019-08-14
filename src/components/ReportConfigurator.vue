@@ -183,38 +183,28 @@ export default {
       this.$store.dispatch('setTree', { tree: this.report })
     },
     onClick (evt) {
-      console.log(evt)
-      // if(evt.data.children) {
-        this.selected = []
-        this.dialog = true
-        this.node = evt
-        if((this.node.data.dataSets || !this.node.data.source) && this.node.data.hasOwnProperty('source')) {
-          // console.log('dsf')
-          this.$store.dispatch('getLibrarys', {currentLib: this.node.data, boolTree: true})
-        } else if(this.node.data.id !== 0 && !this.node.data.dataSets && this.node.data.link) {
-          
-          for(let o of this.librarys) {
-            if (o.source) {
-              for(let i of o.dataSets) {
-                this.findChild(i);
-              }
+      // console.log(evt)
+      this.selected = []
+      this.dialog = true
+      this.node = evt
+      if((this.node.data.dataSets || !this.node.data.source) && this.node.data.hasOwnProperty('source')) {
+        this.$store.dispatch('getLibrarys', {currentLib: this.node.data, boolTree: true})
+      } else if(this.node.data.id !== 0 && !this.node.data.dataSets && this.node.data.link) {
+        
+        for(let o of this.librarys) {
+          if (o.source) {
+            for(let i of o.dataSets) {
+              this.findChild(i);
             }
           }
-          this.node.data.dataSets = this.result
         }
+        this.node.data.dataSets = this.result
+      }
         
-      // if(this.node.data.children) {
-        for (let i = 0; i < this.node.data.children.length; i++) {
-          // let tmpNode = Object.assign({}, evt.data.children[i])
-          // delete tmpNode.children
-          // console.log(this.node.data.children[i])
-          let id = !this.node.data.children[i].datasetID ? this.node.data.children[i].id : JSON.stringify(this.node.data.children[i].datasetID)
-          // console.log(id)
-          this.selected.push(id)
-        }
-      // }
-        
-      // }
+      for (let i = 0; i < this.node.data.children.length; i++) {
+        let id = !this.node.data.children[i].datasetID ? this.node.data.children[i].id : JSON.stringify(this.node.data.children[i].datasetID)
+        this.selected.push(id)
+      }
       
     },
     findChild(parent) {
@@ -229,14 +219,12 @@ export default {
     },
     ok () {
       this.dialog = false
-      if(this.node.data.children) {
-        for (let i = 0; i < this.node.data.children.length; i++) {
-          if (!this.selected.find(function (element) {
-            return element.id === this.node.data.children[i].id
-          }, this)) {
-            this.node.data.children.splice(i, 1)
-            i--
-          }
+      for (let i = 0; i < this.node.data.children.length; i++) {
+        if (!this.selected.find(function (element) {
+          return element === this.node.data.children[i].id
+        }, this)) {
+          this.node.data.children.splice(i, 1)
+          i--
         }
       }
       
@@ -246,19 +234,14 @@ export default {
           return element.id === this.selected[i]
         }, this)
         if (!tmpEl) {
-          
-          
           if(this.node.data.id === 0) {
-            console.log(this.node.data)
             let tmpLib = Object.assign({}, this.librarys.find(x => x.id === this.selected[i]))
-            tmpLib.children = []
-            this.node.data.children.push(tmpLib)
+            if(!this.node.data.children.some(x => x.id === tmpLib.id)) {
+              tmpLib.children = []
+              this.node.data.children.push(tmpLib)
+            }
           } else {
-            // if(!this.node.data.hasOwnProperty('children')) {
-            //   this.node.data['children'] = []
-            // }
             let tmpNodeDataSets = Object.assign([], this.node.data.dataSets)
-            console.log(tmpNodeDataSets)
             let tmpNode = Object.assign({}, tmpNodeDataSets.find(x => {
               if(x.id === this.selected[i] || JSON.stringify(x.datasetID) === this.selected[i]) {
                 return x
@@ -284,13 +267,6 @@ export default {
     //   }
     // },
     report () {
-      // let report = {
-      //   id: 0,
-      //   name: 'Библиотеки',
-      //   children: []
-
-      //   // children: [...this.$store.state.oldLibrarys]
-      // }
       return this.$store.state.report
     },
     librarys() {
