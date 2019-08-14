@@ -268,11 +268,11 @@ export default new Vuex.Store({
           } else {
             // console.log(currentLib)
             // console.log(createdlibs)
-            for(let o of createdlibs[0].dataSets) {
-              o['children'] = [];
-            }
+            // for(let o of createdlibs[0].dataSets) {
+            //   o['children'] = [];
+            // }
             currentLib.dataSets = createdlibs[0].dataSets || [];
-            currentLib['children'] = []
+            // currentLib['children'] = []
             // console.log('current', currentLib)
             this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => parseInt(x.id) === parseInt(createdlibs[0].id))]
             .dataSets = createdlibs[0].dataSets;
