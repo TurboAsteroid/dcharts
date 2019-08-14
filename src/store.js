@@ -10,6 +10,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     selected: [],
+    selectedTreeElement:[],
     activeLib: [],
 
     dialogTree: false,
@@ -134,6 +135,7 @@ export default new Vuex.Store({
           }`
       }).then((res) => {
         let lib = res.data.data.getActiveLibrarys;
+        // this.state.oldLibrarys = 
         for(let o of lib) {
           o.id = parseInt(o.id);
           o["dataSets"] = [];
@@ -266,8 +268,12 @@ export default new Vuex.Store({
           } else {
             // console.log(currentLib)
             // console.log(createdlibs)
-
+            for(let o of createdlibs[0].dataSets) {
+              o['children'] = [];
+            }
             currentLib.dataSets = createdlibs[0].dataSets || [];
+            currentLib['children'] = []
+            // console.log('current', currentLib)
             this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => parseInt(x.id) === parseInt(createdlibs[0].id))]
             .dataSets = createdlibs[0].dataSets;
           }

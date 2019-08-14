@@ -72,7 +72,7 @@ export default {
         },
         addLib() {
             
-            console.log(this.selectedLib)
+            // console.log(this.selectedLib)
             // console.log(this.selected)
             this.$store.commit('changeDialogLibrary',{ boolAdd: false })
             this.$store.commit('addLibrarys')
@@ -86,6 +86,7 @@ export default {
     },
     computed: {
         selectedLib () {
+            // console.log('dsf')
             if(this.librarysList.length) {
                 return this.librarysList.filter(l => {
                     return l.active
