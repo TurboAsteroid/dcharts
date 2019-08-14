@@ -119,7 +119,7 @@
                                     <v-checkbox
                                         v-model="selected"
                                         :label="item.name"
-                                        :value="item.id"
+                                        :value="currentId(item)"
                                         color="info"
                                     ></v-checkbox>
                                   </v-list-tile-action>
@@ -170,6 +170,12 @@ export default {
     // this.$router.replace('/reportConfigurator')
   },
   methods: {
+    currentId(item) {
+      // console.log('i', item)
+      let id = !item.datasetID ? item.id : JSON.stringify(item.datasetID)
+      // console.log('id', parseInt(id))
+      return id
+    },
     goBackToLibrary() {
       this.$router.push('/');
     },
@@ -197,13 +203,16 @@ export default {
           this.node.data.dataSets = this.result
         }
         
-      if(this.node.data.children) {
-        for (let i = 0; i < evt.data.children.length; i++) {
+      // if(this.node.data.children) {
+        for (let i = 0; i < this.node.data.children.length; i++) {
           // let tmpNode = Object.assign({}, evt.data.children[i])
           // delete tmpNode.children
-          this.selected.push(evt.data.children[i].id)
+          // console.log(this.node.data.children[i])
+          let id = !this.node.data.children[i].datasetID ? this.node.data.children[i].id : JSON.stringify(this.node.data.children[i].datasetID)
+          // console.log(id)
+          this.selected.push(id)
         }
-      }
+      // }
         
       // }
       
@@ -222,39 +231,40 @@ export default {
       this.dialog = false
       if(this.node.data.children) {
         for (let i = 0; i < this.node.data.children.length; i++) {
-        if (!this.selected.find(function (element) {
-          return element.id === this.node.data.children[i].id
-        }, this)) {
-          this.node.data.children.splice(i, 1)
-          i--
+          if (!this.selected.find(function (element) {
+            return element.id === this.node.data.children[i].id
+          }, this)) {
+            this.node.data.children.splice(i, 1)
+            i--
+          }
         }
-      }
       }
       
       for (let i = 0; i < this.selected.length; i++) {
         let tmpEl
-        if(this.node.data.children) {
           tmpEl = this.node.data.children.find(function (element) {
           return element.id === this.selected[i]
         }, this)
-        }
-        
         if (!tmpEl) {
           
           
           if(this.node.data.id === 0) {
             console.log(this.node.data)
-
-            this.node.data.children.push(this.librarys.find(x => x.id === this.selected[i]))
+            let tmpLib = Object.assign({}, this.librarys.find(x => x.id === this.selected[i]))
+            tmpLib.children = []
+            this.node.data.children.push(tmpLib)
           } else {
             // if(!this.node.data.hasOwnProperty('children')) {
             //   this.node.data['children'] = []
             // }
             let tmpNodeDataSets = Object.assign([], this.node.data.dataSets)
-            // console.log(tmpNodeDataSets)
-            let tmpNode = Object.assign({}, tmpNodeDataSets.find(x => x.id === this.selected[i]))
-            // tmpNode.children = []
-            // console.log(tmpNode)
+            console.log(tmpNodeDataSets)
+            let tmpNode = Object.assign({}, tmpNodeDataSets.find(x => {
+              if(x.id === this.selected[i] || JSON.stringify(x.datasetID) === this.selected[i]) {
+                return x
+              }
+            }))
+            tmpNode.children = []
             this.node.data.children.push(tmpNode)
           }
         }
@@ -262,6 +272,7 @@ export default {
       this.selected = []
     },
     cancel () {
+      this.selected = []
       this.dialog = false
     },
     
