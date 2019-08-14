@@ -82,7 +82,7 @@
                                   <v-checkbox
                                       v-model="selected"
                                       :label="item.name"
-                                      :value="item"
+                                      :value="item.id"
                                       color="info"
                                   ></v-checkbox>
                                 </v-list-tile-action>
@@ -119,7 +119,7 @@
                                     <v-checkbox
                                         v-model="selected"
                                         :label="item.name"
-                                        :value="item"
+                                        :value="item.id"
                                         color="info"
                                     ></v-checkbox>
                                   </v-list-tile-action>
@@ -148,6 +148,7 @@ export default {
   },
   data: () => ({
     selected: [],
+    
     dialog: false,
     node: null,
     currentChild: null,
@@ -155,12 +156,18 @@ export default {
     result:[]
   }),
   mounted () {
+    // if(this.$store.state.oldLibrarys) {
+    // this.$store.state.oldLibrarys = []
+
+    // }
+    // this.$store.dispatch('getActiveLibrarys');
     // if (!this.$store.getters.library.length) {
     //   this.$router.replace('/')
     // }
     // if(this.$store.state.currentTree.id) {
     //   this.$store.dispatch('getTree', this.$store.state.currentTree.id)
     // }
+    // this.$router.replace('/reportConfigurator')
   },
   methods: {
     goBackToLibrary() {
@@ -172,44 +179,49 @@ export default {
     onClick (evt) {
       console.log(evt)
       // if(evt.data.children) {
+        this.selected = []
         this.dialog = true
         this.node = evt
-        if(this.node.data.dataSets && this.node.data.hasOwnProperty('source') || !this.node.data.source && this.node.data.hasOwnProperty('source') ) {
-          console.log('dsf')
+        if((this.node.data.dataSets || !this.node.data.source) && this.node.data.hasOwnProperty('source')) {
+          // console.log('dsf')
           this.$store.dispatch('getLibrarys', {currentLib: this.node.data, boolTree: true})
         } else if(this.node.data.id !== 0 && !this.node.data.dataSets && this.node.data.link) {
+          
           for(let o of this.librarys) {
             if (o.source) {
               for(let i of o.dataSets) {
-                this.findCild(i);
+                this.findChild(i);
               }
             }
           }
           this.node.data.dataSets = this.result
         }
-        this.selected = []
-
+        
+      if(this.node.data.children) {
         for (let i = 0; i < evt.data.children.length; i++) {
-          let tmpNode = Object.assign({}, evt.data.children[i])
-          delete tmpNode.children
-          this.selected.push(tmpNode)
+          // let tmpNode = Object.assign({}, evt.data.children[i])
+          // delete tmpNode.children
+          this.selected.push(evt.data.children[i].id)
         }
+      }
+        
       // }
       
     },
-    findCild(parent) {
+    findChild(parent) {
       if(parent.link === this.node.data.link) {
         this.result = parent.children
         return 0;
       } else if (parent.children && parent.children.length) {
         for(let o of parent.children) {
-          this.findCild(o);
+          this.findChild(o);
         }
       }
     },
     ok () {
       this.dialog = false
-      for (let i = 0; i < this.node.data.children.length; i++) {
+      if(this.node.data.children) {
+        for (let i = 0; i < this.node.data.children.length; i++) {
         if (!this.selected.find(function (element) {
           return element.id === this.node.data.children[i].id
         }, this)) {
@@ -217,14 +229,34 @@ export default {
           i--
         }
       }
+      }
+      
       for (let i = 0; i < this.selected.length; i++) {
-        let tmpEl = this.node.data.children.find(function (element) {
-          return element.id === this.selected[i].id
+        let tmpEl
+        if(this.node.data.children) {
+          tmpEl = this.node.data.children.find(function (element) {
+          return element.id === this.selected[i]
         }, this)
+        }
+        
         if (!tmpEl) {
-          let tmpNode = Object.assign({}, this.selected[i])
-          tmpNode.children = []
-          this.node.data.children.push(tmpNode)
+          
+          
+          if(this.node.data.id === 0) {
+            console.log(this.node.data)
+
+            this.node.data.children.push(this.librarys.find(x => x.id === this.selected[i]))
+          } else {
+            // if(!this.node.data.hasOwnProperty('children')) {
+            //   this.node.data['children'] = []
+            // }
+            let tmpNodeDataSets = Object.assign([], this.node.data.dataSets)
+            // console.log(tmpNodeDataSets)
+            let tmpNode = Object.assign({}, tmpNodeDataSets.find(x => x.id === this.selected[i]))
+            // tmpNode.children = []
+            // console.log(tmpNode)
+            this.node.data.children.push(tmpNode)
+          }
         }
       }
       this.selected = []
@@ -252,7 +284,7 @@ export default {
     },
     librarys() {
       return this.$store.getters.oldLibrarys
-    }
+    },
   }
 }
 </script>

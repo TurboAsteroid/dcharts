@@ -196,7 +196,7 @@
                                             </span>
 
                                             <span v-else-if="item === items[1]">
-                                                <!-- <v-layout row >
+                                                <v-layout row >
                                                     <v-flex xs12 >
                                                         <v-tabs
                                                             v-model="tabIn"
@@ -245,7 +245,7 @@
                                                                             </v-layout>
                                                                         </span>
                                                                         <span v-else-if="it === itemsIn[1]">
-                                                                            <v-layout row>
+                                                                            <!-- <v-layout row>
                                                                                 <v-flex xs6>
                                                                                     <v-text-field
                                                                                         v-model.number="currentDataSet.val1.value"
@@ -290,19 +290,19 @@
                                                                                     </v-layout>
                                                                                 </v-flex>
                                                                             
-                                                                            </v-layout>
+                                                                            </v-layout> -->
                                                                             
-                                                                            <v-divider v-if="!currentDataSet.link"></v-divider>
+                                                                            <!-- <v-divider v-if="!currentDataSet.link"></v-divider>
                                                                             <v-layout row justify-center v-if="!currentDataSet.link">
                                                                                 <v-btn outline @click="addDataValue()" color="info">Добавить значение</v-btn>
-                                                                            </v-layout>
+                                                                            </v-layout> -->
                                                                         </span>
                                                             </v-tab-item>
                                                         </v-tabs-items>
                                                     </v-flex>
-                                                </v-layout> -->
+                                                </v-layout>
 
-                                                <v-layout row>
+                                                <!-- <v-layout row>
                                                     <v-flex xs12>
                                                         <v-list v-for="(indicator, idx) in indicators" :key="idx">
                                                             <v-list-tile @click="''" >
@@ -323,7 +323,7 @@
                                                             <v-divider></v-divider>
                                                         </v-list>
                                                     </v-flex>  
-                                                </v-layout>
+                                                </v-layout> -->
                                             </span>
                                         </v-card-text>
                                     </v-card>
