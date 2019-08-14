@@ -33,6 +33,7 @@
                                     <v-text-field
                                         :value = obj.name
                                         readonly
+                                        class="title"
                                     ></v-text-field>
                                 </v-flex>
                             </v-layout>

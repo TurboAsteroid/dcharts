@@ -4,7 +4,7 @@
       <v-toolbar-title class="headline text-uppercase">
         <span>d</span>
         <span class="font-weight-light">Charts</span>:{{$router.currentRoute.meta.nameRu}}
-          <span style="font-size: 10px">v0.0.1</span>
+          <span style="font-size: 10px">v0.0.2</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">

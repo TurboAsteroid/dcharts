@@ -31,34 +31,45 @@
         
         <!-- модальное окно выбора библиотеки -->
         <v-layout row justify-center>
-            <v-dialog v-model="dialog" persistent max-width="580">
+            <v-dialog v-model="dialog" persistent max-width="700">
                 <v-card>
                     <v-card-title>
                       <v-layout row align-center>
                           <v-flex xs10 v-if="node && node.data.id === 0">
-                            <span class="headline">Выбор библиотек</span>
+                            <v-text-field
+                              value = "Выбор библиотек"
+                              label="Набор данных"
+                              readonly
+                              class="headline"
+                            ></v-text-field>
+                            <!-- <span class="headline">Выбор библиотек</span> -->
                           </v-flex>
                           <v-flex xs10 v-else-if="node && node.data.id !== 0">
-                            <span class="headline">Набор: {{node.data.name}}</span>
+                            <v-text-field
+                              :value = node.data.name
+                              label="Набор данных"
+                              readonly
+                              class="headline"
+                            ></v-text-field>
                           </v-flex>
-                          <v-flex xs2>
-                              <v-tooltip bottom>
-                                  <template v-slot:activator="{ on }">
-                                      <v-btn flat outline fab dark small v-on="on" color="red" @click="cancel">
-                                          <v-icon dark>close</v-icon>
-                                      </v-btn>
-                                  </template>
-                            <span>Отмена</span>
-                          </v-tooltip>
+                        <v-flex xs3>
+                          <v-btn flat outline dark small color="info" @click="selectAll">
+                              Выбрать все
+                          </v-btn>
                         </v-flex>
-                        <v-flex xs2>
-                              <v-tooltip bottom>
-                                  <template v-slot:activator="{ on }">
-                                      <v-btn flat outline fab dark small v-on="on" color="success" @click="ok">
-                                          <v-icon dark>done</v-icon>
-                                      </v-btn>
-                                  </template>
-                            <span>ОК</span>
+                        <v-flex xs4>
+                          <v-btn flat outline  dark small color="success" @click="ok">
+                            Изменить отчет
+                          </v-btn>
+                        </v-flex>
+                        <v-flex xs1>
+                          <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-btn flat outline fab dark small v-on="on" color="grey" @click="cancel">
+                                    <v-icon dark>close</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Отмена</span>
                           </v-tooltip>
                         </v-flex>
                       </v-layout>
@@ -66,11 +77,48 @@
 
                   <v-divider/>
 
-                  <v-card-text>
-                     <v-list two-line>
-                       <span v-if="node && node.data.id === 0">
-                         <v-layout row 
-                          v-for="(item, index) in librarys"
+                  <v-card-text  max-width="500">
+                    <v-list two-line>
+                      <span v-if="node && node.data.id === 0">
+                        <v-layout row 
+                        v-for="(item, index) in librarys"
+                        :key="index"
+                        align-center
+                        >
+                          <v-flex xs12 >
+                            <v-list-tile
+                                @click="''"
+                            >
+                              <v-list-tile-action>
+                                <v-checkbox
+                                    v-model="selected"
+                                    :label="item.name"
+                                    :value="item.id"
+                                    color="info"
+                                ></v-checkbox>
+                              </v-list-tile-action>
+                            </v-list-tile>
+                            <v-divider v-if="index != librarys.length - 1"></v-divider>
+                          </v-flex>
+                      </v-layout>
+                      </span>
+
+                      <span v-else-if="node && node.data.dataSets">
+                        <!-- <v-treeview
+                          :items="node.data.dataSets"
+
+                        >
+                        <template v-slot:label="{ item }">
+                            <v-checkbox
+                              v-model="selected"
+                              :label="item.name"
+                              :value="item"
+                              color="info"
+                            ></v-checkbox>
+                        </template>
+                      </v-treeview> -->
+                        <v-layout row 
+                          v-for="(item, index) in node.data.dataSets"
                           :key="index"
                           align-center
                           >
@@ -82,54 +130,18 @@
                                   <v-checkbox
                                       v-model="selected"
                                       :label="item.name"
-                                      :value="item.id"
+                                      :value="currentId(item)"
                                       color="info"
                                   ></v-checkbox>
                                 </v-list-tile-action>
                               </v-list-tile>
-                              <v-divider v-if="index != librarys.length - 1"></v-divider>
+                              <v-divider v-if="index != node.data.dataSets.length - 1"></v-divider>
                             </v-flex>
                         </v-layout>
-                       </span>
-
-                       <span v-else-if="node && node.data.dataSets">
-                          <!-- <v-treeview
-                            :items="node.data.dataSets"
-
-                          >
-                          <template v-slot:label="{ item }">
-                              <v-checkbox
-                                v-model="selected"
-                                :label="item.name"
-                                :value="item"
-                                color="info"
-                              ></v-checkbox>
-                          </template>
-                        </v-treeview> -->
-                          <v-layout row 
-                            v-for="(item, index) in node.data.dataSets"
-                            :key="index"
-                            align-center
-                            >
-                              <v-flex xs12 >
-                                <v-list-tile
-                                    @click="''"
-                                >
-                                  <v-list-tile-action>
-                                    <v-checkbox
-                                        v-model="selected"
-                                        :label="item.name"
-                                        :value="currentId(item)"
-                                        color="info"
-                                    ></v-checkbox>
-                                  </v-list-tile-action>
-                                </v-list-tile>
-                                <v-divider v-if="index != node.data.dataSets.length - 1"></v-divider>
-                              </v-flex>
-                          </v-layout>
-                       </span>
-                     </v-list>
+                      </span>
+                    </v-list>
                   </v-card-text>
+                  
                 </v-card>
             </v-dialog>
         </v-layout>
@@ -170,10 +182,22 @@ export default {
     // this.$router.replace('/reportConfigurator')
   },
   methods: {
+    selectAll() {
+      console.log(this.node.data)
+
+      this.selected = []
+      if(this.node.data.id === 0) {
+        this.librarys.forEach(x => this.selected.push(x.id))
+      } else {
+          for (let i = 0; i < this.node.data.dataSets.length; i++) {
+            let id = !this.node.data.dataSets[i].datasetID ? this.node.data.dataSets[i].id : JSON.stringify(this.node.data.dataSets[i].datasetID)
+            this.selected.push(id)
+          }
+      }
+      
+    },
     currentId(item) {
-      // console.log('i', item)
       let id = !item.datasetID ? item.id : JSON.stringify(item.datasetID)
-      // console.log('id', parseInt(id))
       return id
     },
     goBackToLibrary() {
@@ -255,8 +279,9 @@ export default {
       this.selected = []
     },
     cancel () {
-      this.selected = []
       this.dialog = false
+      this.selected = []
+
     },
     
   },
