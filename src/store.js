@@ -50,10 +50,10 @@ export default new Vuex.Store({
       state.dialogTree = bool;
       if (value) {
         state.currentTree = value;
-        state.oldReport = {
+        state.report = {
           id: 0,
           data:[],
-          name:'Корневой элемент',
+          name:'Библиотеки',
           children:[]
         };
       }
@@ -122,7 +122,8 @@ export default new Vuex.Store({
     },
     report (state, data) {
       state.report = data;
-    }
+    },
+  
 
   },
   actions: {
@@ -402,7 +403,6 @@ export default new Vuex.Store({
           treeID: parseInt(treeID)
         }
       }).then(res => {
-        console.log(res.data.data)
         this.state.oldLibrarys = res.data.data.getTree;
         this.state.report = {
           id: 0,
@@ -413,6 +413,24 @@ export default new Vuex.Store({
         addElementsInTree(this.state.report, this.state.oldLibrarys);
 
       });
+    },
+    setTree({commit}, {tree}) {
+      if(this.state.currentTree.name) {
+        console.log(tree.children)
+        console.log(this.state.currentTree)
+        axios.post('http://10.1.100.170:4000', {
+          query:`
+            mutation ChangeTree($tree: [inputTree], $treeLibrary: inputTreeLibrary) {
+              changeTree(tree: $tree, treeLibrary: $treeLibrary)
+            }
+          `,
+          variables:{
+            treeLibrary: this.state.currentTree,
+            tree: tree.children
+          }
+        });
+      }
+      
     }
   },
   getters: {

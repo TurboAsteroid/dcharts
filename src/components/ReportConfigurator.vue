@@ -18,16 +18,16 @@
           <dialogTree/>
           <v-container>
             <v-card>
-              <!-- <v-layout row>
+              <v-layout row>
                 <v-flex xs6 md4>
                   <v-card-title>
                     <v-text-field
-                      v-model="$store.state.currentTree.title"
+                      v-model="$store.state.currentTree.name"
                       label="Имя дерева"
                     ></v-text-field>
                   </v-card-title>
                 </v-flex>
-              </v-layout> -->
+              </v-layout>
               
               <v-container>
                 <tree :data="report" node-text="name" layoutType="euclidean" :zoomable="true" style="height: 800px;" @clicked="onClick" @retract="onClick"/>
@@ -265,7 +265,7 @@ export default {
       let newTree = {
           // id: parseInt(this.libraryTree[this.libraryTree.length - 1].id) + 1,
           id: '',
-          title: '',
+          name: '',
           date: '31.07.2019'
       }
       this.$store.commit('changeDialogTree',{bool: false, value: newTree})
@@ -392,6 +392,9 @@ export default {
     librarys() {
       return this.$store.getters.oldLibrarys
     },
+    tree() {
+      return this.$store.state.currentTree
+    }
   }
 }
 </script>
