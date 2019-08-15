@@ -22,7 +22,8 @@ const resolvers = {
         dataSets: async (parent, args, {connect}) => {
             try {
                 if(!parent.source) {
-                    const [dataSetLib] = await connect.execute(`
+                    let dataSetLib;
+                    [dataSetLib] = await connect.execute(`
                         SELECT
                             libDS.id,
                             libDS.name,
@@ -42,8 +43,8 @@ const resolvers = {
                         WHERE libDS.library_id = ${parent.id}
                         GROUP BY libDS.id
                     `);
-                    let data = [];
 
+                    let data = [];
                     for(let o of dataSetLib) {
                         if (o.id != 0) {
                             data.push({
@@ -62,8 +63,21 @@ const resolvers = {
                             });
                         }
                     }
+                    if(parent.dataset_id) {
+                        data.forEach(x => {
+                            if(parent.dataset_id.some(i => i === x.id)) {
+                                x.inTree = true;
+                            } else {
+                                x.inTree = false;
+                            }
+                        });
+                        delete parent.dataset_id;
+                        delete parent.link_id;
+                    }
+                    // console.log(data)
                     return data;
                 } else if(parent.source) {
+                    // console.log(parent)
                     const [linkTree] = await connect.execute(`
                         SELECT
                             linklib.id,
@@ -102,7 +116,7 @@ const resolvers = {
                         WHERE libDS.library_id = ${parent.id}
                         GROUP BY libDS.id
                     `);
-                    let result = createTree(linkTree);
+                    let result = createTree(linkTree, parent.link_id);
                     for(let o of dataSetLib) {
                         result.children.push({
                             id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
@@ -122,6 +136,17 @@ const resolvers = {
                             children:[]
                         });
                     }
+                    if(parent.dataset_id) {
+                        result.children.forEach(x => {
+                            if(parent.dataset_id.some(i => i === x.datasetID)) {
+                                x.inTree = true;
+                            }
+                        });
+                        // delete parent.dataset_id;
+                        // delete parent.link_id;
+                    }
+                    // console.log(result.children)
+
                     return result.children;
                 } 
             } catch(e) {

@@ -10,8 +10,11 @@
                     <v-flex xs10>
                         <span class="headline">Список отчетов</span>
                     </v-flex>
+                    <v-flex xs4>
+                        <!-- <v-btn outline dark small @click="addTree()" color="info">Создать новый отчет</v-btn> -->
+                    </v-flex>
                     <v-flex xs2>
-                        <v-btn outline fab dark small color="red" @click="closeDialog()">
+                        <v-btn outline fab dark small color="grey" @click="closeDialog()">
                             <v-icon dark>close</v-icon>
                         </v-btn>
                     </v-flex>
@@ -21,37 +24,34 @@
             <v-card-text>
                 <v-list two-line>
                     <v-layout row 
-                    v-for="(item, index) in libraryTree"
+                    v-for="(item, index) in treesLibrary"
                     :key="index"
                     align-center>
-                        <v-flex xs10>
+                        <v-flex xs12>
                             <v-list-tile
-                                :key="item.title"
+                                :key="item.name"
                                 ripple
                                 @click="toggle(item)"
                             >
                                 <v-list-tile-content>
-                                    <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                                    <v-list-tile-title>{{ item.name }}</v-list-tile-title>
                                     <v-list-tile-sub-title>{{ item.date }}</v-list-tile-sub-title>
                                 </v-list-tile-content>
 
-                            </v-list-tile>
-                        </v-flex>
-                            
-                        <v-flex xs2>
-                            <v-btn fab outline dark small color="orange" @click="removeRow(index)">
+                                <v-btn fab outline dark small color="red" @click="removeRow(index)">
                                 <v-icon dark>delete</v-icon>
                             </v-btn>
+                            </v-list-tile>
+                            <v-divider v-if="index !== treesLibrary.length - 1"></v-divider>
                         </v-flex>
+                            
+                        <!-- <v-flex xs2>
+                            
+                        </v-flex> -->
                     </v-layout>
                     
                 </v-list>
             </v-card-text>
-            <v-layout row justify-center align-center>
-                <!-- <v-flex xs12> -->
-                    <v-btn outline dark @click="addTree()" color="info">Создать новый отчет</v-btn>
-                <!-- </v-flex> -->
-            </v-layout>
         </v-card>
       </v-dialog>
 </template>
@@ -66,26 +66,26 @@ export default {
         },
         toggle(item) {
             this.$store.commit('changeDialogTree',{bool: false, value: item})
-            this.$store.dispatch('getTree', item.id)
+            this.$store.dispatch('getTree', {treeID: item.id})
         },
         removeRow (i) {
-            let trees = this.libraryTree.splice(i, 1)
-            this.$store.dispatch('setTree', { boolDelete: true, deleteTree: trees })
+            let trees = this.treesLibrary.splice(i, 1)
+            // this.$store.dispatch('setTree', { boolDelete: true, deleteTree: trees })
         },
-        addTree() { 
-            let newTree = {
-                // id: parseInt(this.libraryTree[this.libraryTree.length - 1].id) + 1,
-                id: '',
-                title: '',
-                date: '31.07.2019'
-            }
-            this.$store.commit('changeDialogTree',{bool: false, value: newTree})
+        // addTree() { 
+        //     let newTree = {
+        //         // id: parseInt(this.libraryTree[this.libraryTree.length - 1].id) + 1,
+        //         id: '',
+        //         title: '',
+        //         date: '31.07.2019'
+        //     }
+        //     this.$store.commit('changeDialogTree',{bool: false, value: newTree})
             
-        }
+        // }
     },
     computed: {
-        libraryTree() {
-            return this.$store.state.libraryTree
+        treesLibrary() {
+            return this.$store.state.treesLibrary
         }
     }
 }
