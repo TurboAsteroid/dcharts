@@ -3,8 +3,15 @@
         <v-container>
           <v-container grid-list-md>
             <v-layout wrap align-center justify-center>
-                <v-btn @click="$store.commit('changeDialogTree', {bool: true})" color="info">Выбрать дерево</v-btn>
-                <v-btn @click="toReport" color="success">Сохранить дерево</v-btn>
+              <!-- <v-flex xs2> -->
+                <v-btn @click="checkTree" color="info">Выбрать отчет</v-btn>
+              <!-- </v-flex> -->
+              <!-- <v-flex xs2> -->
+                <v-btn @click="addTree()" color="warning">Создать отчет</v-btn>                
+              <!-- </v-flex> -->
+              <!-- <v-flex xs2> -->
+                <v-btn @click="toReport" color="success">Сохранить отчет</v-btn>                
+              <!-- </v-flex> -->
             </v-layout>
             <v-divider></v-divider>
           </v-container>
@@ -76,14 +83,104 @@
                   </v-card-title>
 
                   <v-divider/>
+                  <!-- Начало: Добавление наборов в дерево -->
+                  <span v-if="node && node.data.id !== 0">
+                    <v-tabs
+                        v-model="tab"
+                        grow
+                        >
+                        <v-tabs-slider color="info"></v-tabs-slider>
+                        <v-tab
+                            v-for="item in items"
+                            :key="item"
+                        >
+                          {{ item }}
+                        </v-tab>
+                    </v-tabs>
+                    <v-tabs-items v-model="tab">
+                      <v-tab-item
+                          v-for="item in items"
+                          :key="item"
+                      >
+                        <v-card flat>
+                          <v-divider></v-divider>
+                          <v-card-text>
+                            <!-- Начало: Выбор наборов -->
+                            <span v-if="item === items[0]">
+                              <v-list two-line>
+                                <span v-if="node && node.data.dataSets">
+                                  <v-layout row 
+                                    v-for="(item, index) in node.data.dataSets"
+                                    :key="index"
+                                    align-center
+                                    >
+                                      <v-flex xs12 >
+                                        <v-list-tile
+                                            @click="''"
+                                        >
+                                          <v-list-tile-action>
+                                            <v-checkbox
+                                                v-model="selected"
+                                                :label="item.name"
+                                                :value="currentId(item)"
+                                                color="info"
+                                            ></v-checkbox>
+                                          </v-list-tile-action>
+                                        </v-list-tile>
+                                        <v-divider v-if="index != node.data.dataSets.length - 1"></v-divider>
+                                      </v-flex>
+                                  </v-layout>
+                                </span>
+                              </v-list>
+                            </span>
+                            <!-- Конец: Выбор наборов -->
 
-                  <v-card-text  max-width="500">
-                    <v-list two-line>
-                      <span v-if="node && node.data.id === 0">
+
+                            <!-- Начало: Выбор показателей -->
+                            <span v-if="item === items[1] && node && node.data.id !== 0">
+                              <v-list two-line>
+                                <span>
+                                  <v-layout row 
+                                    v-for="(item, index) in indicators"
+                                    :key="index"
+                                    align-center
+                                  >
+                                    <v-flex xs12 >
+                                      <v-list-tile
+                                          @click="''"
+                                      >
+                                        <v-list-tile-action>
+                                          <v-checkbox
+                                              v-model="selectedIndicators"
+                                              :label="item.name"
+                                              :value="item.id"
+                                              color="info"
+                                          ></v-checkbox>
+                                        </v-list-tile-action>
+                                      </v-list-tile>
+                                      <v-divider v-if="index != indicators.length - 1"></v-divider>
+                                    </v-flex>
+                                  </v-layout>
+                                </span>
+                              </v-list>
+                            </span>
+                            <!-- Конец: Выбор показателей -->
+                          </v-card-text>
+                        </v-card>
+                      </v-tab-item>
+                    </v-tabs-items>
+                  </span>
+                  <!-- Конец: Добавление наборов в дерево -->
+
+
+                  <!-- Начало: Добавление библиотек в дерево-->
+                  <span v-else>
+                    <v-card-text>
+                      <v-list two-line>
                         <v-layout row 
-                        v-for="(item, index) in librarys"
-                        :key="index"
-                        align-center
+                          v-for="(item, index) in librarys"
+                          :key="index"
+                          align-center
                         >
                           <v-flex xs12 >
                             <v-list-tile
@@ -100,52 +197,16 @@
                             </v-list-tile>
                             <v-divider v-if="index != librarys.length - 1"></v-divider>
                           </v-flex>
-                      </v-layout>
-                      </span>
-
-                      <span v-else-if="node && node.data.dataSets">
-                        <!-- <v-treeview
-                          :items="node.data.dataSets"
-
-                        >
-                        <template v-slot:label="{ item }">
-                            <v-checkbox
-                              v-model="selected"
-                              :label="item.name"
-                              :value="item"
-                              color="info"
-                            ></v-checkbox>
-                        </template>
-                      </v-treeview> -->
-                        <v-layout row 
-                          v-for="(item, index) in node.data.dataSets"
-                          :key="index"
-                          align-center
-                          >
-                            <v-flex xs12 >
-                              <v-list-tile
-                                  @click="''"
-                              >
-                                <v-list-tile-action>
-                                  <v-checkbox
-                                      v-model="selected"
-                                      :label="item.name"
-                                      :value="currentId(item)"
-                                      color="info"
-                                  ></v-checkbox>
-                                </v-list-tile-action>
-                              </v-list-tile>
-                              <v-divider v-if="index != node.data.dataSets.length - 1"></v-divider>
-                            </v-flex>
                         </v-layout>
-                      </span>
-                    </v-list>
-                  </v-card-text>
+                      </v-list>
+                    </v-card-text>
+                  </span>
+                  <!-- Конец: Добавление библиотек в дерево -->
                   
                 </v-card>
             </v-dialog>
         </v-layout>
-        </v-container>
+      </v-container>
     <!-- </div> -->
 </template>
 
@@ -160,8 +221,26 @@ export default {
   },
   data: () => ({
     selected: [],
-    
+    selectedIndicators: [],
+
     dialog: false,
+    tab: null,
+    items:['Список наборов', 'Список показателей'],
+    indicators: [
+        {
+            id: 1,
+            name: 'test1',
+        },
+        {
+            id: 2,
+            name: 'test2',
+        },
+        {
+            id: 3,
+            name: 'test3',
+        },
+    ],
+
     node: null,
     currentChild: null,
     child: [],
@@ -182,6 +261,20 @@ export default {
     // this.$router.replace('/reportConfigurator')
   },
   methods: {
+    addTree() { 
+      let newTree = {
+          // id: parseInt(this.libraryTree[this.libraryTree.length - 1].id) + 1,
+          id: '',
+          title: '',
+          date: '31.07.2019'
+      }
+      this.$store.commit('changeDialogTree',{bool: false, value: newTree})
+        
+    },
+    checkTree() {
+      this.$store.commit('changeDialogTree', {bool: true})
+      this.$store.dispatch('getTreesLibrary');
+    },
     selectAll() {
       console.log(this.node.data)
 
@@ -211,7 +304,9 @@ export default {
       this.selected = []
       this.dialog = true
       this.node = evt
+      // this.node.data.children.length ? this.tab = 0 : this.tab = 1 
       if((this.node.data.dataSets || !this.node.data.source) && this.node.data.hasOwnProperty('source')) {
+        console.log('dsf')
         this.$store.dispatch('getLibrarys', {currentLib: this.node.data, boolTree: true})
       } else if(this.node.data.id !== 0 && !this.node.data.dataSets && this.node.data.link) {
         

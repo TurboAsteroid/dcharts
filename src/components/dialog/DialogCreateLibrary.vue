@@ -196,7 +196,32 @@
                                             </span>
 
                                             <span v-else-if="item === items[1]">
-                                                <v-layout row >
+                                                <v-layout row class="maxHeight2">
+                                                    <v-flex xs12>
+                                                        <v-list v-for="(indicator, idx) in indicators" :key="idx">
+                                                            <v-list-tile @click="''">
+                                                                <!-- <v-list-tile-action>
+                                                                    <v-checkbox v-model="selected" :value="indicator" color="info"></v-checkbox>
+                                                                </v-list-tile-action> -->
+
+                                                                <v-list-tile-content>
+                                                                    <v-list-tile-title>{{indicator.name}}</v-list-tile-title>
+                                                                </v-list-tile-content>
+                                                                
+                                                                <v-btn fab flat dark small color="orange" @click="''">
+                                                                    <v-icon dark>settings</v-icon>
+                                                                </v-btn>
+                                                                
+                                                            </v-list-tile>
+                                                            <v-divider></v-divider>
+                                                        </v-list>
+                                                    </v-flex>  
+                                                </v-layout>
+                                                <v-divider></v-divider>
+                                                <v-layout row justify-center>
+                                                    <v-btn outline @click="addIndicators()" color="info">все показатели</v-btn>
+                                                </v-layout>
+                                                <!-- <v-layout row >
                                                     <v-flex xs12 >
                                                         <v-tabs
                                                             v-model="tabIn"
@@ -215,8 +240,8 @@
                                                                 v-for="it in itemsIn"
                                                                 :key="it"
                                                                 
-                                                            >
-                                                                    <v-divider light></v-divider>
+                                                            > -->
+                                                                    <!-- <v-divider light></v-divider>
                                                                         <span v-if="it === itemsIn[0] && indicators.length">
                                                                             <v-layout row class="maxHeight2">
                                                                                 <v-flex xs12>
@@ -244,7 +269,7 @@
                                                                                 <v-btn outline @click="addIndicators()" color="info">все показатели</v-btn>
                                                                             </v-layout>
                                                                         </span>
-                                                                        <span v-else-if="it === itemsIn[1]">
+                                                                        <span v-else-if="it === itemsIn[1]"> -->
                                                                             <!-- <v-layout row>
                                                                                 <v-flex xs6>
                                                                                     <v-text-field
@@ -296,11 +321,11 @@
                                                                             <v-layout row justify-center v-if="!currentDataSet.link">
                                                                                 <v-btn outline @click="addDataValue()" color="info">Добавить значение</v-btn>
                                                                             </v-layout> -->
-                                                                        </span>
+                                                                        <!-- </span>
                                                             </v-tab-item>
                                                         </v-tabs-items>
                                                     </v-flex>
-                                                </v-layout>
+                                                </v-layout> -->
 
                                                 <!-- <v-layout row>
                                                     <v-flex xs12>

@@ -3,7 +3,7 @@
         <v-container grid-list-md>
             <v-layout wrap align-center justify-center>
                 <v-flex xs2>
-                <v-btn @click.stop="addLib()" color="info" block ml-2>Выбор библиотек</v-btn>
+                    <v-btn @click.stop="addLib()" color="info" block ml-2>Выбор библиотек</v-btn>
                 </v-flex>
                 <v-flex xs2>
                     <v-btn @click.stop="createLib()" color="warning" block>Создание библиотеки</v-btn>

@@ -1,6 +1,7 @@
 
 let dataLib = []
-function createTree(tree, lib) {
+function createTree(tree, link_id) {
+    
     let adjList = [];
     let result = {
         id: 0,
@@ -22,7 +23,7 @@ function createTree(tree, lib) {
     for(let o of tree) {
         if (o.id != 0) { 
             dataLib.push({
-                id: o.id,
+                id: parseInt(o.id),
                 // datasetID: '',
                 name: o.name,
                 data: o.data ? o.data.split(',') : [],
@@ -36,9 +37,18 @@ function createTree(tree, lib) {
                     label: o.val2 ? o.val2.split(',')[1] : ''
                 },
                 link: o.link_name,
-                children:[]
+                children:[],
             });
-        }  
+        } 
+        if(link_id) {
+            dataLib.forEach(x => {
+                if(link_id.some(i => i === x.id)) {
+                    x.inTree = true;
+                } else {
+                    x.inTree = false;
+                }
+            });
+        }
     }
     getTree(result, adjList[0]);
     function getTree(parent, child) {

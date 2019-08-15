@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import axios from 'axios';
 import sortLinks from './modules/sortLinks';
 import addDataToReport from '../server/modules/addDataToReport';
+import addElementsInTree from './modules/addElementsInTree'
 import { ifError } from 'assert';
 
 Vue.use(Vuex);
@@ -28,7 +29,10 @@ export default new Vuex.Store({
       active: true,
       source: ''
     },
+    currentTree: {},
+
     librarysList:[],
+    treesLibrary:[],
     librarys:[],
     oldLibrarys:[], // все выбранные библиотеки
 
@@ -334,6 +338,82 @@ export default new Vuex.Store({
         }
       });
     },
+    getTreesLibrary({commit}) {
+      axios.post('http://10.1.100.170:4000', {
+        query:`
+          query {
+            getTreesLibrary {
+              id
+              name
+              date
+              levels
+            }
+          }
+        `
+      }).then(res => {
+        // console.log(res.data.data.getTreesLibrary)
+        this.state.treesLibrary = res.data.data.getTreesLibrary;
+      });
+    },
+    getTree({commit},{treeID}) {
+      // console.log(treeID)
+      axios.post('http://10.1.100.170:4000', {
+        query: `
+          query GetTree($treeID: Int){
+            getTree(treeID: $treeID) {
+              id
+              name
+              active
+              source
+              inTree
+              dataSets {
+                ...dataSet
+                datasetID
+                children {
+                  ...dataSet
+                  children {
+                    ...dataSet
+                    children {
+                      ...dataSet
+                    }
+                  }
+                }
+              }  
+            }
+          }
+          fragment dataSet on DataSet {
+            id
+            data
+            name
+            labels
+            inTree
+            link
+            val1 {
+              value
+              label
+            }
+            val2 {
+              value
+              label
+            }    
+          }
+        `,
+        variables: {
+          treeID: parseInt(treeID)
+        }
+      }).then(res => {
+        console.log(res.data.data)
+        this.state.oldLibrarys = res.data.data.getTree;
+        this.state.report = {
+          id: 0,
+          data:[],
+          name:'Библиотеки',
+          children:[]
+        };
+        addElementsInTree(this.state.report, this.state.oldLibrarys);
+
+      });
+    }
   },
   getters: {
     oldLibrarys: state => state.oldLibrarys,

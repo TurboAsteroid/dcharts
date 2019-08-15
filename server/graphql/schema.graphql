@@ -2,15 +2,9 @@ type Query {
     getActiveLibrarys: [LibrarysList]
     getLibrarysList: [LibrarysList]
     getLibrarys(LibID: [Int]): [Librarys]
-
-#/////////////////////////////////////////////////
-    getLibrary: [Library]
-    getDataByParametr(linkSelected: [linkInput]!): [DataParametrs]
-    getTree(treeId: Int): Library
-    getData(salary: [String], salaryBool: Boolean!): dataSource
-    getLibraryLink: String
-    getLibraryTree: [libraryTree]
-#/////////////////////////////////////////////////////////
+    getTreesLibrary:[treesLibrary]
+    getTree(treeID: Int): [Librarys]
+    
 }
 type Mutation {
     activationLib(activeLibs: [inputActiveLibrary]) : String
@@ -41,6 +35,7 @@ type Librarys {
     name: String
     source: String
     active: Boolean
+    inTree: Boolean
     dataSets: [DataSet]
 }
 type DataSet {
@@ -52,11 +47,18 @@ type DataSet {
     val1: Value
     val2: Value
     link: String
+    inTree: Boolean
     children:[DataSet]
 }
 type Value {
     value: Int
     label: String
+}
+type treesLibrary {
+    id: ID!
+    name: String!
+    date: String
+    levels: Int
 }
 
 input inputLibrary {
@@ -107,11 +109,7 @@ type DataParametrs {
     data: [Int]
     labels: [String]
 } 
-type libraryTree {
-    id: ID!
-    title: String!
-    date: String
-}
+
 
 
 input libraryTreeInput {
