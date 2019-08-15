@@ -10,17 +10,18 @@ type Mutation {
     activationLib(activeLibs: [inputActiveLibrary]) : String
     changeLib(library: inputLibrary) : Int
     deleteLibrarysOrDataSets(libID: Int, datasetID: [Int]) : String
+    changeTree(tree: [inputTree], treeLibrary: inputTreeLibrary) : String
     # changeLinkLib(library: inputLibrary) : String
 
 
 #////////////////////////////////////////////////////////
-    createNewNote(data: [libraryInput]!): [Library]
-    updateNote(data: [libraryInput]!): [Library]
-    deleteNote(data: [Int]!): [Library]
-    changeTree(tree: treeInput, currentTree: libraryTreeInput): String
-    addLibraryTree(tree: libraryTreeInput): String
-    updateLibraryTree(tree: libraryTreeInput): String
-    deleteLibraryTree(trees: [libraryTreeInput]): String
+    # createNewNote(data: [libraryInput]!): [Library]
+    # updateNote(data: [libraryInput]!): [Library]
+    # deleteNote(data: [Int]!): [Library]
+    # changeTree(tree: treeInput, currentTree: libraryTreeInput): String
+    # addLibraryTree(tree: libraryTreeInput): String
+    # updateLibraryTree(tree: libraryTreeInput): String
+    # deleteLibraryTree(trees: [libraryTreeInput]): String
 #/////////////////////////////////////////////////////////
 }
 
@@ -68,6 +69,15 @@ input inputLibrary {
     active: Boolean
     dataSets: [inputDataSet]
 }
+input inputTree {
+     id: ID!
+    name: String
+    source: String
+    active: Boolean
+    inTree: Boolean
+    children: [inputDataSet]
+    dataSets: [inputDataSet]
+}
 input inputDataSet {
     id: ID!
     datasetID: ID
@@ -76,7 +86,9 @@ input inputDataSet {
     name: String
     val1: inputValue
     val2: inputValue
+    inTree: Boolean
     link: String
+    dataSets:[inputDataSet]
     children:[inputDataSet]
 }
 input inputValue {
@@ -87,57 +99,19 @@ input inputActiveLibrary {
     id: Int
     active: Int
 }
+input inputTreeLibrary {
+    id: ID
+    name: String
+    date: String
+    levels: Int
+}
+# input inputTree {
+#     children: [inputDataSet]
+#     date: String
+#     id: ID
+#     name: String
+# }
 
 
 #//////////////////////////////////////////////
-type Library {
-    id: ID!
-    data: [Int]
-    labels: [String]
-    name: String
-    val1: Value
-    val2: Value
-    link: String
-    children:[Library]
-}
-type dataSource {
-    getSalary(salary: [String]): [DataParametrs]
-}
-
-type DataParametrs {
-    id: ID
-    data: [Int]
-    labels: [String]
-} 
-
-
-
-input libraryTreeInput {
-    id: ID!
-    title: String!
-    date: String
-}
-input libraryInput {
-    id: ID
-    data: [Int]
-    name:String
-    val1: valueInput
-    val2: valueInput
-    labels: [String]
-    children: [libraryInput]
-    link: String
-}
-input valueInput {
-    value: Int!
-    label: String!
-}
-input linkInput {
-    linkSource: String
-    linkParametr: [String]
-}
-input treeInput {
-    children: [libraryInput]
-    data: [Int]
-    id: ID
-    name: String
-}
+# rs
