@@ -74,25 +74,13 @@ export default {
             this.$store.commit('changeDialogTree',{bool: false})
         },
         toggle(item) {
-            this.$store.commit('changeDialogTree',{bool: false, value: item})
-            this.$store.dispatch('getTree', {treeID: item.id})
+            // this.$store.commit('changeDialogTree',{bool: false, value: item})
+            this.$store.dispatch('getTree', {tree: item})
         },
         removeRow (i, item) {
-            console.log(item)
             let trees = this.treesLibrary.splice(i, 1)
             this.$store.dispatch('deleteTree', {treeID: item.id})
-            // this.$store.dispatch('setTree', { boolDelete: true, deleteTree: trees })
         },
-        // addTree() { 
-        //     let newTree = {
-        //         // id: parseInt(this.libraryTree[this.libraryTree.length - 1].id) + 1,
-        //         id: '',
-        //         title: '',
-        //         date: '31.07.2019'
-        //     }
-        //     this.$store.commit('changeDialogTree',{bool: false, value: newTree})
-            
-        // }
     },
     computed: {
         treesLibrary() {

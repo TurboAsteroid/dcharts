@@ -16,6 +16,7 @@
             <v-divider></v-divider>
           </v-container>
           <dialogTree/>
+          <dialogAddLibrary/>
           <v-container>
             <v-card>
               <v-layout row>
@@ -240,16 +241,18 @@
 <script>
 import { tree } from 'vued3tree'
 import dialogTree from './dialog/DialogTree'
+import dialogAddLibrary from './dialog/DialogAddLibrary'
+
 export default {
   name: 'reportConfigurator',
   components: {
     tree,
-    dialogTree
+    dialogTree,
+    dialogAddLibrary
   },
   data: () => ({
     selected: [],
     selectedIndicators: [],
-    checkAll: false,
     dialog: false,
     tab: null,
     items:['Список наборов', 'Список показателей'],
@@ -272,9 +275,15 @@ export default {
     currentChild: null,
     child: [],
     result:[],
-    idx: 0
   }),
   mounted () {
+    console.log(this.$store.state.treesLibrary.length)
+    if(!this.$store.state.treesLibrary.length) {
+      this.$store.dispatch('getTreesLibrary');
+      this.$store.dispatch('getTree', {getLastTree: true})
+    }
+    
+
     // if(this.$store.state.oldLibrarys) {
     // this.$store.state.oldLibrarys = []
 
@@ -296,6 +305,7 @@ export default {
           name: '',
           date: '31.07.2019'
       }
+      this.tab = null
       this.$store.commit('changeDialogTree',{bool: false, value: newTree})
         
     },
@@ -399,16 +409,22 @@ export default {
     },
     selectAll: {
       get: function () {
-        if(this.node && this.node.data.dataSets) {
-          return this.node.data.dataSets ? this.selected.length === this.node.data.dataSets.length && (this.node.data.dataSets.length ? true : false) : false
-        } else if (this.node && this.node.data.id === 0) {
-          return this.node.data.children ? this.selected.length === this.librarys.length : false
+        if(this.tab === 0) {
+          if(this.node && this.node.data.dataSets) {
+            return this.node.data.dataSets ? this.selected.length === this.node.data.dataSets.length && (this.node.data.dataSets.length ? true : false) : false
+          } else if (this.node && this.node.data.id === 0) {
+            return this.node.data.children ? this.selected.length === this.librarys.length : false
+          }
         }
+        
       },
       set: function (value) {
+        if(this.tab === 0 || !this.tab) {
           let selected = [];
           if (value) {
+            console.log(value)
             if(this.node && this.node.data.id === 0) {
+              console.log(this.librarys)
               this.librarys.forEach(x => selected.push(x.id))
             } else if(this.node && this.node.data.dataSets) {
               for (let i = 0; i < this.node.data.dataSets.length; i++) {
@@ -418,6 +434,7 @@ export default {
             }
           }
           this.selected = selected;
+        }
       }
     }
   }

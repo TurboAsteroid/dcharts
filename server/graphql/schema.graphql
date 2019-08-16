@@ -3,8 +3,8 @@ type Query {
     getLibrarysList: [LibrarysList]
     getLibrarys(LibID: [Int]): [Librarys]
     getTreesLibrary:[treesLibrary]
-    getTree(treeID: Int): [Librarys]
-    
+    getTree(treeID: Int, lastTree: Boolean): [Librarys]
+    getLibraryIdInTree(treeID: Int) : [Int]
 }
 type Mutation {
     activationLib(activeLibs: [inputActiveLibrary]) : String
