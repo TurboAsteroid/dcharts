@@ -2,7 +2,7 @@
     <v-dialog
         persistent
         v-model="$store.state.dialogTree"
-        max-width="630"
+        max-width="600"
     >
         <v-card>
             <v-card-title>
