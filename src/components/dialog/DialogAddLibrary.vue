@@ -95,6 +95,8 @@ export default {
             // console.log(this.selectedLib)
             // console.log(this.selected)
             this.$store.commit('changeDialogLibrary',{ boolAdd: false })
+            this.$store.commit('changeDialogTree',{bool: false});
+
             this.$store.commit('addLibrarys')
             this.$store.dispatch('activationLibrarys');
 

@@ -85,9 +85,17 @@ const getTreesLibrary = async (_, args, {connect}) => {
         console.error(e.message);
     }
 };
-const getTree = async (_, {treeID}, {connect}) => {
-    // console.log(treeID);
+const getTree = async (_, {treeID, lastTree}, {connect}) => {
     try {
+        let id;
+        if(lastTree) {
+            [lastTreeId] = await connect.execute(`
+                SELECT MAX( id ) FROM trees_library;
+            `);
+            id = lastTreeId[0]['MAX( id )'];
+        } else {
+            id = treeID;
+        }
         // let tree = [];
         let [tree] = await connect.execute(`
             SELECT
@@ -97,10 +105,9 @@ const getTree = async (_, {treeID}, {connect}) => {
                 dataset_id,
                 link_id
             FROM trees
-            WHERE tree_id = ${treeID}
+            WHERE tree_id = ${id}
         `);
-        // console.log(tree)
-        let templateLibs = []
+        let templateLibs = [];
         for(let tr of Object.keys(tree)) {
             if(!templateLibs.some(x => x.library_id === tree[tr].library_id)) {
                 templateLibs.push({
@@ -116,7 +123,6 @@ const getTree = async (_, {treeID}, {connect}) => {
         }
         // console.log(templateLibs)
         let libList = [];
-        // for(let i of templateLibs) {
         let [lib] = await connect.execute(`
             SELECT
                 id,
@@ -126,19 +132,65 @@ const getTree = async (_, {treeID}, {connect}) => {
             FROM librarys
             WHERE active = 1
         `);
-        
+
+        //////////// Получить деревья у которых библиотеки не входят в коллекцию //////////////// 
+        // let lib = [];
+        // for(let o of templateLibs) {
+        //     let s = await connect.execute(`
+        //         SELECT
+        //             id,
+        //             name,
+        //             source,
+        //             active
+        //         FROM librarys
+        //         WHERE id = ${o.library_id}
+        //     `);
+        //     lib.push(...s[0]);
+        // }
+        ///////////////////////////////////////////////////////////////////////////////////////
+
         lib.forEach(x => libList.push({
             ...x, 
             ...templateLibs.find(i => i.library_id === x.id),
             inTree: templateLibs.some(i => i.library_id === x.id)
-        }))
+        }));
         
-        return libList
+        // libList.push(templateLibs.map(x => x.library_id))
+        // console.log('templateLibs',templateLibs)
+        // console.log('lib',lib)
+        // console.log('liblist', libList)
+        
+        return libList;
         
     } catch(e) {
-        console.log(e.message);
+        console.log(e);
     }
-}
+};
+const getLibraryIdInTree = async (_, {treeID}, {connect}) => {
+    // console.log(treeID)
+    try{
+        let [tree] = await connect.execute(`
+            SELECT
+                id,
+                library_id
+            FROM trees
+            WHERE tree_id = ${treeID}
+        `);
+        let templateLibs = [];
+        for(let tr of Object.keys(tree)) {
+            if(!templateLibs.some(x => x === tree[tr].library_id)) {
+                templateLibs.push(tree[tr].library_id);
+            }
+        }
+        // console.log('templateLibs',templateLibs);
+        return templateLibs;
+    } catch(e) {
+        console.log(e)
+    }
+    
+    
+
+};
 
 /////////////////////////////////////////////////////////
 // const getLibrary = async (_, args, {connect}) => {
@@ -267,7 +319,7 @@ module.exports = {
     getLibrarys,
     getTreesLibrary,
     getTree,
-
+    getLibraryIdInTree
 //////////////////////////
     // getLibrary,
     // getDataByParametr,

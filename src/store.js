@@ -154,7 +154,7 @@ export default new Vuex.Store({
       });
     },
     getLibrarysList({commit}) {
-      axios.post('http://10.1.100.170:4000', {
+      return axios.post('http://10.1.100.170:4000', {
         query: 
           `query {
               getLibrarysList {
@@ -357,12 +357,19 @@ export default new Vuex.Store({
         this.state.treesLibrary = res.data.data.getTreesLibrary;
       });
     },
-    getTree({commit},{treeID}) {
+    getTree({dispatch, commit},{tree, getLastTree}) {
+      // console.log(tree)
+      let treeID;
+      let report;
+      if(tree) {
+        treeID = tree.id;
+      }
+      
       // console.log(treeID)
       axios.post('http://10.1.100.170:4000', {
         query: `
-          query GetTree($treeID: Int){
-            getTree(treeID: $treeID) {
+          query GetTree($treeID: Int, $lastTree: Boolean){
+            getTree(treeID: $treeID, lastTree: $lastTree) {
               id
               name
               active
@@ -382,6 +389,7 @@ export default new Vuex.Store({
                 }
               }  
             }
+            getLibraryIdInTree(treeID: $treeID)
           }
           fragment dataSet on DataSet {
             id
@@ -401,19 +409,53 @@ export default new Vuex.Store({
           }
         `,
         variables: {
-          treeID: parseInt(treeID)
+          treeID: parseInt(treeID),
+          lastTree: getLastTree || false
         }
       }).then(res => {
+        // console.log(res.data.data.getLibraryIdInTree)
+
         this.state.oldLibrarys = res.data.data.getTree;
-        this.state.report = {
+        report = {
           id: 0,
           data:[],
           name:'Библиотеки',
-          children:[]
+          children:[],
+          librarysID: res.data.data.getLibraryIdInTree
         };
-        addElementsInTree(this.state.report, this.state.oldLibrarys);
+        // console.log(this.state.oldLibrarys)
+        addElementsInTree(report, this.state.oldLibrarys);
+        if(getLastTree && this.state.treesLibrary.length) {
+          let lastTree = this.state.treesLibrary[this.state.treesLibrary.length - 1];
+          this.state.currentTree = {
+            id: lastTree.id,
+            name: lastTree.name,
+            date: lastTree.date
+          };
+        }
+      }).then(() => {
 
-      });
+        if(!report.children.length) {
+          dispatch('getLibrarysList').then(() => {
+            if(this.state.librarysList.length) {
+              this.state.selected = []
+              report.librarysID.forEach(x => {
+                this.state.librarysList.splice(
+                  this.state.librarysList.findIndex(i => i.id !== x),
+                  1
+                );
+              });
+              
+              // console.log(this.state.librarysList)
+              // commit('changeDialogTree',{bool: false});
+              commit('changeDialogLibrary', { boolAdd: true });
+            }
+          });
+        } else {
+          commit('changeDialogTree',{bool: false, value: tree});
+          this.state.report = report;
+        }
+      }).catch(e => console.error(e.message));
     },
     setTree({commit}, {tree}) {
       if(this.state.currentTree.name) {
