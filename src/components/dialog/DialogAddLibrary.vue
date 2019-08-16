@@ -7,24 +7,44 @@
         <v-card>
             <v-card-title>
                 <v-layout row align-center>
-                    <v-flex xs10>
+                    <v-flex xs11>
                     <span class="headline">Выбор библиотек</span>
                     </v-flex>
-                    <v-flex xs2>
+                    <v-flex xs4>
                         <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
-                                <v-btn flat outline fab dark small v-on="on" color="success" @click="addLib()">
-                                    <v-icon dark >done</v-icon>
+                                <v-btn flat outline dark small v-on="on" color="success" @click="addLib()">
+                                    <!-- <v-icon dark >done</v-icon> -->
+                                    Изменить коллекцию
                                 </v-btn>
                             </template>
-                      <span>Добавить</span>
-                    </v-tooltip>
-                </v-flex>
+                        <span>Добавить</span>
+                        </v-tooltip>
+                    </v-flex>
+                     <v-flex xs2>
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-btn outline fab dark small color="grey" @click="closeDialog()" v-on="on">
+                                    <v-icon dark>close</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Отмена</span>
+                        </v-tooltip>
+                    </v-flex>
                 </v-layout>
             </v-card-title>
 
             <v-divider my-2/>
-
+            <v-card-title style="padding: 0;">
+                <v-layout>
+                <v-flex xs1>
+                    <v-checkbox
+                    v-model="selectAll"
+                    color="orange" 
+                    style="padding: 10px; margin: 0; height: 0;"></v-checkbox>
+                </v-flex>
+                </v-layout>
+            </v-card-title>
             <v-card-text>
                 <v-list two-line>
                     <v-layout row 
@@ -83,6 +103,10 @@ export default {
             // this.$store.dispatch('getLibrarys', {selectedLib: this.selected})
             // this.selected = []
         },
+        closeDialog() {
+            this.$store.commit('changeDialogLibrary',{ boolAdd: false })
+            this.$store.state.selected = this.selectedLib
+        }
     },
     computed: {
         selectedLib () {
@@ -98,6 +122,21 @@ export default {
         librarysList() {
             return this.$store.state.librarysList
         },
+        sel() {
+            return this.$store.state.selected
+        },
+        selectAll: {
+            get: function () {
+                return this.librarysList ? this.$store.state.selected.length === this.librarysList.length : false
+            },
+            set: function (value) {
+                let selected = [];
+                if (value) {
+                    this.librarysList.forEach(x => selected.push(x.id))
+                }
+                this.$store.state.selected = selected;
+            }
+        }
     }
 }
 </script>

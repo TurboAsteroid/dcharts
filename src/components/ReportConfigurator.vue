@@ -45,13 +45,12 @@
                           <v-flex xs10 v-if="node && node.data.id === 0">
                             <v-text-field
                               value = "Выбор библиотек"
-                              label="Набор данных"
                               readonly
                               class="headline"
                             ></v-text-field>
                             <!-- <span class="headline">Выбор библиотек</span> -->
                           </v-flex>
-                          <v-flex xs10 v-else-if="node && node.data.id !== 0">
+                          <v-flex xs10 v-else-if="node && node.data.id !== 0 && !node.data.hasOwnProperty('source')">
                             <v-text-field
                               :value = node.data.name
                               label="Набор данных"
@@ -59,10 +58,18 @@
                               class="headline"
                             ></v-text-field>
                           </v-flex>
+                          <v-flex xs10 v-else-if="node && node.data.id !== 0 && node.data.hasOwnProperty('source')">
+                            <v-text-field
+                              :value = node.data.name
+                              label="Библиотека"
+                              readonly
+                              class="headline"
+                            ></v-text-field>
+                          </v-flex>
                         <v-flex xs3>
-                          <v-btn flat outline dark small color="info" @click="selectAll">
+                          <!-- <v-btn flat outline dark small color="info" @click="''">
                               Выбрать все
-                          </v-btn>
+                          </v-btn> -->
                         </v-flex>
                         <v-flex xs4>
                           <v-btn flat outline  dark small color="success" @click="ok">
@@ -104,7 +111,17 @@
                       >
                         <v-card flat>
                           <v-divider></v-divider>
-                          <v-card-text>
+                          <v-card-title style="padding: 0;">
+                              <v-layout>
+                                <v-flex xs1>
+                                  <v-checkbox
+                                    v-model="selectAll"
+                                    color="orange" 
+                                    style="padding: 10px; margin: 0; height: 0;"></v-checkbox>
+                                </v-flex>
+                              </v-layout>
+                          </v-card-title>
+                          <v-card-text >
                             <!-- Начало: Выбор наборов -->
                             <span v-if="item === items[0]">
                               <v-list two-line>
@@ -175,6 +192,16 @@
 
                   <!-- Начало: Добавление библиотек в дерево-->
                   <span v-else>
+                    <v-card-title style="padding: 0;">
+                      <v-layout>
+                        <v-flex xs1>
+                          <v-checkbox
+                            v-model="selectAll"
+                            color="orange" 
+                            style="padding: 10px; margin: 0; height: 0;"></v-checkbox>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-title>
                     <v-card-text>
                       <v-list two-line>
                         <v-layout row 
@@ -222,7 +249,7 @@ export default {
   data: () => ({
     selected: [],
     selectedIndicators: [],
-
+    checkAll: false,
     dialog: false,
     tab: null,
     items:['Список наборов', 'Список показателей'],
@@ -244,7 +271,8 @@ export default {
     node: null,
     currentChild: null,
     child: [],
-    result:[]
+    result:[],
+    idx: 0
   }),
   mounted () {
     // if(this.$store.state.oldLibrarys) {
@@ -275,20 +303,6 @@ export default {
       this.$store.commit('changeDialogTree', {bool: true})
       this.$store.dispatch('getTreesLibrary');
     },
-    selectAll() {
-      console.log(this.node.data)
-
-      this.selected = []
-      if(this.node.data.id === 0) {
-        this.librarys.forEach(x => this.selected.push(x.id))
-      } else {
-          for (let i = 0; i < this.node.data.dataSets.length; i++) {
-            let id = !this.node.data.dataSets[i].datasetID ? this.node.data.dataSets[i].id : JSON.stringify(this.node.data.dataSets[i].datasetID)
-            this.selected.push(id)
-          }
-      }
-      
-    },
     currentId(item) {
       let id = !item.datasetID ? item.id : JSON.stringify(item.datasetID)
       return id
@@ -300,13 +314,10 @@ export default {
       this.$store.dispatch('setTree', { tree: this.report })
     },
     onClick (evt) {
-      // console.log(evt)
       this.selected = []
       this.dialog = true
       this.node = evt
-      // this.node.data.children.length ? this.tab = 0 : this.tab = 1 
       if((this.node.data.dataSets || !this.node.data.source) && this.node.data.hasOwnProperty('source')) {
-        console.log('dsf')
         this.$store.dispatch('getLibrarys', {currentLib: this.node.data, boolTree: true})
       } else if(this.node.data.id !== 0 && !this.node.data.dataSets && this.node.data.link) {
         
@@ -324,7 +335,6 @@ export default {
         let id = !this.node.data.children[i].datasetID ? this.node.data.children[i].id : JSON.stringify(this.node.data.children[i].datasetID)
         this.selected.push(id)
       }
-      
     },
     findChild(parent) {
       if(parent.link === this.node.data.link) {
@@ -371,21 +381,13 @@ export default {
           }
         }
       }
-      this.selected = []
     },
     cancel () {
       this.dialog = false
-      this.selected = []
-
     },
     
   },
   computed: {
-    // report () {
-    //   if (Object.keys(this.$store.state.oldReport).length !== 0) {
-    //     return this.$store.state.oldReport
-    //   }
-    // },
     report () {
       return this.$store.state.report
     },
@@ -394,7 +396,39 @@ export default {
     },
     tree() {
       return this.$store.state.currentTree
+    },
+    selectAll: {
+      get: function () {
+        if(this.node && this.node.data.dataSets) {
+          return this.node.data.dataSets ? this.selected.length === this.node.data.dataSets.length && (this.node.data.dataSets.length ? true : false) : false
+        } else if (this.node && this.node.data.id === 0) {
+          return this.node.data.children ? this.selected.length === this.librarys.length : false
+        }
+      },
+      set: function (value) {
+          let selected = [];
+          if (value) {
+            if(this.node && this.node.data.id === 0) {
+              this.librarys.forEach(x => selected.push(x.id))
+            } else if(this.node && this.node.data.dataSets) {
+              for (let i = 0; i < this.node.data.dataSets.length; i++) {
+                let id = !this.node.data.dataSets[i].datasetID ? this.node.data.dataSets[i].id : JSON.stringify(this.node.data.dataSets[i].datasetID)
+                selected.push(id)
+              }
+            }
+          }
+          this.selected = selected;
+      }
     }
   }
 }
 </script>
+<style>
+.noPadding {
+  padding: 0px 0px;
+  margin-left: 5px
+}
+.paddingCardText {
+  padding-top: 0;
+}
+</style>
