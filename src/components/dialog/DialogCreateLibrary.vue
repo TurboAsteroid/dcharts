@@ -77,6 +77,7 @@
                                 <v-treeview
                                     open-all
                                     :items="currentLibrary.dataSets"
+                                    item-key="id"
                                     activatable
                                 >
                                     <template slot="label" slot-scope="{ item }">
@@ -118,7 +119,7 @@
                                 v-model="tab"
                                 grow
                                 >
-                                <v-tabs-slider color="grey"></v-tabs-slider>
+                                <v-tabs-slider color="info"></v-tabs-slider>
                                 <v-tab
                                     v-for="item in items"
                                     :key="item"

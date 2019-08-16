@@ -113,7 +113,7 @@ export default new Vuex.Store({
           activeLib.push({id: lib.id, active: 0})
         }
       });
-
+      // console.log(result)
       state.oldLibrarys = result;
       state.activeLib = activeLib;
     },
@@ -128,6 +128,7 @@ export default new Vuex.Store({
   },
   actions: {
     getActiveLibrarys({commit}) {
+      // console.log('dsf')
       axios.post('http://10.1.100.170:4000', {
         query: 
           `query {
@@ -140,11 +141,13 @@ export default new Vuex.Store({
           }`
       }).then((res) => {
         let lib = res.data.data.getActiveLibrarys;
+        this.state.oldLibrarys = [];
+        this.state.selected = [];
         // this.state.oldLibrarys = 
         for(let o of lib) {
           o.id = parseInt(o.id);
           o["dataSets"] = [];
-          this.state.activeLib.push({id: o.id, active: 1})
+          this.state.activeLib.push({id: o.id, active: 1});
           this.state.selected.push(o.id);
           this.state.oldLibrarys.push(o);
         }
@@ -184,9 +187,7 @@ export default new Vuex.Store({
           activeLibs: this.state.activeLib
         }
       }).then((res) => {
-        if(res.data.data.changeLib) {
-          lib.id = res.data.data.changeLib;
-        }
+        
       });
     },
     getLibrarys({commit}, {currentLib, boolTree}) {
@@ -416,8 +417,8 @@ export default new Vuex.Store({
     },
     setTree({commit}, {tree}) {
       if(this.state.currentTree.name) {
-        console.log(tree.children)
-        console.log(this.state.currentTree)
+        // console.log(tree.children)
+        // console.log(this.state.currentTree)
         axios.post('http://10.1.100.170:4000', {
           query:`
             mutation ChangeTree($tree: [inputTree], $treeLibrary: inputTreeLibrary) {
@@ -431,6 +432,18 @@ export default new Vuex.Store({
         });
       }
       
+    },
+    deleteTree({commit}, {treeID}) {
+      axios.post('http://10.1.100.170:4000', {
+        query:`
+          mutation DeleteTree($treeID: ID!) {
+            deleteTree(treeID: $treeID)
+          }        
+        `, 
+        variables: {
+          treeID
+        }
+      });
     }
   },
   getters: {
