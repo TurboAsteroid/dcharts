@@ -70,6 +70,9 @@ export default {
         dialogAddLibrary,
         dialogCreateLibrary
     },
+    mounted() {
+        this.$store.dispatch('getActiveLibrarys');
+    },
     methods: {
         addLib() {
             this.$store.commit('changeDialogLibrary', { boolAdd: true })

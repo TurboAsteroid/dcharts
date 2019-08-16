@@ -203,7 +203,13 @@ const changeTree = async (_, {tree, treeLibrary}, {connect}) => {
         }
     }
 };
-
+const deleteTree = async (_, {treeID}, {connect}) => {
+    try {
+        await connect.execute(`DELETE FROM trees_library WHERE id = ${treeID}`);
+    } catch(e) {
+        console.log(e);
+    }
+}
 
 /////////////////////////////////////////////////////////
 // const createNewNote = async (_, {data}, {connect}) => {
@@ -335,7 +341,8 @@ module.exports = {
     changeLib,
     deleteLibrarysOrDataSets,
     activationLib,
-    changeTree
+    changeTree,
+    deleteTree,
 /////////////////////
     // createNewNote,
     // updateNote,

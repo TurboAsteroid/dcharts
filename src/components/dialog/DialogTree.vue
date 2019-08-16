@@ -14,9 +14,14 @@
                         <!-- <v-btn outline dark small @click="addTree()" color="info">Создать новый отчет</v-btn> -->
                     </v-flex>
                     <v-flex xs2>
-                        <v-btn outline fab dark small color="grey" @click="closeDialog()">
-                            <v-icon dark>close</v-icon>
-                        </v-btn>
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-btn outline fab dark small color="grey" @click="closeDialog()" v-on="on">
+                                    <v-icon dark>close</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Отмена</span>
+                        </v-tooltip>
                     </v-flex>
                 </v-layout>
             </v-card-title>
@@ -37,10 +42,14 @@
                                     <v-list-tile-title>{{ item.name }}</v-list-tile-title>
                                     <v-list-tile-sub-title>{{ item.date }}</v-list-tile-sub-title>
                                 </v-list-tile-content>
-
-                                <v-btn fab outline dark small color="red" @click="removeRow(index)">
-                                <v-icon dark>delete</v-icon>
-                            </v-btn>
+                                <v-tooltip bottom>
+                                    <template v-slot:activator="{ on }">
+                                        <v-btn fab outline dark small color="red" @click="removeRow(index, item)" v-on="on">
+                                            <v-icon dark>delete</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>Удалить отчет</span>
+                                </v-tooltip>
                             </v-list-tile>
                             <v-divider v-if="index !== treesLibrary.length - 1"></v-divider>
                         </v-flex>
@@ -68,8 +77,10 @@ export default {
             this.$store.commit('changeDialogTree',{bool: false, value: item})
             this.$store.dispatch('getTree', {treeID: item.id})
         },
-        removeRow (i) {
+        removeRow (i, item) {
+            console.log(item)
             let trees = this.treesLibrary.splice(i, 1)
+            this.$store.dispatch('deleteTree', {treeID: item.id})
             // this.$store.dispatch('setTree', { boolDelete: true, deleteTree: trees })
         },
         // addTree() { 
