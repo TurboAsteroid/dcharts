@@ -6,44 +6,27 @@
         permanent>
           <v-toolbar>
           </v-toolbar>
-          <v-list dense class="pt-0">
-            <v-treeview 
-            :items="items"
-            open-all
-            activatable
+          <v-list dense class="pt-3">
+            <tree 
+              :tree-data="report"
             >
-              <template slot="label" slot-scope="{ item }">
-                  <router-link
-                      tag="div"
-                      :to="{ path: '/report/' + item.id, query: {
-                        obj: item
-                      }}" 
-                      class="link">
-                          {{ item.name }}
-                  </router-link>
-              </template>
-              <template v-slot:prepend="{ item }" >
-                <v-icon :color="item.status">
-                  {{ status[item.status] }}
-                </v-icon>
-              </template>
-            </v-treeview>
+            </tree>
           </v-list>
         </v-navigation-drawer>
-        <!-- <v-content> -->
-          <v-container>
-            <!-- <v-layout> -->
+          <v-container style="margin: 0px 0px;">
             <router-view name="charts"></router-view>
-
-            <!-- </v-layout> -->
-
           </v-container>
-        <!-- </v-content> -->
     </v-app>
 </template>
 
 <script>
+import Tree from "./tree/Tree";
+
+
 export default {
+    components: {
+      Tree
+    },
     data () {
         return {
           status:{
@@ -126,13 +109,22 @@ export default {
         }
     },
     mounted(){
+    if(!this.$store.state.treesLibrary.length) {      
+      this.$store.dispatch('getTreesLibrary');
+      this.$store.dispatch('getTree', {getLastTree: true})
+    }
         this.$router.replace('/report')
     },
     methods: {
-        currentLink(item) {
-            console.log(item)
-            this.$store.state.currentDashbord = item
-        }
+      currentLink(item) {
+        console.log(item)
+        this.$store.state.currentDashbord = item
+      }
+    },
+    computed: {
+      report() {
+        return this.$store.state.report.children
+      }
     }
 }
 </script>

@@ -4,11 +4,16 @@ const { reactiveProp } = mixins
 export default {
   extends: Pie,
   mixins: [reactiveProp],
-  props: ['options'],
+  props: ['options', 'chartData'],
+  watch: {
+    chartData() {
+      return this.renderChart(this.chartData, this.options)
+    }
+  },
   mounted () {
-    // this.chartData is created in the mixin.
-    // If you want to pass options please create a local options object
-
-    this.renderChart(this.chartData, this.options)
+    this.chartData ? this.renderChart({
+      labels: this.chartData.labels,
+      datasets: this.chartData.datasets
+    }, this.options) : {}
   }
 }
