@@ -15,6 +15,7 @@ export default new Vuex.Store({
     activeLib: [],
 
     dialogTree: false,
+    dialogAlert: false,
     dialogAddLibrary: false,
     setting: false,
     create: false,
@@ -46,8 +47,11 @@ export default new Vuex.Store({
     
   },
   mutations: {
-    changeDialogTree:(state, {bool, value}) => {
-      state.dialogTree = bool;
+    changeDialogTree:(state, {bool, boolAlert, value}) => {
+      bool !== undefined ? state.dialogTree = bool : {};
+      if(boolAlert !== undefined) {
+        state.dialogAlert = boolAlert;
+      }
       if (value) {
         state.currentTree = value;
         state.report = {
@@ -60,6 +64,7 @@ export default new Vuex.Store({
     },
     changeDialogLibrary:(state, {boolAdd, boolSetting, boolCreate, newLibrary, deleteLibrary, valueSetting}) => {
       if(boolAdd !== undefined) {
+        state.dialogAlert = false;
         state.dialogAddLibrary = boolAdd;
       }
       if(boolSetting !== undefined) {
@@ -100,7 +105,7 @@ export default new Vuex.Store({
     addLibrarys: (state) => {
       let result = [],
           activeLib = [];
-
+      // console.log(state.selected)
       for(let o of state.selected) {
         let lib = state.librarysList.find(x => x.id === o);
         lib.active = true;
@@ -114,7 +119,7 @@ export default new Vuex.Store({
         }
       });
       // console.log(result)
-      state.oldLibrarys = result;
+      state.oldLibrarys = Object.assign([], result);
       state.activeLib = activeLib;
     },
     librarys: (state, data) => {
@@ -129,7 +134,7 @@ export default new Vuex.Store({
   actions: {
     getActiveLibrarys({commit}) {
       // console.log('dsf')
-      axios.post('http://10.1.100.170:4000', {
+      axios.post('http://localhost:4000', {
         query: 
           `query {
               getActiveLibrarys {
@@ -154,7 +159,7 @@ export default new Vuex.Store({
       });
     },
     getLibrarysList({commit}) {
-      return axios.post('http://10.1.100.170:4000', {
+      return axios.post('http://localhost:4000', {
         query: 
           `query {
               getLibrarysList {
@@ -165,18 +170,21 @@ export default new Vuex.Store({
               }
           }`
       }).then((res) => {
-        // this.state.selectedLibrary = []
-        // console.log(res)
         let libList = res.data.data.getLibrarysList;
+        this.state.selected = []
+        
         for(let o of libList) {
           o.id = parseInt(o.id);
           o["dataSets"] = [];
+          o.active ? this.state.selected.push(o.id) : '';
         }
-        this.state.librarysList = libList;
+        this.state.librarysList = Object.assign([], libList);
+        console.log(this.state.librarysList)
+
       }); 
     },
-    activationLibrarys({commit},) {
-      axios.post('http://10.1.100.170:4000', {
+    activationLibrarys({dispatch, commit},) {
+      axios.post('http://localhost:4000', {
         query:
           `mutation ActivationLibrary(
             $activeLibs: [inputActiveLibrary]
@@ -187,14 +195,23 @@ export default new Vuex.Store({
           activeLibs: this.state.activeLib
         }
       }).then((res) => {
-        
+        if(this.state.currentTree.addLib) {
+          let currentTree = this.state.treesLibrary[this.state.treesLibrary.findIndex(x => x.id === this.state.currentTree.id)];
+          this.state.currentTree = {
+            id: currentTree.id,
+            name: currentTree.name,
+            date: currentTree.date
+          };
+          delete this.state.currentTree.addLib;
+          dispatch('getTree',{tree: currentTree});
+        }
       });
     },
     getLibrarys({commit}, {currentLib, boolTree}) {
       let LibID = !currentLib.source ? [parseInt(currentLib.id)] : null,
           linkLibID = currentLib.source ? [parseInt(currentLib.id)] : null;
 
-      axios.post('http://10.1.100.170:4000', {
+      axios.post('http://localhost:4000', {
         query:
           `query GetSelectedLibrary(
               $LibID: [Int], 
@@ -306,7 +323,7 @@ export default new Vuex.Store({
         }
       }
 
-      axios.post('http://10.1.100.170:4000', {
+      axios.post('http://localhost:4000', {
         query:
           `mutation ChangeLibrary(
             $library: inputLibrary
@@ -328,7 +345,7 @@ export default new Vuex.Store({
         commit('changeDialogLibrary',{ boolCreateSetting: false });
       }
 
-      axios.post('http://10.1.100.170:4000', {
+      axios.post('http://localhost:4000', {
         query: `
           mutation DeleteLibrarysOtDataSets($libID: Int, $datasetID: [Int])  {
             deleteLibrarysOrDataSets(libID: $libID, datasetID: $datasetID)
@@ -341,7 +358,7 @@ export default new Vuex.Store({
       });
     },
     getTreesLibrary({commit}) {
-      axios.post('http://10.1.100.170:4000', {
+      axios.post('http://localhost:4000', {
         query:`
           query {
             getTreesLibrary {
@@ -358,15 +375,12 @@ export default new Vuex.Store({
       });
     },
     getTree({dispatch, commit},{tree, getLastTree}) {
-      // console.log(tree)
       let treeID;
       let report;
       if(tree) {
         treeID = tree.id;
       }
-      
-      // console.log(treeID)
-      axios.post('http://10.1.100.170:4000', {
+      axios.post('http://localhost:4000', {
         query: `
           query GetTree($treeID: Int, $lastTree: Boolean){
             getTree(treeID: $treeID, lastTree: $lastTree) {
@@ -389,7 +403,7 @@ export default new Vuex.Store({
                 }
               }  
             }
-            getLibraryIdInTree(treeID: $treeID)
+            getLibraryIdInTree(treeID: $treeID, lastTree: $lastTree)
           }
           fragment dataSet on DataSet {
             id
@@ -413,8 +427,6 @@ export default new Vuex.Store({
           lastTree: getLastTree || false
         }
       }).then(res => {
-        // console.log(res.data.data.getLibraryIdInTree)
-
         this.state.oldLibrarys = res.data.data.getTree;
         report = {
           id: 0,
@@ -423,36 +435,42 @@ export default new Vuex.Store({
           children:[],
           librarysID: res.data.data.getLibraryIdInTree
         };
-        // console.log(this.state.oldLibrarys)
-        addElementsInTree(report, this.state.oldLibrarys);
-        if(getLastTree && this.state.treesLibrary.length) {
+        addElementsInTree(report, { data: this.state.oldLibrarys });
+        // if(getLastTree && this.state.oldLibrarys.length) {
           let lastTree = this.state.treesLibrary[this.state.treesLibrary.length - 1];
           this.state.currentTree = {
             id: lastTree.id,
             name: lastTree.name,
             date: lastTree.date
           };
-        }
+        // }
       }).then(() => {
 
-        if(!report.children.length) {
+        if(!report.children.length || report.children.length !== report.librarysID.length) {
           dispatch('getLibrarysList').then(() => {
             if(this.state.librarysList.length) {
-              this.state.selected = []
+              this.state.selected = [];
+              let libList = [];
+
               report.librarysID.forEach(x => {
-                this.state.librarysList.splice(
-                  this.state.librarysList.findIndex(i => i.id !== x),
-                  1
-                );
+                libList.push(this.state.librarysList.find(i => i.id === x));
               });
+              libList.forEach(x => {
+                x.active ? this.state.selected.push(x.id) : {}
+              });
+              this.state.librarysList = Object.assign([], libList);
+              commit('changeDialogTree', { boolAlert: true });
+              // commit('changeDialogLibrary', { boolAdd: true });
               
-              // console.log(this.state.librarysList)
-              // commit('changeDialogTree',{bool: false});
-              commit('changeDialogLibrary', { boolAdd: true });
+              if (treeID) {
+                this.state.currentTree.id = treeID;
+                this.state.currentTree.name = tree.name;
+              }
+              this.state.currentTree.addLib = true;
             }
           });
         } else {
-          commit('changeDialogTree',{bool: false, value: tree});
+          commit('changeDialogTree',{ bool: false, value: tree });
           this.state.report = report;
         }
       }).catch(e => console.error(e.message));
@@ -461,7 +479,7 @@ export default new Vuex.Store({
       if(this.state.currentTree.name) {
         // console.log(tree.children)
         // console.log(this.state.currentTree)
-        axios.post('http://10.1.100.170:4000', {
+        axios.post('http://localhost:4000', {
           query:`
             mutation ChangeTree($tree: [inputTree], $treeLibrary: inputTreeLibrary) {
               changeTree(tree: $tree, treeLibrary: $treeLibrary)
@@ -476,7 +494,7 @@ export default new Vuex.Store({
       
     },
     deleteTree({commit}, {treeID}) {
-      axios.post('http://10.1.100.170:4000', {
+      axios.post('http://localhost:4000', {
         query:`
           mutation DeleteTree($treeID: ID!) {
             deleteTree(treeID: $treeID)

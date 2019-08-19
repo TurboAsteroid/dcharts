@@ -1,4 +1,5 @@
 <template>
+<div>
     <v-dialog
         persistent
         v-model="$store.state.dialogTree"
@@ -42,6 +43,14 @@
                                     <v-list-tile-title>{{ item.name }}</v-list-tile-title>
                                     <v-list-tile-sub-title>{{ item.date }}</v-list-tile-sub-title>
                                 </v-list-tile-content>
+                                <!-- <v-alert
+                                    v-model="a"
+                                    :value="alert"
+                                    type="success"
+                                    transition="scale-transition"
+                                >
+                                    This is a success alert.
+                                </v-alert> -->
                                 <v-tooltip bottom>
                                     <template v-slot:activator="{ on }">
                                         <v-btn fab outline dark small color="red" @click="removeRow(index, item)" v-on="on">
@@ -62,7 +71,78 @@
                 </v-list>
             </v-card-text>
         </v-card>
-      </v-dialog>
+    </v-dialog>
+    <v-dialog 
+        v-model="$store.state.dialogAlert" 
+        max-width="540px"
+        >
+        <v-card>
+            <v-card-title style="padding: 5px 10px;">
+              <v-layout row align-center>
+                    <!-- <v-flex xs1>
+                        <v-icon large color="red">{{'warning'}}</v-icon>
+
+                    </v-flex> -->
+                    <v-flex xs10>
+                        <v-text-field
+                            :value = currentTree.name
+                            label="Имя отчета"
+                            readonly
+                            class="headline"
+                        ></v-text-field>
+                    </v-flex>
+              </v-layout>
+            </v-card-title>
+          <v-divider></v-divider>
+
+          <v-card-text>
+              <v-layout row align-center justify-center>
+                      <v-flex xs1>
+                        <v-icon large color="red">{{'warning'}}</v-icon>
+                      </v-flex>
+                    <v-flex xs11 ml-2>
+                        <p class="text-uppercase">
+                            В коллекции отсутствуют библиотеки, ИСПОЛЬЗУЕМЫЕ В ОТЧЕТЕ
+                        </p>
+                        <p class="text-uppercase">
+                            Для использования отчета необходимо выбрать недостающие библиотеки
+                        </p>
+                    </v-flex>
+              </v-layout>
+          </v-card-text>
+          <!-- <v-divider></v-divider> -->
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-layout>
+                <v-flex xs5>
+                    <v-btn 
+                        outline
+                        block
+                        small
+                        color="primary" 
+                        flat 
+                        @click="$store.commit('changeDialogTree', {boolAlert: false, bool: true})"
+                    >
+                        Выбор отчета</v-btn>
+                </v-flex>
+                <v-spacer></v-spacer>
+                <v-flex xs5>
+                    <v-btn 
+                        outline
+                        small
+                        block
+                        color="success" 
+                        flat 
+                        @click="$store.commit('changeDialogLibrary', { boolAdd: true })"
+                    >
+                        Выбор библиотек</v-btn>
+                </v-flex>
+            </v-layout>
+            
+          </v-card-actions>
+        </v-card>
+    </v-dialog>
+</div>
 </template>
 
 <script>
@@ -74,7 +154,6 @@ export default {
             this.$store.commit('changeDialogTree',{bool: false})
         },
         toggle(item) {
-            // this.$store.commit('changeDialogTree',{bool: false, value: item})
             this.$store.dispatch('getTree', {tree: item})
         },
         removeRow (i, item) {
@@ -85,11 +164,16 @@ export default {
     computed: {
         treesLibrary() {
             return this.$store.state.treesLibrary
+        },
+        currentTree() {
+            return this.$store.state.currentTree
         }
     }
 }
 </script>
 
 <style>
-
+    .paddingAlert {
+        padding-bottom: 0; 
+    }
 </style>

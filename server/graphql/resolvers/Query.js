@@ -166,15 +166,25 @@ const getTree = async (_, {treeID, lastTree}, {connect}) => {
         console.log(e);
     }
 };
-const getLibraryIdInTree = async (_, {treeID}, {connect}) => {
+const getLibraryIdInTree = async (_, {treeID, lastTree}, {connect}) => {
     // console.log(treeID)
     try{
+        let id;
+        if(lastTree) {
+            [lastTreeId] = await connect.execute(`
+                SELECT MAX( id ) FROM trees_library;
+            `);
+            id = lastTreeId[0]['MAX( id )'];
+        } else {
+            id = treeID;
+        }
+        // let tree = [];
         let [tree] = await connect.execute(`
             SELECT
                 id,
                 library_id
             FROM trees
-            WHERE tree_id = ${treeID}
+            WHERE tree_id = ${id}
         `);
         let templateLibs = [];
         for(let tr of Object.keys(tree)) {

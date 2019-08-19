@@ -1,12 +1,21 @@
-function addElementsInTree(report, data) {
+function addElementsInTree(report, { data, addedData }) {
     let tmp;
-    for(let o of data) {
-        if(o.inTree) {
-        tmp = Object.assign({}, o);
-        tmp.children = [];
-        report.children.push(tmp);
+    if (data) {
+        for(let o of data) {
+            if(o.inTree) {
+            tmp = Object.assign({}, o);
+            tmp.children = [];
+            report.children.push(tmp);
+            }
+        }
+    } else if (addedData) {
+        for(let o of addedData) {
+            tmp = Object.assign({}, o);
+            tmp.children = [];
+            report.children.push(tmp);
         }
     }
+    
     report.children.forEach(x => {
         recurse(x, x.dataSets);
     });
