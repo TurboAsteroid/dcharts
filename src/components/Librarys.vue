@@ -75,6 +75,8 @@ export default {
     },
     methods: {
         addLib() {
+            this.$store.state.selected = []
+            this.$store.state.currentTree.addLib = false
             this.$store.commit('changeDialogLibrary', { boolAdd: true })
             this.$store.dispatch('getLibrarysList');
         },

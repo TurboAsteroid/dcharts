@@ -24,7 +24,7 @@
                   <v-card-title>
                     <v-text-field
                       v-model="$store.state.currentTree.name"
-                      label="Имя дерева"
+                      label="Имя отчета"
                     ></v-text-field>
                   </v-card-title>
                 </v-flex>
@@ -277,11 +277,17 @@ export default {
     result:[],
   }),
   mounted () {
-    console.log(this.$store.state.treesLibrary.length)
-    if(!this.$store.state.treesLibrary.length) {
+    // console.log(this.$store.state.treesLibrary.length)
+    // if(!this.$store.state.treesLibrary.length) {
+      this.$store.state.report = {
+          id: 0,
+          data:[],
+          name:'Библиотеки',
+          children:[],
+      };
       this.$store.dispatch('getTreesLibrary');
       this.$store.dispatch('getTree', {getLastTree: true})
-    }
+    // }
     
 
     // if(this.$store.state.oldLibrarys) {

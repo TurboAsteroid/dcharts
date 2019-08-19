@@ -82,6 +82,9 @@ export default {
     data:() => ({
         selected: []
     }),
+    // mounted() {
+    //     this.$store.state.selected = []
+    // },
     methods: {
         getSelected(item) {
             if(item.active) {
@@ -92,20 +95,14 @@ export default {
         },
         addLib() {
             
-            // console.log(this.selectedLib)
-            // console.log(this.selected)
             this.$store.commit('changeDialogLibrary',{ boolAdd: false })
             this.$store.commit('changeDialogTree',{bool: false});
 
             this.$store.commit('addLibrarys')
-            this.$store.dispatch('activationLibrarys');
-
-            // this.$store.commit('addLib', { addLib: this.selectedLibrary})
-
-            // this.$store.dispatch('getLibrarys', {selectedLib: this.selected})
-            // this.selected = []
+            this.$store.dispatch('activationLibrarys',);
         },
         closeDialog() {
+            // this.$store.commit('changeDialogTree', {boolAlert: false})
             this.$store.commit('changeDialogLibrary',{ boolAdd: false })
             this.$store.state.selected = this.selectedLib
         }

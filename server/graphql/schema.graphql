@@ -4,7 +4,7 @@ type Query {
     getLibrarys(LibID: [Int]): [Librarys]
     getTreesLibrary:[treesLibrary]
     getTree(treeID: Int, lastTree: Boolean): [Librarys]
-    getLibraryIdInTree(treeID: Int) : [Int]
+    getLibraryIdInTree(treeID: Int, lastTree: Boolean) : [Int]
 }
 type Mutation {
     activationLib(activeLibs: [inputActiveLibrary]) : String
