@@ -197,9 +197,9 @@ const getLibraryIdInTree = async (_, {treeID, lastTree}, {connect}) => {
     } catch(e) {
         console.log(e)
     }
-    
-    
-
+};
+const getData = async () => {
+    return {};
 };
 
 /////////////////////////////////////////////////////////
@@ -329,7 +329,8 @@ module.exports = {
     getLibrarys,
     getTreesLibrary,
     getTree,
-    getLibraryIdInTree
+    getLibraryIdInTree,
+    getData,
 //////////////////////////
     // getLibrary,
     // getDataByParametr,

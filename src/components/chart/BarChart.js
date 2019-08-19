@@ -4,14 +4,20 @@ const { reactiveProp } = mixins
 export default {
   extends: Bar,
   mixins: [reactiveProp],
-  props: ['options'],
-  mounted () {
-    // this.chartData is created in the mixin.
-    // If you want to pass options please create a local options object
-    
-    this.renderChart({
+  props: ['options','chartData'],
+  watch: {
+    chartData() {
+      return this.renderChart({
+        labels: this.chartData.labels,
+        datasets: this.chartData.datasets.concat([this.chartData.top], [this.chartData.bot])
+      }, this.options);
+    }
+  },
+  mounted() {
+    // console.log(this.chartData)
+    this.chartData ? this.renderChart({
       labels: this.chartData.labels,
-      datasets: this.chartData.datasets.concat([this.chartData.top], [this.chartData.bot])
-    }, this.options)
+      datasets: this.chartData.datasets ? this.chartData.datasets.concat([this.chartData.top], [this.chartData.bot]) : {}
+    }, this.options) : {};
   }
-}
+};

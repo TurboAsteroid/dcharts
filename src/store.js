@@ -134,7 +134,7 @@ export default new Vuex.Store({
   actions: {
     getActiveLibrarys({commit}) {
       // console.log('dsf')
-      axios.post('http://localhost:4000', {
+      axios.post('http://10.1.100.170:4000', {
         query: 
           `query {
               getActiveLibrarys {
@@ -159,7 +159,7 @@ export default new Vuex.Store({
       });
     },
     getLibrarysList({commit}) {
-      return axios.post('http://localhost:4000', {
+      return axios.post('http://10.1.100.170:4000', {
         query: 
           `query {
               getLibrarysList {
@@ -184,7 +184,7 @@ export default new Vuex.Store({
       }); 
     },
     activationLibrarys({dispatch, commit},) {
-      axios.post('http://localhost:4000', {
+      axios.post('http://10.1.100.170:4000', {
         query:
           `mutation ActivationLibrary(
             $activeLibs: [inputActiveLibrary]
@@ -211,7 +211,7 @@ export default new Vuex.Store({
       let LibID = !currentLib.source ? [parseInt(currentLib.id)] : null,
           linkLibID = currentLib.source ? [parseInt(currentLib.id)] : null;
 
-      axios.post('http://localhost:4000', {
+      axios.post('http://10.1.100.170:4000', {
         query:
           `query GetSelectedLibrary(
               $LibID: [Int], 
@@ -323,7 +323,7 @@ export default new Vuex.Store({
         }
       }
 
-      axios.post('http://localhost:4000', {
+      axios.post('http://10.1.100.170:4000', {
         query:
           `mutation ChangeLibrary(
             $library: inputLibrary
@@ -345,7 +345,7 @@ export default new Vuex.Store({
         commit('changeDialogLibrary',{ boolCreateSetting: false });
       }
 
-      axios.post('http://localhost:4000', {
+      axios.post('http://10.1.100.170:4000', {
         query: `
           mutation DeleteLibrarysOtDataSets($libID: Int, $datasetID: [Int])  {
             deleteLibrarysOrDataSets(libID: $libID, datasetID: $datasetID)
@@ -358,7 +358,7 @@ export default new Vuex.Store({
       });
     },
     getTreesLibrary({commit}) {
-      axios.post('http://localhost:4000', {
+      axios.post('http://10.1.100.170:4000', {
         query:`
           query {
             getTreesLibrary {
@@ -380,7 +380,7 @@ export default new Vuex.Store({
       if(tree) {
         treeID = tree.id;
       }
-      axios.post('http://localhost:4000', {
+      axios.post('http://10.1.100.170:4000', {
         query: `
           query GetTree($treeID: Int, $lastTree: Boolean){
             getTree(treeID: $treeID, lastTree: $lastTree) {
@@ -479,7 +479,7 @@ export default new Vuex.Store({
       if(this.state.currentTree.name) {
         // console.log(tree.children)
         // console.log(this.state.currentTree)
-        axios.post('http://localhost:4000', {
+        axios.post('http://10.1.100.170:4000', {
           query:`
             mutation ChangeTree($tree: [inputTree], $treeLibrary: inputTreeLibrary) {
               changeTree(tree: $tree, treeLibrary: $treeLibrary)
@@ -494,7 +494,7 @@ export default new Vuex.Store({
       
     },
     deleteTree({commit}, {treeID}) {
-      axios.post('http://localhost:4000', {
+      axios.post('http://10.1.100.170:4000', {
         query:`
           mutation DeleteTree($treeID: ID!) {
             deleteTree(treeID: $treeID)
@@ -504,7 +504,55 @@ export default new Vuex.Store({
           treeID
         }
       });
-    }
+    },
+
+    getDataByParametr({}, {currentNode, link}) {
+      let currentLink = link.split('.'),
+        source = currentLink[0],
+        parametr = currentLink[1];
+      // let links = sortLinks(report),
+      //     param = links.find(x => x.linkSource === "Salary"),
+      //     result = {};
+
+      // if(links.length !== 0) {
+        return axios.post('http://localhost:4000', {
+          query:` 
+            query GetData (
+              $salary: String, 
+              $salaryBool: Boolean!
+            ){
+                getData (
+                  salary: $salary, 
+                  salaryBool: $salaryBool
+                ){
+                    getSalary(salary: $salary) @include(if: $salaryBool){
+                      id
+                      data
+                      labels
+                    }
+                }
+            }
+          `,
+          variables:{
+            // salary: param.linkParametr,
+            // salaryBool: links.some(x => x.linkSource === "Salary")
+            salary: parametr,
+            salaryBool: source === "Salary"
+          }
+        }).then(res => {
+          let addData = res.data.data.getData.getSalary[0];
+          console.log(addData)
+          currentNode.data = addData.data;
+          currentNode.labels = addData.labels;
+          // for(let o of Object.keys(addData)) {
+          //   console.log(...addData[o])
+          //   // result = addDataToReport(report, addData[o]);
+          // }
+          // this.state.report = result;
+        });
+      // }
+    },
+
   },
   getters: {
     oldLibrarys: state => state.oldLibrarys,

@@ -5,6 +5,8 @@ type Query {
     getTreesLibrary:[treesLibrary]
     getTree(treeID: Int, lastTree: Boolean): [Librarys]
     getLibraryIdInTree(treeID: Int, lastTree: Boolean) : [Int]
+
+    getData(salary: String, salaryBool: Boolean!): dataSource
 }
 type Mutation {
     activationLib(activeLibs: [inputActiveLibrary]) : String
@@ -62,6 +64,16 @@ type treesLibrary {
     date: String
     levels: Int
 }
+type dataSource {
+    getSalary(salary: String): [DataParametrs]
+}
+type DataParametrs {
+    id: ID
+    data: [Int]
+    labels: [String]
+}
+
+
 
 input inputLibrary {
     id: ID!

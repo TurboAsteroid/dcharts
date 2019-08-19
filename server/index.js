@@ -162,20 +162,21 @@ const resolvers = {
     //         return parent.children;
     //     }
     // },
-    // dataSource: {
-    //     getSalary: async (parent, {salary}) => {
-    //         try {
-    //             // let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=${parametr}&date=${createDate(12)}`, {agent}); // !!!!!
-    //             let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=company,sex,platform,byAge&date=${createDate(6)}`, {agent});
-    //             let data = await response.json();
-    //             let restructData = restructJSON(data);
-    //             let findData = getDataByParametr(restructData, salary);
-    //             return findData
-    //         } catch (e) {
-    //             console.log(e.message);
-    //         }
-    //     }
-    // }
+    dataSource: {
+        getSalary: async (parent, {salary}) => {
+            try {
+                // let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=${parametr}&date=${createDate(12)}`, {agent}); // !!!!!
+                let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=company,sex,platform,byAge&date=${createDate(6)}`, {agent});
+                let data = await response.json();
+                let restructData = restructJSON(data);
+                let findData = getDataByParametr(restructData, salary);
+                console.log(findData)
+                return findData
+            } catch (e) {
+                console.log(e.message);
+            }
+        }
+    }
 }
 const server = new GraphQLServer({
     typeDefs: './server/graphql/schema.graphql',

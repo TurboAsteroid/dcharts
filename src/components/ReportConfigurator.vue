@@ -278,7 +278,7 @@ export default {
   }),
   mounted () {
     // console.log(this.$store.state.treesLibrary.length)
-    // if(!this.$store.state.treesLibrary.length) {
+    if(!this.$store.state.treesLibrary.length) {
       this.$store.state.report = {
           id: 0,
           data:[],
@@ -287,7 +287,7 @@ export default {
       };
       this.$store.dispatch('getTreesLibrary');
       this.$store.dispatch('getTree', {getLastTree: true})
-    // }
+    }
     
 
     // if(this.$store.state.oldLibrarys) {
