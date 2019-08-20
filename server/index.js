@@ -10,13 +10,11 @@ const createDate = require('./modules/date');
 const restructJSON = require('./modules/restructJSON');
 const getDataByParametr = require('./modules/getDataByParametr');
 const createTree = require('./modules/createTree');
+const createStatus = require('./modules/createStatus');
 
 const Query = require('./graphql/resolvers/Query');
 const Mutation = require('./graphql/resolvers/Mutation');
 
-const createStatus = (linkTree) => {
-    
-};
 const getDataForTree = async (parent, linkTree) => {
     let source  = parent.source,
         parametrs = [],
@@ -95,7 +93,7 @@ const resolvers = {
                     let data = [];
                     for(let o of dataSetLib) {
                         if (o.id != 0) {
-                            data.push({
+                            let idx = data.push({
                                 id: o.id,
                                 name: o.name,
                                 data: o.data ? o.data.split(',').map(x => JSON.parse(x)) : [],
@@ -109,6 +107,7 @@ const resolvers = {
                                     label: o.val2 ? o.val2.split(',')[1] : 'max'
                                 },
                             });
+                            createStatus(data[idx - 1]);
                         }
                     }
                     if(parent.dataset_id) {
@@ -173,7 +172,6 @@ const resolvers = {
                         }
                         
                         linkTree = await getDataForTree(parent, linkTree);
-                        createStatus(linkTree);
                     }
                     
                     const [dataSetLib] = await connect.execute(`
@@ -200,7 +198,7 @@ const resolvers = {
                     // console.log('dataSetLib', dataSetLib)
                     let result = createTree(linkTree, parent.link_id);
                     for(let o of dataSetLib) {
-                        result.children.push({
+                        let idx = result.children.push({
                             id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
                             datasetID: o.id,
                             name: o.name,
@@ -217,6 +215,7 @@ const resolvers = {
                             link: o.link_name || '',
                             children:[]
                         });
+                        createStatus(result.children[idx - 1]);
                     }
                     if(parent.dataset_id) {
                         result.children.forEach(x => {

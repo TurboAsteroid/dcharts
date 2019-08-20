@@ -55,9 +55,13 @@ type DataSet {
     link: String
     inTree: Boolean
     children:[DataSet]
+    status: Status
     # dataReport: DataParametrs
 }
-
+type Status {
+    icon: String
+    iconClass: String
+}
 type Value {
     value: Int
     label: String

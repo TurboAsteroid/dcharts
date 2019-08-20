@@ -1,4 +1,4 @@
-
+const createStatus = require('./createStatus');
 let dataLib = []
 function createTree(tree, link_id) {
     
@@ -22,7 +22,7 @@ function createTree(tree, link_id) {
     }
     for(let o of tree) {
         if (o.id != 0) { 
-            dataLib.push({
+            let idx = dataLib.push({
                 id: parseInt(o.id),
                 // datasetID: '',
                 name: o.name,
@@ -41,6 +41,7 @@ function createTree(tree, link_id) {
                 link: o.link_name,
                 children:[],
             });
+            createStatus(dataLib[idx - 1]);
         } 
         if(link_id) {
             dataLib.forEach(x => {

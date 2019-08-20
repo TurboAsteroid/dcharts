@@ -21,7 +21,11 @@ export default {
 
 <style>
 .tree-list ul {
+  list-style-type: none; /* Убираем маркеры */
+
+}
+.tree-list ul {
   padding-left: 20px;
-  margin: 6px 0;
+  margin: 5px 0;
 }
 </style>
