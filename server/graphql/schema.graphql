@@ -10,10 +10,12 @@ type Query {
 }
 type Mutation {
     activationLib(activeLibs: [inputActiveLibrary]) : String
+    activationTree(treeID: ID) : String
     changeLib(library: inputLibrary) : Int
     deleteLibrarysOrDataSets(libID: Int, datasetID: [Int]) : String
     changeTree(tree: [inputTree], treeLibrary: inputTreeLibrary) : String
     deleteTree(treeID: ID!) : String
+
     # changeLinkLib(library: inputLibrary) : String
 
 
@@ -40,7 +42,7 @@ type Librarys {
     source: String
     active: Boolean
     inTree: Boolean
-    dataSets: [DataSet]
+    dataSets(addData: Boolean): [DataSet]
 }
 type DataSet {
     id: ID!
@@ -53,7 +55,9 @@ type DataSet {
     link: String
     inTree: Boolean
     children:[DataSet]
+    # dataReport: DataParametrs
 }
+
 type Value {
     value: Int
     label: String
@@ -63,6 +67,7 @@ type treesLibrary {
     name: String!
     date: String
     levels: Int
+    active: Boolean
 }
 type dataSource {
     getSalary(salary: String): [DataParametrs]

@@ -1,5 +1,4 @@
-function getData(data, parametr) {
-    let source = 'Salary';
+function getData(data, parametr, source) {
     let result = [],
         dataArr = [],
         labelsArr = [];

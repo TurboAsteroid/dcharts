@@ -14,12 +14,60 @@ const createTree = require('./modules/createTree');
 const Query = require('./graphql/resolvers/Query');
 const Mutation = require('./graphql/resolvers/Mutation');
 
+const createStatus = (linkTree) => {
+    
+};
+const getDataForTree = async (parent, linkTree) => {
+    let source  = parent.source,
+        parametrs = [],
+        result;
+
+    linkTree.forEach(x => parametrs.push(x.link_name.split('.')[1]));
+    try {
+        // source === 'Salary' ? result = await getSalary(parametrs, source) : {};
+        // source === 'Cu' ? result = await getCu(parametrs, source) : {};
+        switch(source) {
+            case 'Salary':
+                result = await getSalary(parametrs, source)
+                break;
+            case 'Cu':
+                result = await getCu(parametrs, source)
+                break;
+            default:
+                result = null;
+                break;
+          }
+        result ? linkTree.forEach(x => {
+            x.data = result.filter(i => i.id === x.link_name).map(i => i.data)[0];
+            x.labels = result.filter(i => i.id === x.link_name).map(i => i.labels)[0];
+        }) : {};
+        return linkTree;
+    } catch (e) {
+        console.log(e)
+    }
+};
+const getSalary = async (parametrs, source) => {
+    try {
+        // let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=${parametr}&date=${createDate(12)}`, {agent}); // !!!!!
+        let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=company,sex,platform,byAge&date=${createDate(6)}`, {agent});
+        let data = await response.json();
+        let restructData = restructJSON(data); // промежеуточная функция преобразования данных из API
+        let findData = getDataByParametr(restructData, parametrs, source);
+        return findData;
+    } catch (e) {
+        console.log(e.message);
+    }
+};
+const getCu = async (parametrs) => {
+    // console.log('getCu')
+};
+
 const resolvers = {
     Query,
     Mutation,
 
     Librarys: {
-        dataSets: async (parent, args, {connect}) => {
+        dataSets: async (parent, {addData}, {connect}) => {
             try {
                 if(!parent.source) {
                     let dataSetLib;
@@ -78,24 +126,56 @@ const resolvers = {
                     return data;
                 } else if(parent.source) {
                     // console.log(parent)
-                    const [linkTree] = await connect.execute(`
-                        SELECT
-                            linklib.id,
-                            linklib.name,
-                            linklib.link_name,
-                            linklib.parent_id,
-                            CONCAT(control1.value, ',', control1.label) AS val1,
-                            CONCAT(control2.value, ',', control2.label) AS val2
-                        FROM link_library linklib
-                        LEFT JOIN control_values_links control1 
-                            ON control1.link_id = linklib.id
-                            AND control1.label = 'min'
-                        LEFT JOIN control_values_links control2 
-                            ON control2.link_id = linklib.id
-                            AND control2.label = 'max'
-                        WHERE linklib.library_id = ${parent.id}
-                        GROUP BY linklib.id
-                    `);
+                    let linkTree = []
+                    if(!addData) {
+                        [linkTree] = await connect.execute(`
+                            SELECT
+                                linklib.id,
+                                linklib.name,
+                                linklib.link_name,
+                                linklib.parent_id,
+                                CONCAT(control1.value, ',', control1.label) AS val1,
+                                CONCAT(control2.value, ',', control2.label) AS val2
+                            FROM link_library linklib
+                            LEFT JOIN control_values_links control1 
+                                ON control1.link_id = linklib.id
+                                AND control1.label = 'min'
+                            LEFT JOIN control_values_links control2 
+                                ON control2.link_id = linklib.id
+                                AND control2.label = 'max'
+                            WHERE linklib.library_id = ${parent.id}
+                            GROUP BY linklib.id
+                        `);
+                    } else if(addData && parent.link_id) {
+                    // console.log('parent', parent)
+
+                        for(let o of parent.link_id) {
+                            let [obj] = await connect.execute(`
+                                SELECT
+                                    linklib.id,
+                                    linklib.name,
+                                    linklib.link_name,
+                                    linklib.parent_id,
+                                    CONCAT(control1.value, ',', control1.label) AS val1,
+                                    CONCAT(control2.value, ',', control2.label) AS val2
+                                FROM link_library linklib
+                                LEFT JOIN control_values_links control1 
+                                    ON control1.link_id = linklib.id
+                                    AND control1.label = 'min'
+                                LEFT JOIN control_values_links control2 
+                                    ON control2.link_id = linklib.id
+                                    AND control2.label = 'max'
+                                WHERE linklib.library_id = ${parent.id}
+                                    AND linklib.id = ${o}
+                                GROUP BY linklib.id
+                            `);
+                            linkTree.push(...obj);
+                        }
+                        
+                        linkTree = await getDataForTree(parent, linkTree);
+                        createStatus(linkTree);
+                    }
+                    
                     const [dataSetLib] = await connect.execute(`
                         SELECT
                             libDS.id,
@@ -116,6 +196,8 @@ const resolvers = {
                         WHERE libDS.library_id = ${parent.id}
                         GROUP BY libDS.id
                     `);
+                    // console.log('linkTree', linkTree)
+                    // console.log('dataSetLib', dataSetLib)
                     let result = createTree(linkTree, parent.link_id);
                     for(let o of dataSetLib) {
                         result.children.push({
@@ -145,7 +227,7 @@ const resolvers = {
                         // delete parent.dataset_id;
                         // delete parent.link_id;
                     }
-                    // console.log(result.children)
+                    // console.log('result',result.children)
 
                     return result.children;
                 } 
@@ -154,27 +236,19 @@ const resolvers = {
             }
         }
     },
-
-    
-/////////////////////////////////////
-    // Library:{
-    //     children:(parent, args) => {
-    //         return parent.children;
-    //     }
-    // },
     dataSource: {
-        getSalary: async (parent, {salary}) => {
-            try {
-                // let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=${parametr}&date=${createDate(12)}`, {agent}); // !!!!!
-                let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=company,sex,platform,byAge&date=${createDate(6)}`, {agent});
-                let data = await response.json();
-                let restructData = restructJSON(data);
-                let findData = getDataByParametr(restructData, salary);
-                return findData;
-            } catch (e) {
-                console.log(e.message);
-            }
-        }
+        // getSalary: async (parent, {salary}) => {
+        //     try {
+        //         // let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=${parametr}&date=${createDate(12)}`, {agent}); // !!!!!
+        //         let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=company,sex,platform,byAge&date=${createDate(6)}`, {agent});
+        //         let data = await response.json();
+        //         let restructData = restructJSON(data);
+        //         let findData = getDataByParametr(restructData, salary);
+        //         return findData;
+        //     } catch (e) {
+        //         console.log(e.message);
+        //     }
+        // }
     }
 }
 const server = new GraphQLServer({

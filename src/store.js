@@ -207,6 +207,22 @@ export default new Vuex.Store({
         }
       });
     },
+    activationTree({}, {treeID}) {
+      console.log(treeID)
+      axios.post('http://10.1.100.170:4000', {
+        query:
+          `mutation ActivationTree(
+            $treeID: ID
+          ) {
+            activationTree(treeID: $treeID) 
+          }`,
+        variables: {
+          treeID
+        }
+      }).then(() => {
+
+      });
+    },
     getLibrarys({commit}, {currentLib, boolTree}) {
       let LibID = !currentLib.source ? [parseInt(currentLib.id)] : null,
           linkLibID = currentLib.source ? [parseInt(currentLib.id)] : null;
@@ -366,6 +382,7 @@ export default new Vuex.Store({
               name
               date
               levels
+              active
             }
           }
         `
@@ -374,7 +391,7 @@ export default new Vuex.Store({
         this.state.treesLibrary = res.data.data.getTreesLibrary;
       });
     },
-    getTree({dispatch, commit},{tree, getLastTree}) {
+    getTree({dispatch, commit},{tree, getLastTree, addData}) {
       let treeID;
       let report;
       if(tree) {
@@ -382,14 +399,14 @@ export default new Vuex.Store({
       }
       axios.post('http://10.1.100.170:4000', {
         query: `
-          query GetTree($treeID: Int, $lastTree: Boolean){
+          query GetTree($treeID: Int, $lastTree: Boolean, $addData: Boolean){
             getTree(treeID: $treeID, lastTree: $lastTree) {
               id
               name
               active
               source
               inTree
-              dataSets {
+              dataSets(addData: $addData) {
                 ...dataSet
                 datasetID
                 children {
@@ -424,7 +441,8 @@ export default new Vuex.Store({
         `,
         variables: {
           treeID: parseInt(treeID),
-          lastTree: getLastTree || false
+          lastTree: getLastTree || false,
+          addData: addData || false
         }
       }).then(res => {
         this.state.oldLibrarys = res.data.data.getTree;
@@ -436,14 +454,14 @@ export default new Vuex.Store({
           librarysID: res.data.data.getLibraryIdInTree
         };
         addElementsInTree(report, { data: this.state.oldLibrarys });
-        // if(getLastTree && this.state.oldLibrarys.length) {
-          let lastTree = this.state.treesLibrary[this.state.treesLibrary.length - 1];
+        if(getLastTree && this.state.oldLibrarys.length) {
+          let lastTree = this.state.treesLibrary.find(x => x.active === true);
           this.state.currentTree = {
             id: lastTree.id,
             name: lastTree.name,
             date: lastTree.date
           };
-        // }
+        }
       }).then(() => {
 
         if(!report.children.length || report.children.length !== report.librarysID.length) {
@@ -540,10 +558,10 @@ export default new Vuex.Store({
             salaryBool: source === "Salary"
           }
         }).then(res => {
-          let addData = res.data.data.getData.getSalary[0];
-          console.log(addData)
-          currentNode.data = addData.data;
-          currentNode.labels = addData.labels;
+          // let addData = res.data.data.getData.getSalary[0];
+          // console.log(addData)
+          // currentNode.data = addData.data;
+          // currentNode.labels = addData.labels;
           // for(let o of Object.keys(addData)) {
           //   console.log(...addData[o])
           //   // result = addDataToReport(report, addData[o]);

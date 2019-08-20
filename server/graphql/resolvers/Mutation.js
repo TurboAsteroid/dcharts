@@ -14,6 +14,21 @@ const activationLib = async (_, {activeLibs}, {connect}) => {
         console.log(e.message);
     }
 };
+const activationTree = async (_, {treeID}, {connect}) => {
+    try {
+        await connect.execute(`
+            UPDATE trees_library
+            SET active = 0
+        `)
+        await connect.execute(`
+            UPDATE trees_library
+            SET active = 1
+            WHERE id = ${treeID}
+        `)
+    } catch (e) {
+        console.log(e)
+    }
+}
 // Изменение библиотеки в бд
 const changeLib = async (_, {library}, {connect}) => {
     const lib = library;
@@ -343,6 +358,7 @@ module.exports = {
     activationLib,
     changeTree,
     deleteTree,
+    activationTree,
 /////////////////////
     // createNewNote,
     // updateNote,
