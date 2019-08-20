@@ -26,8 +26,10 @@ function createTree(tree, link_id) {
                 id: parseInt(o.id),
                 // datasetID: '',
                 name: o.name,
-                data: o.data ? o.data.split(',') : [],
-                labels: o.labels ? o.labels.split(',') : [],
+                // data: o.data ? o.data.split(',') : [],
+                // labels: o.labels ? o.labels.split(',') : [],
+                data: o.data && o.data.length ? o.data : [],
+                labels: o.labels && o.labels.length ? o.labels : [],
                 val1:{
                     value: o.val1 ? o.val1.split(',')[0] : 0,
                     label: o.val1 ? o.val1.split(',')[1] : ''

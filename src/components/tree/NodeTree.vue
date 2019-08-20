@@ -43,33 +43,33 @@ export default {
     getCharts(i) {
         // console.log(this.$route)
         // this.active_el = i
-        if(!this.node.data.length && !this.node.labels.length) {
-            this.node.link ? this.$store.dispatch('getDataByParametr', { currentNode: this.node, link: this.node.link }).then(() => {
-                this.datacollections = {}
-                this.fillData(this.node)
-                // this.node.charts =  [
-                //     {
-                //         title: 'Линейная диаграмма',
-                //         active: true
-                //     },
-                //     {
-                //         title: 'Столбчатая диаграмма',
-                //         active: true
-                //     },
-                //     {
-                //         title: 'Круговая диаграмма',
-                //         active: true
-                //     },
-                // ]
-                this.$router.push({ 
-                    path: '/report/' + this.node.id, 
-                    query: { 
-                        obj: this.node ,
-                        dataCollections: Object.assign({},this.datacollections)
-                    } 
-                })
-            }) : {}
-        }
+        // if(!this.node.data.length && !this.node.labels.length) {
+        //     this.node.link ? this.$store.dispatch('getDataByParametr', { currentNode: this.node, link: this.node.link }).then(() => {
+        //         this.datacollections = {}
+        //         this.fillData(this.node)
+        //         // this.node.charts =  [
+        //         //     {
+        //         //         title: 'Линейная диаграмма',
+        //         //         active: true
+        //         //     },
+        //         //     {
+        //         //         title: 'Столбчатая диаграмма',
+        //         //         active: true
+        //         //     },
+        //         //     {
+        //         //         title: 'Круговая диаграмма',
+        //         //         active: true
+        //         //     },
+        //         // ]
+        //         this.$router.push({ 
+        //             path: '/report/' + this.node.id, 
+        //             query: { 
+        //                 obj: this.node ,
+        //                 dataCollections: Object.assign({},this.datacollections)
+        //             } 
+        //         })
+        //     }) : {}
+        // }
         if(this.node.data.length && this.node.labels.length) {
             this.datacollections = {}
             this.fillData(Object.assign({},this.node))

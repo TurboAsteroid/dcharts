@@ -286,7 +286,7 @@ export default {
           children:[],
       };
       this.$store.dispatch('getTreesLibrary');
-      this.$store.dispatch('getTree', {getLastTree: true})
+      this.$store.dispatch('getTree', {getLastTree: true, addData:false})
     }
     
 
@@ -306,7 +306,6 @@ export default {
   methods: {
     addTree() { 
       let newTree = {
-          // id: parseInt(this.libraryTree[this.libraryTree.length - 1].id) + 1,
           id: '',
           name: '',
           date: '31.07.2019'

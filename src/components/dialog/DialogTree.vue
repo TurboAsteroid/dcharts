@@ -154,6 +154,7 @@ export default {
             this.$store.commit('changeDialogTree',{bool: false})
         },
         toggle(item) {
+            this.$store.dispatch('activationTree', {treeID: item.id})
             this.$store.dispatch('getTree', {tree: item})
         },
         removeRow (i, item) {

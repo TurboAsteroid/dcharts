@@ -109,11 +109,11 @@ export default {
         }
     },
     mounted(){
-    if(!this.$store.state.treesLibrary.length) {      
+    // if(!this.$store.state.treesLibrary.length) {      
       this.$store.dispatch('getTreesLibrary');
-      this.$store.dispatch('getTree', {getLastTree: true})
-    }
-        this.$router.replace('/report')
+    // }
+      this.$store.dispatch('getTree', {getLastTree: true, addData: true})
+      this.$router.replace('/report')
     },
     methods: {
       currentLink(item) {
