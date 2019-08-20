@@ -142,9 +142,9 @@ const getTree = async (_, {treeID, lastTree}, {connect}) => {
         });
         
         // libList.push(templateLibs.map(x => x.library_id))
-        console.log('templateLibs',templateLibs)
-        console.log('lib',lib)
-        console.log('liblist', libList)
+        // console.log('templateLibs',templateLibs)
+        // console.log('lib',lib)
+        // console.log('liblist', libList)
         
         return libList;
         

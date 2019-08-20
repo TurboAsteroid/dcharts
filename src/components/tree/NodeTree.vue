@@ -2,23 +2,23 @@
   <li class="node-tree">
     
     <div
-    class="link title font-weight-regular"
-    @click="getCharts(node.id)"
+    class="link title font-weight-regular py-1"
+    @click="getCharts(node)"
     >
-    <v-layout>
-        <v-flex v-if="node.hasOwnProperty('status')">
-            <v-icon dark fab :class="currentStatus.iconClass">{{currentStatus.icon}}</v-icon>
-        </v-flex>
-        <v-flex xs10 v-if="node.hasOwnProperty('status')">
-            <span>{{ node.name }}</span>
-        </v-flex>
-        <v-flex xs12 v-else>
-            <span>{{ node.name }}</span>
-        </v-flex>
-    </v-layout>
-        
+        <v-layout >
+            <v-flex v-if="node.hasOwnProperty('status')">
+                <v-icon dark fab :class="currentStatus.iconClass">{{currentStatus.icon}}</v-icon>
+            </v-flex>
+            <v-flex xs10 v-if="node.hasOwnProperty('status')">
+                <span style="word-wrap: break-word;">{{ node.name }}</span>
+            </v-flex>
+            <v-flex xs12 v-else>
+                <span >{{ node.name }}</span>
+            </v-flex>
+        </v-layout>
+        <v-divider  :class="{ active : node === $store.state.currentDashbord }"></v-divider>
     </div>
-    <v-divider class="py-1"></v-divider>
+   
 
     <ul v-if="node && node.children && node.children.length">
       <node v-for="(child, idx) in node.children" :node="child" :key="idx"></node>
@@ -56,6 +56,7 @@ export default {
   },
   methods:{
     getCharts(i) {
+        this.$store.state.currentDashbord = i;
         // console.log(this.$route)
         // this.active_el = i
         // if(!this.node.data.length && !this.node.labels.length) {
@@ -162,7 +163,8 @@ export default {
         cursor: pointer;
     }
     .active {
-        border: 1px solid grey;
+        background-color: #2196F3;
+        /* border: 1px solid grey; */
     }
     .default {
         background-color: white;

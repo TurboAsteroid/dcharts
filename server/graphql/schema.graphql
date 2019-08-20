@@ -92,7 +92,7 @@ input inputLibrary {
     dataSets: [inputDataSet]
 }
 input inputTree {
-     id: ID!
+    id: ID!
     name: String
     source: String
     active: Boolean
@@ -110,12 +110,17 @@ input inputDataSet {
     val2: inputValue
     inTree: Boolean
     link: String
+    status: inputStatus
     dataSets:[inputDataSet]
     children:[inputDataSet]
 }
 input inputValue {
     value: Int
     label: String
+}
+input inputStatus {
+    icon: String
+    iconClass: String
 }
 input inputActiveLibrary {
     id: Int

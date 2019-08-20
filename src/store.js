@@ -31,6 +31,7 @@ export default new Vuex.Store({
       source: ''
     },
     currentTree: {},
+    currentDashbord: {},
 
     librarysList:[],
     treesLibrary:[],
@@ -501,6 +502,8 @@ export default new Vuex.Store({
       if(this.state.currentTree.name) {
         // console.log(tree.children)
         // console.log(this.state.currentTree)
+        let treeLib = Object.assign({}, this.state.currentTree);
+        delete treeLib.active
         axios.post('http://10.1.100.170:4000', {
           query:`
             mutation ChangeTree($tree: [inputTree], $treeLibrary: inputTreeLibrary) {
@@ -508,7 +511,7 @@ export default new Vuex.Store({
             }
           `,
           variables:{
-            treeLibrary: this.state.currentTree,
+            treeLibrary: treeLib,
             tree: tree.children
           }
         });
