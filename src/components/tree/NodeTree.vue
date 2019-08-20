@@ -5,8 +5,18 @@
     class="link title font-weight-regular"
     @click="getCharts(node.id)"
     >
-    <!-- :class="{active: active_el === node.id}" -->
-        {{ node.name }}
+    <v-layout>
+        <v-flex v-if="node.hasOwnProperty('status')">
+            <v-icon dark fab :class="currentStatus.iconClass">{{currentStatus.icon}}</v-icon>
+        </v-flex>
+        <v-flex xs10 v-if="node.hasOwnProperty('status')">
+            <span>{{ node.name }}</span>
+        </v-flex>
+        <v-flex xs12 v-else>
+            <span>{{ node.name }}</span>
+        </v-flex>
+    </v-layout>
+        
     </div>
     <v-divider class="py-1"></v-divider>
 
@@ -21,6 +31,11 @@ export default {
   name: "node",
   props: {
     node: Object
+  },
+  computed:{
+      currentStatus() {
+          return this.node.status
+      }
   },
   data() {
       return {
@@ -139,6 +154,9 @@ export default {
 };
 </script>
 <style scoped>
+    /* .node-tree {
+        margin-left: 5px; 
+    } */
     .link {
         text-decoration: none;
         cursor: pointer;

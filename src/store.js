@@ -429,6 +429,10 @@ export default new Vuex.Store({
             labels
             inTree
             link
+            status {
+              icon
+              iconClass
+            }
             val1 {
               value
               label
