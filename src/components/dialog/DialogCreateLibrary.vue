@@ -176,7 +176,7 @@
                                                                 <v-text-field
                                                                     v-model="currentDataSet.labels[j]"
                                                                     mask="##.##.##"
-                                                                    label="Дата!?"
+                                                                    label="Дата"
                                                                 ></v-text-field>
                                                             </v-flex>
                                                             <!-- <v-flex xs1> -->
