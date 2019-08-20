@@ -13,9 +13,9 @@
             </tree>
           </v-list>
         </v-navigation-drawer>
-          <v-container style="margin: 0px 0px;">
+          <div style="margin: 0px 0px;">
             <router-view name="charts"></router-view>
-          </v-container>
+          </div>
     </v-app>
 </template>
 

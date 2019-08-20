@@ -7,30 +7,56 @@
                         <v-text-field
                             readonly
                             :value="currentDashbord.name"
+                            class="headline"
                         >
-
                         </v-text-field>
+                        
+                        <v-menu :close-on-content-click="false" bottom offset-y>
+                            <template v-slot:activator="{ on }">
+                                <v-btn outline fab small color="orange" v-on="on">
+                                    <v-icon dark >settings</v-icon>
+                                </v-btn>
+                            </template>
+                            <v-list>
+                                <v-list-tile v-for="(item, i) in charts" :key="i" @click="''">
+                                    <v-list-tile-action>
+                                        <v-checkbox
+                                            type="checkbox"
+                                            color="info"
+                                            v-model="item.active"
+                                        ></v-checkbox>
+                                    </v-list-tile-action>
+                                    <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                                </v-list-tile>
+                            </v-list>
+                        </v-menu>
                     </v-card-title>
                     
                 </v-card>
             </v-flex>
         </v-layout>
         <v-layout row wrap>
-            <v-flex xs12 lg6 xl4>
+            <v-flex xs12 lg6 xl4 v-if="charts[0].active">
                 <v-card>
-                    <line-chart :chart-data="dataCollections"></line-chart>
+                    <v-card-text>
+                        <line-chart :chart-data="dataCollections"></line-chart>
+                    </v-card-text>
                 </v-card>
             </v-flex>
 
-            <v-flex xs12 lg6 xl4>
+            <v-flex xs12 lg6 xl4 v-if="charts[1].active">
                 <v-card>
-                    <Bar-chart :chart-data="dataCollections"></Bar-chart>
+                    <v-card-text>
+                        <Bar-chart :chart-data="dataCollections"></Bar-chart>
+                    </v-card-text>
                 </v-card>
             </v-flex>
 
-            <v-flex xs12 lg6 xl4>
+            <v-flex xs12 lg6 xl4 v-if="charts[2].active">
                 <v-card>
-                     <pie-chart :chart-data="dataCollections"></pie-chart>
+                    <v-card-text>
+                        <pie-chart :chart-data="dataCollections"></pie-chart>
+                    </v-card-text>
                 </v-card>  
             </v-flex>
 
@@ -80,6 +106,20 @@ export default {
     },
     data () {
       return {
+          charts: [
+          {
+            title: 'Линейная диаграмма',
+            active: true
+          },
+          {
+            title: 'Столбчатая диаграмма',
+            active: true
+          },
+          {
+            title: 'Круговая диаграмма',
+            active: true
+          },
+        ],
         //   datacollections: {},
         //   collections: {},
         //   backgroundColors: [

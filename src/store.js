@@ -515,7 +515,7 @@ export default new Vuex.Store({
       //     result = {};
 
       // if(links.length !== 0) {
-        return axios.post('http://localhost:4000', {
+        return axios.post('http://10.1.100.170:4000', {
           query:` 
             query GetData (
               $salary: String, 

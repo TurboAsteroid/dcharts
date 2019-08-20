@@ -170,8 +170,7 @@ const resolvers = {
                 let data = await response.json();
                 let restructData = restructJSON(data);
                 let findData = getDataByParametr(restructData, salary);
-                console.log(findData)
-                return findData
+                return findData;
             } catch (e) {
                 console.log(e.message);
             }
