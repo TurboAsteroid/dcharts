@@ -1,7 +1,7 @@
 <template>
     <v-app>
         <v-navigation-drawer 
-        width="330"
+        width="350"
         app
         permanent>
           <v-toolbar>
