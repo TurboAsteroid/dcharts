@@ -412,7 +412,27 @@ export default new Vuex.Store({
             val2 {
               value
               label
-            }    
+            }
+            indicators {
+              id
+              name
+              source
+              active
+              data
+              labels
+              val1 {
+                value
+                label
+              }
+              val2 {
+                value
+                label
+              }
+              status {
+                icon
+                iconClass
+              }
+            }
           }
         `,
         variables: {
@@ -422,6 +442,7 @@ export default new Vuex.Store({
         }
       }).then(res => {
         this.state.oldLibrarys = res.data.data.getTree;
+        
         report = {
           id: 0,
           data:[],
@@ -438,6 +459,7 @@ export default new Vuex.Store({
             date: lastTree.date
           };
         }
+        console.log(report)
       }).then(() => {
 
         if(!report.children.length || report.children.length !== report.librarysID.length) {
@@ -502,7 +524,7 @@ export default new Vuex.Store({
           boolLink: currentDataSet.link ? true : false
         }
       }).then(res => {
-        currentDataSet.indicators = res.data.data.getIndicators;
+        res.data.data.getIndicators.length ? currentDataSet.indicators = res.data.data.getIndicators : {}
       });
     },
     getDataByParametr({}, {currentNode, link}) {

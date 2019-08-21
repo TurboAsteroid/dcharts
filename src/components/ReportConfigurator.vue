@@ -281,7 +281,7 @@ export default {
   },
   methods: {
     getIndicators(item) {
-      if(item === this.items[1] && !this.node.data.source) {
+      if(item === this.items[1] && !this.node.data.source && !this.indicators.length) {
           this.$store.dispatch('getIndicators', { currentDataSet: this.node.data }).then(res => {
             this.indicators = this.node.data.indicators
             this.selectedIndicators = []
