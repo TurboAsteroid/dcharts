@@ -69,17 +69,17 @@
                     <v-card-text>
                         <v-list subheader>
                             <v-list-tile
-                                v-for="item in items"
-                                :key="item.title"
+                                v-for="indicator in currentDashbord.indicators"
+                                :key="indicator.id"
                                 avatar
                                 @click="''"
                             >
                                 <v-list-tile-avatar>
-                                    <v-icon dark :class="[item.iconClass]">{{ item.icon }}</v-icon>
+                                    <v-icon dark :class="[indicator.status.iconClass]">{{ indicator.status.icon }}</v-icon>
                                 </v-list-tile-avatar>
 
                                 <v-list-tile-content>
-                                    <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                                    <v-list-tile-title>{{ indicator.name }}</v-list-tile-title>
                                 </v-list-tile-content>
                             </v-list-tile>
                         </v-list>

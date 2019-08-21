@@ -235,19 +235,82 @@ const resolvers = {
             }
         }
     },
-    dataSource: {
-        // getSalary: async (parent, {salary}) => {
-        //     try {
-        //         // let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=${parametr}&date=${createDate(12)}`, {agent}); // !!!!!
-        //         let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=company,sex,platform,byAge&date=${createDate(6)}`, {agent});
-        //         let data = await response.json();
-        //         let restructData = restructJSON(data);
-        //         let findData = getDataByParametr(restructData, salary);
-        //         return findData;
-        //     } catch (e) {
-        //         console.log(e.message);
-        //     }
-        // }
+    DataSet: {
+        indicators: async (parent, args, {connect}) => {
+            // console.log('parent', parent)
+            try {
+                let indicators;
+                if(parent.link) {
+                    indicators = await connect.execute(`
+                    SELECT 
+                        ri.id,
+                        i.name,
+                        i.source,
+                        ri.active,
+                        CONCAT(cv1.value, ',', cv1.label) AS val1,
+                        CONCAT(cv2.value, ',', cv2.label) AS val2
+                    FROM relations_indicators ri
+                    INNER JOIN indicators i ON ri.indicator_id = i.id AND i.id != 0
+                    LEFT JOIN control_values_relations cv1 
+                        ON cv1.indicator_id = i.id
+                        AND cv1.label = 'min'
+                    LEFT JOIN control_values_relations cv2 
+                        ON cv2.indicator_id = i.id
+                        AND cv2.label = 'max'
+                    WHERE ri.link_id = ${parent.id} AND active = 1
+                `);
+                indicators = [...indicators[0]];
+                
+                } else {
+                    let id = parent.datasetID ? parent.datasetID : parent.id;
+                    indicators = await connect.execute(`
+                        SELECT 
+                            ri.id,
+                            i.name,
+                            i.source,
+                            ri.active,
+                            CONCAT(cv1.value, ',', cv1.label) AS val1,
+                            CONCAT(cv2.value, ',', cv2.label) AS val2
+                        FROM relations_indicators ri
+                        INNER JOIN indicators i ON ri.indicator_id = i.id AND i.id != 0
+                        LEFT JOIN control_values_relations cv1 
+                            ON cv1.indicator_id = i.id
+                            AND cv1.label = 'min'
+                        LEFT JOIN control_values_relations cv2 
+                            ON cv2.indicator_id = i.id
+                            AND cv2.label = 'max'
+                        WHERE ri.dataset_id = ${id} AND active = 1
+                    `);
+                    indicators = [...indicators[0]];
+                }
+                let result = [];
+                // console.log(indicators)
+                for(let o of indicators) {
+                    let idx = result.push({
+                        id: o.id,
+                        name: o.name,
+                        data: [10000, 20000, 30000],
+                        labels: ['08.17', '08.18', '08.20'],
+                        val1:{
+                            value: o.val1 ? o.val1.split(',')[0] : 0,
+                            label: o.val1 ? o.val1.split(',')[1] : ''
+                        },
+                        val2: {
+                            value: o.val2 ? o.val2.split(',')[0] : 0,
+                            label: o.val2 ? o.val2.split(',')[1] : ''
+                        },
+                        source: o.source || '',
+                        active: o.active
+                    });
+                    createStatus(result[idx - 1]);
+                }
+                // console.log('ind',indicators)
+                console.log('ind',result)
+                return result;
+            } catch (e) {
+                console.log(e);
+            }
+        }
     }
 }
 const server = new GraphQLServer({
