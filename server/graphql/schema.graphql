@@ -5,12 +5,15 @@ type Query {
     getTreesLibrary:[treesLibrary]
     getTree(treeID: Int, lastTree: Boolean): [Librarys]
     getLibraryIdInTree(treeID: Int, lastTree: Boolean) : [Int]
+    getIndicators(id: ID, boolLink: Boolean) : [Indicators]
 
     getData(salary: String, salaryBool: Boolean!): dataSource
 }
 type Mutation {
-    activationLib(activeLibs: [inputActiveLibrary]) : String
+    activationLib(activeLibs: [inputActive]) : String
     activationTree(treeID: ID) : String
+    activationIndicators(activeInd: [inputActive]) : String
+
     changeLib(library: inputLibrary) : Int
     deleteLibrarysOrDataSets(libID: Int, datasetID: [Int]) : String
     changeTree(tree: [inputTree], treeLibrary: inputTreeLibrary) : String
@@ -43,6 +46,16 @@ type Librarys {
     active: Boolean
     inTree: Boolean
     dataSets(addData: Boolean): [DataSet]
+}
+type Indicators {
+    id: Int!
+    name: String
+    source: String
+    active: Boolean
+    data: [Int]
+    labels: [String]
+    val1: Value
+    val2: Value
 }
 type DataSet {
     id: ID!
@@ -113,6 +126,17 @@ input inputDataSet {
     status: inputStatus
     dataSets:[inputDataSet]
     children:[inputDataSet]
+    indicators:[inputIndicators]
+}
+input inputIndicators {
+    id: Int!
+    name: String
+    source: String
+    active: Boolean
+    data: [Int]
+    labels: [String]
+    val1: inputValue
+    val2: inputValue
 }
 input inputValue {
     value: Int
@@ -122,7 +146,7 @@ input inputStatus {
     icon: String
     iconClass: String
 }
-input inputActiveLibrary {
+input inputActive {
     id: Int
     active: Int
 }

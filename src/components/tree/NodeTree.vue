@@ -5,18 +5,19 @@
     class="link title font-weight-regular py-1"
     @click="getCharts(node)"
     >
-        <v-layout >
+        <v-layout align-center>
             <v-flex v-if="node.hasOwnProperty('status')">
                 <v-icon dark fab :class="currentStatus.iconClass">{{currentStatus.icon}}</v-icon>
             </v-flex>
-            <v-flex xs10 v-if="node.hasOwnProperty('status')">
+            <v-flex xs11 ml-2 v-if="node.hasOwnProperty('status')">
                 <span style="word-wrap: break-word;">{{ node.name }}</span>
+                <v-divider  :class="{ active : node === $store.state.currentDashbord }"></v-divider>
             </v-flex>
             <v-flex xs12 v-else>
                 <span >{{ node.name }}</span>
             </v-flex>
         </v-layout>
-        <v-divider  :class="{ active : node === $store.state.currentDashbord }"></v-divider>
+        
     </div>
    
 

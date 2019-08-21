@@ -133,6 +133,67 @@ export default new Vuex.Store({
 
   },
   actions: {
+    activationLibrarys({dispatch, commit},) {
+      axios.post('http://10.1.100.170:4000', {
+        query:
+          `mutation ActivationLibrary(
+            $activeLibs: [inputActive]
+          ) {
+            activationLib(activeLibs: $activeLibs) 
+          }`,
+        variables: {
+          activeLibs: this.state.activeLib
+        }
+      }).then((res) => {
+        if(this.state.currentTree.addLib) {
+          let currentTree = this.state.treesLibrary[this.state.treesLibrary.findIndex(x => x.id === this.state.currentTree.id)];
+          this.state.currentTree = {
+            id: currentTree.id,
+            name: currentTree.name,
+            date: currentTree.date
+          };
+          delete this.state.currentTree.addLib;
+          dispatch('getTree',{tree: currentTree});
+        }
+      });
+    },
+    activationTree({}, {treeID}) {
+      console.log(treeID)
+      axios.post('http://10.1.100.170:4000', {
+        query:
+          `mutation ActivationTree(
+            $treeID: ID
+          ) {
+            activationTree(treeID: $treeID) 
+          }`,
+        variables: {
+          treeID
+        }
+      }).then(() => {
+
+      });
+    },
+    activationIndicators({}, {selected, currentIndicators}) {
+      let activeInd = [];
+      for(let o of currentIndicators) {
+        if(selected.find(x => x === o.id)) {
+          activeInd.push({id: o.id, active: 1});
+        } else {
+          activeInd.push({id: o.id, active: 0});
+        }
+      }
+      return axios.post('http://10.1.100.170:4000', {
+        query:`
+          mutation ActivationIndicators($activeInd: [inputActive]) {
+            activationIndicators(activeInd: $activeInd)
+          }
+        `,
+        variables: {
+          activeInd
+        }
+      });
+    },
+
     getActiveLibrarys({commit}) {
       // console.log('dsf')
       axios.post('http://10.1.100.170:4000', {
@@ -183,46 +244,6 @@ export default new Vuex.Store({
         console.log(this.state.librarysList)
 
       }); 
-    },
-    activationLibrarys({dispatch, commit},) {
-      axios.post('http://10.1.100.170:4000', {
-        query:
-          `mutation ActivationLibrary(
-            $activeLibs: [inputActiveLibrary]
-          ) {
-            activationLib(activeLibs: $activeLibs) 
-          }`,
-        variables: {
-          activeLibs: this.state.activeLib
-        }
-      }).then((res) => {
-        if(this.state.currentTree.addLib) {
-          let currentTree = this.state.treesLibrary[this.state.treesLibrary.findIndex(x => x.id === this.state.currentTree.id)];
-          this.state.currentTree = {
-            id: currentTree.id,
-            name: currentTree.name,
-            date: currentTree.date
-          };
-          delete this.state.currentTree.addLib;
-          dispatch('getTree',{tree: currentTree});
-        }
-      });
-    },
-    activationTree({}, {treeID}) {
-      console.log(treeID)
-      axios.post('http://10.1.100.170:4000', {
-        query:
-          `mutation ActivationTree(
-            $treeID: ID
-          ) {
-            activationTree(treeID: $treeID) 
-          }`,
-        variables: {
-          treeID
-        }
-      }).then(() => {
-
-      });
     },
     getLibrarys({commit}, {currentLib, boolTree}) {
       let LibID = !currentLib.source ? [parseInt(currentLib.id)] : null,
@@ -323,57 +344,7 @@ export default new Vuex.Store({
           
         }
       });
-    },
-    changeLibrarys({commit}, {library}) {
-      let lib = JSON.parse(JSON.stringify(library));
-      if(this.state.oldLibrarys.some(x => x.id === lib.id)) {
-        this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => x.id === lib.id)].name = lib.name;
-      } else {
-        // console.log(lib)
-        this.state.oldLibrarys.push(lib)
-      }
-
-      commit('changeDialogLibrary',{ boolCreate: false, boolSetting: false});
-      for(let o of lib.dataSets) { // убираю id у созданных наборов, чтобы можно было создавать записи в бд
-        if(o.datasetID && typeof o.id === 'string' || o.datasetID === 0) {
-          o.id = ''
-        }
-      }
-
-      axios.post('http://10.1.100.170:4000', {
-        query:
-          `mutation ChangeLibrary(
-            $library: inputLibrary
-          ) {
-            changeLib(library: $library) 
-          }`,
-        variables: {
-          library: lib
-        }
-      }).then((res) => {
-        if(res.data.data.changeLib) {
-          lib.id = res.data.data.changeLib;
-        }
-      });
-    },
-    deleteLibrarysOrDataSets({commit}, {libID, datasetID}) {
-      if(libID) {
-        this.state.oldLibrarys.splice(this.state.oldLibrarys.findIndex(x => parseInt(x.id) === libID), 1)
-        commit('changeDialogLibrary',{ boolCreateSetting: false });
-      }
-
-      axios.post('http://10.1.100.170:4000', {
-        query: `
-          mutation DeleteLibrarysOtDataSets($libID: Int, $datasetID: [Int])  {
-            deleteLibrarysOrDataSets(libID: $libID, datasetID: $datasetID)
-          }
-        `,
-        variables: {
-          libID,
-          datasetID
-        }
-      });
-    },
+    }, 
     getTreesLibrary({commit}) {
       axios.post('http://10.1.100.170:4000', {
         query:`
@@ -498,39 +469,42 @@ export default new Vuex.Store({
         }
       }).catch(e => console.error(e.message));
     },
-    setTree({commit}, {tree}) {
-      if(this.state.currentTree.name) {
-        // console.log(tree.children)
-        // console.log(this.state.currentTree)
-        let treeLib = Object.assign({}, this.state.currentTree);
-        delete treeLib.active
-        axios.post('http://10.1.100.170:4000', {
-          query:`
-            mutation ChangeTree($tree: [inputTree], $treeLibrary: inputTreeLibrary) {
-              changeTree(tree: $tree, treeLibrary: $treeLibrary)
-            }
-          `,
-          variables:{
-            treeLibrary: treeLib,
-            tree: tree.children
-          }
-        });
+    getIndicators({commit}, {currentDataSet}) {
+      let id;
+      if(currentDataSet.hasOwnProperty('datasetID') && currentDataSet.hasOwnProperty('link')) {
+        currentDataSet.datasetID ? id = currentDataSet.datasetID : id = currentDataSet.id;
+      } else {
+        id = currentDataSet.id;
       }
-      
-    },
-    deleteTree({commit}, {treeID}) {
-      axios.post('http://10.1.100.170:4000', {
+      return axios.post('http://10.1.100.170:4000', {
         query:`
-          mutation DeleteTree($treeID: ID!) {
-            deleteTree(treeID: $treeID)
-          }        
-        `, 
+          query GetIndicators($id: ID, $boolLink: Boolean){
+            getIndicators(id: $id, boolLink: $boolLink){
+              id
+              name
+              source
+              data
+              labels
+              val1 {
+                value
+                label
+              }
+              val2 {
+                value
+                label
+              }
+              active
+            }
+          }
+        `,
         variables: {
-          treeID
+          id,
+          boolLink: currentDataSet.link ? true : false
         }
+      }).then(res => {
+        currentDataSet.indicators = res.data.data.getIndicators;
       });
     },
-
     getDataByParametr({}, {currentNode, link}) {
       let currentLink = link.split('.'),
         source = currentLink[0],
@@ -578,6 +552,88 @@ export default new Vuex.Store({
       // }
     },
 
+    changeLibrarys({commit}, {library}) {
+      let lib = JSON.parse(JSON.stringify(library));
+      if(this.state.oldLibrarys.some(x => x.id === lib.id)) {
+        this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => x.id === lib.id)].name = lib.name;
+      } else {
+        // console.log(lib)
+        this.state.oldLibrarys.push(lib)
+      }
+
+      commit('changeDialogLibrary',{ boolCreate: false, boolSetting: false});
+      for(let o of lib.dataSets) { // убираю id у созданных наборов, чтобы можно было создавать записи в бд
+        if(o.datasetID && typeof o.id === 'string' || o.datasetID === 0) {
+          o.id = ''
+        }
+      }
+
+      axios.post('http://10.1.100.170:4000', {
+        query:
+          `mutation ChangeLibrary(
+            $library: inputLibrary
+          ) {
+            changeLib(library: $library) 
+          }`,
+        variables: {
+          library: lib
+        }
+      }).then((res) => {
+        if(res.data.data.changeLib) {
+          lib.id = res.data.data.changeLib;
+        }
+      });
+    },
+    deleteLibrarysOrDataSets({commit}, {libID, datasetID}) {
+      if(libID) {
+        this.state.oldLibrarys.splice(this.state.oldLibrarys.findIndex(x => parseInt(x.id) === libID), 1)
+        commit('changeDialogLibrary',{ boolCreateSetting: false });
+      }
+
+      axios.post('http://10.1.100.170:4000', {
+        query: `
+          mutation DeleteLibrarysOtDataSets($libID: Int, $datasetID: [Int])  {
+            deleteLibrarysOrDataSets(libID: $libID, datasetID: $datasetID)
+          }
+        `,
+        variables: {
+          libID,
+          datasetID
+        }
+      });
+    },
+    setTree({commit}, {tree}) {
+      if(this.state.currentTree.name) {
+        // console.log(tree.children)
+        // console.log(this.state.currentTree)
+        let treeLib = Object.assign({}, this.state.currentTree);
+        delete treeLib.active
+        axios.post('http://10.1.100.170:4000', {
+          query:`
+            mutation ChangeTree($tree: [inputTree], $treeLibrary: inputTreeLibrary) {
+              changeTree(tree: $tree, treeLibrary: $treeLibrary)
+            }
+          `,
+          variables:{
+            treeLibrary: treeLib,
+            tree: tree.children
+          }
+        });
+      }
+      
+    },
+    deleteTree({commit}, {treeID}) {
+      axios.post('http://10.1.100.170:4000', {
+        query:`
+          mutation DeleteTree($treeID: ID!) {
+            deleteTree(treeID: $treeID)
+          }        
+        `, 
+        variables: {
+          treeID
+        }
+      });
+    },
   },
   getters: {
     oldLibrarys: state => state.oldLibrarys,

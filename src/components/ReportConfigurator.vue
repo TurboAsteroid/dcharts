@@ -101,6 +101,7 @@
                         <v-tab
                             v-for="item in items"
                             :key="item"
+                            @click="getIndicators(item)"
                         >
                           {{ item }}
                         </v-tab>
@@ -257,18 +258,6 @@ export default {
     tab: null,
     items:['Список наборов', 'Список показателей'],
     indicators: [
-        {
-            id: 1,
-            name: 'test1',
-        },
-        {
-            id: 2,
-            name: 'test2',
-        },
-        {
-            id: 3,
-            name: 'test3',
-        },
     ],
 
     node: null,
@@ -278,7 +267,7 @@ export default {
   }),
   mounted () {
     // console.log(this.$store.state.treesLibrary.length)
-    if(!this.$store.state.treesLibrary.length) {
+    // if(!this.$store.state.treesLibrary.length) {
       this.$store.state.report = {
           id: 0,
           data:[],
@@ -287,23 +276,21 @@ export default {
       };
       this.$store.dispatch('getTreesLibrary');
       this.$store.dispatch('getTree', {getLastTree: true, addData:false})
-    }
-    
-
-    // if(this.$store.state.oldLibrarys) {
-    // this.$store.state.oldLibrarys = []
-
     // }
-    // this.$store.dispatch('getActiveLibrarys');
-    // if (!this.$store.getters.library.length) {
-    //   this.$router.replace('/')
-    // }
-    // if(this.$store.state.currentTree.id) {
-    //   this.$store.dispatch('getTree', this.$store.state.currentTree.id)
-    // }
-    // this.$router.replace('/reportConfigurator')
+  
   },
   methods: {
+    getIndicators(item) {
+      if(item === this.items[1] && !this.node.data.source) {
+          this.$store.dispatch('getIndicators', { currentDataSet: this.node.data }).then(res => {
+            this.indicators = this.node.data.indicators
+            this.selectedIndicators = []
+            this.indicators.forEach(x => {
+              x.active ? this.selectedIndicators.push(x.id) : {}
+            })
+          })
+      }
+    },
     addTree() { 
       let newTree = {
           id: '',
@@ -330,15 +317,25 @@ export default {
     },
     onClick (evt) {
       this.selected = []
+      this.selectedIndicators = []
+      this.indicators = []
       this.dialog = true
       this.node = evt
+      // this.tab = 0;
+      !this.node.data.source ? this.$store.dispatch('getIndicators', { currentDataSet: this.node.data }).then(res => {
+        this.indicators = this.node.data.indicators
+        this.indicators.forEach(x => {
+          x.active ? this.selectedIndicators.push(x.id) : []
+        })
+      }) : {}
       if((this.node.data.dataSets || !this.node.data.source) && this.node.data.hasOwnProperty('source')) {
         this.$store.dispatch('getLibrarys', {currentLib: this.node.data, boolTree: true})
-      } else if(this.node.data.id !== 0 && !this.node.data.dataSets && this.node.data.link) {
-        
+      } else if(this.node.data.id !== 0 && !this.node.data.dataSets  && this.node.data.link) {
+        // this.$store.dispatch('getLibrarys', {currentLib: this.node.data, boolTree: true})
         for(let o of this.librarys) {
           if (o.source) {
             for(let i of o.dataSets) {
+              console.log(i)
               this.findChild(i);
             }
           }
@@ -350,6 +347,7 @@ export default {
         let id = !this.node.data.children[i].datasetID ? this.node.data.children[i].id : JSON.stringify(this.node.data.children[i].datasetID)
         this.selected.push(id)
       }
+      
     },
     findChild(parent) {
       if(parent.link === this.node.data.link) {
@@ -362,7 +360,8 @@ export default {
       }
     },
     ok () {
-      this.dialog = false
+      // this.dialog = false
+      this.$store.dispatch('activationIndicators', { selected: this.selectedIndicators, currentIndicators: this.indicators }).then(() => this.dialog = false)
       for (let i = 0; i < this.node.data.children.length; i++) {
         if (!this.selected.find(function (element) {
           return element === this.node.data.children[i].id
@@ -420,6 +419,12 @@ export default {
           } else if (this.node && this.node.data.id === 0) {
             return this.node.data.children ? this.selected.length === this.librarys.length : false
           }
+        } else if(this.tab === 1) {
+          if(this.indicators.length) {
+            return this.indicators ? this.selectedIndicators.length === this.indicators.length : false
+          } else {
+            return false
+          }
         }
         
       },
@@ -427,9 +432,7 @@ export default {
         if(this.tab === 0 || !this.tab) {
           let selected = [];
           if (value) {
-            console.log(value)
             if(this.node && this.node.data.id === 0) {
-              console.log(this.librarys)
               this.librarys.forEach(x => selected.push(x.id))
             } else if(this.node && this.node.data.dataSets) {
               for (let i = 0; i < this.node.data.dataSets.length; i++) {
@@ -439,6 +442,14 @@ export default {
             }
           }
           this.selected = selected;
+        } else if(this.tab === 1) {
+          let selected = []
+          if(value) {
+            for(let o of this.indicators){
+              selected.push(o.id)
+            }
+          }
+          this.selectedIndicators = selected
         }
       }
     }
