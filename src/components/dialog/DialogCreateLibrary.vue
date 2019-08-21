@@ -103,7 +103,7 @@
                                         </v-text-field>
                                     </v-flex>
                                     <v-flex xs1></v-flex>
-                                    <v-flex xs1>
+                                    <v-flex xs1 v-if="!currentDataSet.link">
                                         <v-tooltip bottom>
                                             <template v-slot:activator="{ on }">
                                                 <v-btn outline fab dark small color="red" @click="deleteDataSet()" v-on="on">
@@ -123,6 +123,7 @@
                                 <v-tab
                                     v-for="item in items"
                                     :key="item"
+                                    @click="getIndicators(item)"
                                 >
                                     {{ item }}
                                 </v-tab>
@@ -198,23 +199,25 @@
 
                                             <span v-else-if="item === items[1]">
                                                 <v-layout row class="maxHeight2">
-                                                    <v-flex xs12>
-                                                        <v-list v-for="(indicator, idx) in indicators" :key="idx">
-                                                            <v-list-tile @click="''">
-                                                                <!-- <v-list-tile-action>
-                                                                    <v-checkbox v-model="selected" :value="indicator" color="info"></v-checkbox>
-                                                                </v-list-tile-action> -->
+                                                    <v-flex xs12 v-if="indicators">
+                                                        <v-list >
+                                                            <v-layout v-for="(indicator, idx) in indicators" :key="idx">
+                                                                <v-flex xs12>
+                                                                    <v-list-tile @click="''">
 
-                                                                <v-list-tile-content>
-                                                                    <v-list-tile-title>{{indicator.name}}</v-list-tile-title>
-                                                                </v-list-tile-content>
-                                                                
-                                                                <v-btn fab flat dark small color="orange" @click="''">
-                                                                    <v-icon dark>settings</v-icon>
-                                                                </v-btn>
-                                                                
-                                                            </v-list-tile>
-                                                            <v-divider></v-divider>
+                                                                        <v-list-tile-content>
+                                                                            <v-list-tile-title>{{indicator.name}}</v-list-tile-title>
+                                                                        </v-list-tile-content>
+                                                                        
+                                                                        <v-btn fab flat dark small color="orange" @click="''">
+                                                                            <v-icon dark>settings</v-icon>
+                                                                        </v-btn>
+                                                                        
+                                                                    </v-list-tile>
+                                                                    <v-divider v-if="idx != indicators.length - 1"></v-divider>
+                                                                </v-flex>
+                                                            </v-layout>
+                                                            
                                                         </v-list>
                                                     </v-flex>  
                                                 </v-layout>
@@ -368,18 +371,6 @@ export default {
     data: () => ({
         selected: [],
         indicators: [
-            {
-                id: 1,
-                name: 'test1',
-            },
-            {
-                id: 2,
-                name: 'test2',
-            },
-            {
-                id: 3,
-                name: 'test3',
-            },
         ],
         allIndicators: [
             {
@@ -416,6 +407,11 @@ export default {
         itemsIn: ['Выбор', 'Создание']
     }),
     methods: {
+        getIndicators(item) {
+            if(item === this.items[1]) {
+                this.$store.dispatch('getIndicators', { currentDataSet: this.currentDataSet }).then(res => this.indicators = this.currentDataSet.indicators)
+            }
+        },
         onlyNumber ($event) {
             let keyCode = ($event.keyCode ? $event.keyCode : $event.which);
             if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) { // 46 is dot
@@ -525,8 +521,8 @@ export default {
     overflow-y: auto;
 }
 .maxHeight2{
-    height: 452px;
-    max-height: 452px;
+    height: 507px;
+    max-height: 507px;
     overflow-y: auto;
 }
 .dialogHeight {
