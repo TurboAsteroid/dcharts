@@ -175,11 +175,13 @@ export default new Vuex.Store({
     },
     activationIndicators({}, {selected, currentIndicators}) {
       let activeInd = [];
-      for(let o of currentIndicators) {
-        if(selected.find(x => x === o.id)) {
-          activeInd.push({id: o.id, active: 1});
-        } else {
-          activeInd.push({id: o.id, active: 0});
+      if(currentIndicators) {
+        for(let o of currentIndicators) {
+          if(selected.find(x => x === o.id)) {
+            activeInd.push({id: o.id, active: 1});
+          } else {
+            activeInd.push({id: o.id, active: 0});
+          }
         }
       }
       return axios.post('http://10.1.100.170:4000', {
@@ -442,7 +444,7 @@ export default new Vuex.Store({
         }
       }).then(res => {
         this.state.oldLibrarys = res.data.data.getTree;
-        
+        console.log( res.data.data.getTree)
         report = {
           id: 0,
           data:[],
@@ -450,7 +452,7 @@ export default new Vuex.Store({
           children:[],
           librarysID: res.data.data.getLibraryIdInTree
         };
-        addElementsInTree(report, { data: this.state.oldLibrarys });
+        this.state.oldLibrarys ? addElementsInTree(report, { data: this.state.oldLibrarys }) : {};
         if(getLastTree && this.state.oldLibrarys.length) {
           let lastTree = this.state.treesLibrary.find(x => x.active === true);
           this.state.currentTree = {
@@ -459,7 +461,6 @@ export default new Vuex.Store({
             date: lastTree.date
           };
         }
-        console.log(report)
       }).then(() => {
 
         if(!report.children.length || report.children.length !== report.librarysID.length) {
@@ -489,7 +490,7 @@ export default new Vuex.Store({
           commit('changeDialogTree',{ bool: false, value: tree });
           this.state.report = report;
         }
-      }).catch(e => console.error(e.message));
+      }).catch(e => console.error(e));
     },
     getIndicators({commit}, {currentDataSet}) {
       let id;
@@ -587,10 +588,9 @@ export default new Vuex.Store({
       for(let o of lib.dataSets) { // убираю id у созданных наборов, чтобы можно было создавать записи в бд
         datasets.push(o);
         if(o.datasetID && typeof o.id === 'string' || o.datasetID === 0) {
-          o.id = ''
+          o.id = '';
         }
       }
-      // console.log(datasets)
 
       axios.post('http://10.1.100.170:4000', {
         query:
@@ -630,7 +630,7 @@ export default new Vuex.Store({
         }
       });
     },
-    setTree({commit}, {tree}) {
+    setTree({dispatch, commit}, {tree}) {
       if(this.state.currentTree.name) {
         // console.log(tree.children)
         // console.log(this.state.currentTree)
@@ -646,6 +646,10 @@ export default new Vuex.Store({
             treeLibrary: treeLib,
             tree: tree.children
           }
+        }).then(res => {
+          console.log(res.data.data)
+          let id = res.data.data.changeTree ? res.data.data.changeTree : null;
+          id ? dispatch('activationTree', {treeID: id}) : {};
         });
       }
       

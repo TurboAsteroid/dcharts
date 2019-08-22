@@ -17,7 +17,8 @@ function addElementsInTree(report, { data, addedData }) {
     }
     
     report.children.forEach(x => {
-        recurse(x, x.dataSets);
+
+        x.dataSets ? recurse(x, x.dataSets) : {};
     });
 }
 function recurse(parent, child) {

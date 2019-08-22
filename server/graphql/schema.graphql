@@ -17,7 +17,7 @@ type Mutation {
     changeLib(library: inputLibrary) : Int
     changeIndicators(indicators: [inputDataSet]) : String
     deleteLibrarysOrDataSets(libID: Int, datasetID: [Int]) : String
-    changeTree(tree: [inputTree], treeLibrary: inputTreeLibrary) : String
+    changeTree(tree: [inputTree], treeLibrary: inputTreeLibrary) : Int
     deleteTree(treeID: ID!) : String
 
     # changeLinkLib(library: inputLibrary) : String

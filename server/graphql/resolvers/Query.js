@@ -160,6 +160,7 @@ const getLibraryIdInTree = async (_, {treeID, lastTree}, {connect}) => {
             [lastTreeId] = await connect.execute(`
                 SELECT id FROM trees_library WHERE active = 1;
             `);
+            console.log(lastTreeId)
             id = lastTreeId[0]['id'];
         } else {
             id = treeID;
@@ -229,10 +230,9 @@ const getIndicators = async (_, {id, boolLink}, {connect}) => {
                     AND cv2.label = 'max'
                 WHERE ri.dataset_id = ${id}
             `);
-            indicators = [...indicators[0]]
+            indicators = [...indicators[0]];
         }
         let result = [];
-        // console.log(indicators)
         for(let o of indicators) {
             result.push({
                 id: o.id,
@@ -250,9 +250,7 @@ const getIndicators = async (_, {id, boolLink}, {connect}) => {
                 source: o.source || '',
                 active: o.active
             });
-            // createStatus(result.children[idx - 1]);
         }
-        console.log(result)
         return result;
     } catch (e) {
         console.log(e);
