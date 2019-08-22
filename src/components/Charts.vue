@@ -18,7 +18,7 @@
                                 </v-btn>
                             </template>
                             <v-list>
-                                <v-list-tile v-for="(item, i) in charts" :key="i" @click="''">
+                                <v-list-tile v-for="(item, i) in $store.state.charts" :key="i" @click="''">
                                     <v-list-tile-action>
                                         <v-checkbox
                                             type="checkbox"
@@ -35,8 +35,8 @@
                 </v-card>
             </v-flex>
         </v-layout>
-        <v-layout row wrap>
-            <v-flex xs12 lg6 xl4 v-if="charts[0].active && dataCollections">
+        <v-layout row wrap v-if="$store.state.charts && $store.state.charts.length">
+            <v-flex xs12 lg6 xl4 v-if="$store.state.charts[0].active && dataCollections">
                 <v-card>
                     <v-card-text>
                         <line-chart :chart-data="dataCollections"></line-chart>
@@ -44,7 +44,7 @@
                 </v-card>
             </v-flex>
 
-            <v-flex xs12 lg6 xl4 v-if="charts[1].active && dataCollections">
+            <v-flex xs12 lg6 xl4 v-if="$store.state.charts[1].active && dataCollections">
                 <v-card>
                     <v-card-text>
                         <Bar-chart :chart-data="dataCollections"></Bar-chart>
@@ -52,7 +52,7 @@
                 </v-card>
             </v-flex>
 
-            <v-flex xs12 lg6 xl4 v-if="charts[2].active && dataCollections">
+            <v-flex xs12 lg6 xl4 v-if="$store.state.charts[2].active && dataCollections">
                 <v-card>
                     <v-card-text>
                         <pie-chart :chart-data="dataCollections"></pie-chart>
@@ -60,7 +60,7 @@
                 </v-card>  
             </v-flex>
 
-            <v-flex xs12 lg6 xl4 v-if="charts[3].active && dataCollections">
+            <v-flex xs12 lg6 xl4 v-if="$store.state.charts[3].active && dataCollections">
                 <v-card>
                     <v-card-title class="headline">
                         Показатели
@@ -107,7 +107,9 @@
                     </v-card-text>
                 </v-card>   
             </v-flex>
-            <v-flex xs12 lg6 xl4 v-if="!dataCollections">
+        </v-layout>
+        <v-layout  v-if="!dataCollections">
+            <v-flex xs12 lg6 xl4>
                 <v-card>
                     <v-card-text>
                         <v-layout align-center>
@@ -161,16 +163,6 @@ export default {
               active: true
           }
         ],
-        //   datacollections: {},
-        //   collections: {},
-        //   backgroundColors: [
-        //     'rgba(255, 99, 132, 0.2)',
-        //     'rgba(54, 162, 235, 0.2)',
-        //     'rgba(255, 206, 86, 0.2)',
-        //     'rgba(75, 192, 192, 0.2)',
-        //     'rgba(153, 102, 255, 0.2)',
-        //     'rgba(255, 159, 64, 0.2)'
-        //   ],
         datacollections: {},
         backgroundColors: [
             'rgba(255, 99, 132, 0.2)',
