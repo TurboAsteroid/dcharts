@@ -237,6 +237,7 @@ const resolvers = {
     },
     DataSet: {
         indicators: async (parent, args, {connect}) => {
+            console.log('parent',parent)
             try {
                 let indicators;
                 if(parent.link) {

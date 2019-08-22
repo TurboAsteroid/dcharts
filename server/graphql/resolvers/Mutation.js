@@ -148,13 +148,14 @@ const changeLib = async (_, {library}, {connect}) => {
     }
 };
 const changeIndicators = async (_,{indicators}, {connect}) => {
-    let allIndicators = []
+    let allIndicators = [];
     for(let o in indicators) {
         (function recurse(currentNode) {
             currentNode.indicators ? allIndicators.push(...currentNode.indicators) : {}
-
-            for(let i = 0, length = currentNode.children.length; i < length; i++) {
-                recurse(currentNode.children[i]);
+            if(currentNode.children) {
+                for(let i = 0, length = currentNode.children.length; i < length; i++) {
+                    recurse(currentNode.children[i]);
+                }
             }
         })(indicators[o]);
     }
@@ -168,7 +169,7 @@ const changeIndicators = async (_,{indicators}, {connect}) => {
                     WHERE id = ${o.id}
                 `);
                 indicator_id = arr[0].indicator_id;
-                console.log(indicator_id);
+                // console.log(indicator_id);
                 await connect.execute(`
                     UPDATE indicators
                     SET
@@ -260,6 +261,7 @@ const changeTree = async (_, {tree, treeLibrary}, {connect}) => {
                 (tree_id, library_id, dataset_id, link_id)
             VALUES ?
         `, [arr]);
+        return !treeLibrary.id ? id : 0;
     } catch(e) {
         console.log(e);
     }
