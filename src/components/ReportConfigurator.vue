@@ -126,7 +126,7 @@
                           <v-card-text>
                             <!-- Начало: Выбор наборов -->
                             <span v-if="item === items[0]">
-                              <v-list two-line v-if="node && node.data.dataSets">
+                              <v-list two-line v-if="node && node.data.dataSets && node.data.dataSets.length">
                                   <v-layout row 
                                     v-for="(item, index) in node.data.dataSets"
                                     :key="index"
