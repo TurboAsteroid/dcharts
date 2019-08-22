@@ -58,25 +58,27 @@ export default {
   methods:{
     getCharts(i) {
         this.$store.state.currentDashbord = i;
+        let dc = null
+        
         if(!this.node.source && this.node.data.length && this.node.labels.length) {
             this.datacollections = {}
             this.fillData(Object.assign({},this.node))
-            this.$router.push({ 
-                path: '/report/' + this.node.id, 
-                query: { 
-                    obj: this.node ,
-                    dataCollections: Object.assign({},this.datacollections)
-                } 
-            })
-        } else if (!this.node.source){
-            this.$router.push({ 
-                path: '/report/' + this.node.id, 
-                query: { 
-                    obj: this.node ,
-                    dataCollections: null
-                } 
-            })
+            dc = Object.assign({},this.datacollections)
         }
+        if(!this.node.source) {
+            this.$store.dispatch('getCharts', {currentNode: this.node}).then(() => {
+                console.log(this.$store.state.charts);
+                this.$router.push({ 
+                    path: '/report/' + this.node.id, 
+                    query: { 
+                        obj: this.node ,
+                        dataCollections: dc
+                    } 
+                })
+            });
+             
+        }
+       
     },
     fillData (currentReport) {
         this.datacollections = {

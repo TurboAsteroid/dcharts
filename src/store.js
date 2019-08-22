@@ -45,6 +45,8 @@ export default new Vuex.Store({
       children:[]
     },
     oldReport:[],
+
+    charts:[],
     
   },
   mutations: {
@@ -573,6 +575,37 @@ export default new Vuex.Store({
           // this.state.report = result;
         });
       // }
+    },
+    getCharts({}, {currentNode}) {
+      console.log(currentNode)
+      let boolLink = false,
+          boolDataset = false;
+      let id;
+      if(!currentNode.hasOwnProperty('datasetID') && currentNode.hasOwnProperty('link') || currentNode.children.length && currentNode.link) {
+        id = currentNode.id;
+        boolLink = true;
+      } else {
+        currentNode.datasetID ? id = currentNode.datasetID : id = currentNode.id;
+        boolDataset = true;
+      }
+
+      return axios.post('http://10.1.100.170:4000', {
+        query:`
+          query GetCharts($id: ID, $boolLink: Boolean, $boolDataset: Boolean){
+            getCharts(id: $id, boolLink: $boolLink, boolDataset: $boolDataset) {
+              title
+              active
+            }
+          }
+        `,
+        variables: {
+          id,
+          boolLink,
+          boolDataset
+        }
+      }).then(res => {
+        this.state.charts = res.data.data.getCharts;
+      });
     },
 
     changeLibrarys({dispatch, commit}, {library}) {

@@ -177,6 +177,7 @@
                                                                 <v-text-field
                                                                     v-model="currentDataSet.labels[j]"
                                                                     mask="##.####"
+                                                                    type="data"
                                                                     label="Дата"
                                                                 ></v-text-field>
                                                             </v-flex>
@@ -310,6 +311,9 @@ export default {
         itemsIn: ['Выбор', 'Создание']
     }),
     methods: {
+        save (date) {
+            this.$refs.menu.save(date)
+        },
         getIndicators(item) {
             if(item === this.items[1] && !this.currentDataSet.indicators) {
                 this.$store.dispatch('getIndicators', { currentDataSet: this.currentDataSet }).then(res => this.indicators = this.currentDataSet.indicators)

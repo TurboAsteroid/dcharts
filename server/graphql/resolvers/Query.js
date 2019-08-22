@@ -161,7 +161,14 @@ const getLibraryIdInTree = async (_, {treeID, lastTree}, {connect}) => {
                 SELECT id FROM trees_library WHERE active = 1;
             `);
             console.log(lastTreeId)
-            id = lastTreeId[0]['id'];
+            if(lastTreeId.length) {
+                id = lastTreeId[0]['id'];
+            }else {
+                [lastTreeId] = await connect.execute(`
+                    SELECT MAX(id) FROM trees_library;
+                `);
+                id = lastTreeId[0]['MAX(id)']
+            }
         } else {
             id = treeID;
         }
@@ -256,129 +263,75 @@ const getIndicators = async (_, {id, boolLink}, {connect}) => {
         console.log(e);
     }
     
-}
+};
+const getCharts = async (_,{id, boolLink, boolDataset}, {connect}) => {
+    console.log('id',id)
+    console.log('boolLink',boolLink)
+    console.log(' boolDataset', boolDataset)
+    let element_id,
+        charts = [],
+        obj = {}
+    try {
+        if(boolLink) {
+            let [x] = await connect.execute(`
+                SELECT id
+                FROM trees
+                WHERE link_id = ${id}
+            `);
+            element_id = x[0].id;
+            [a] = await connect.execute(`
+                SELECT 
+                    bar,
+                    line,
+                    pie,
+                    indicators
+                FROM charts
+                WHERE elements_trees_id = ${element_id}
+            `);
+            obj = a[0];
+        } else if(boolDataset) {
+            let [x] = await connect.execute(`
+                SELECT id
+                FROM trees
+                WHERE dataset_id = ${id}
+            `);
+            element_id = x[0].id;
+            [a] = await connect.execute(`
+                SELECT 
+                    bar,
+                    line,
+                    pie,
+                    indicators
+                FROM charts
+                WHERE elements_trees_id = ${element_id}
+            `);
+            obj = a[0];
+        }
+        charts = [
+            {
+                title: 'Линейная диаграмма',
+                active: obj.line ? true : false
+            },
+            {
+                title: 'Столбчатая диаграмма',
+                active: obj.bar ? true : false
+            },
+            {
+                title: 'Круговая диаграмма',
+                active: obj.pie ? true : false
+            }, 
+            {
+                title: 'Показатели',
+                active: obj.indicators ? true : false
+            }
+        ];
+        return charts;
+    } catch(e) {
+        console.log(e)
+    }
+    
+};
 
-/////////////////////////////////////////////////////////
-// const getLibrary = async (_, args, {connect}) => {
-//     try {
-//         const [rows] = await connect.execute(`
-//             SELECT 
-//                 library.id,
-//                 library.name,
-//                 library.link,
-//                 CONCAT(v1.value, ',', v1.label) AS val1,
-//                 CONCAT(v2.value, ',', v2.label) AS val2,
-//                 GROUP_CONCAT(data.value,'') AS data,
-//                 GROUP_CONCAT(data.label,'') AS labels
-//             FROM library
-//             LEFT JOIN value v1 ON v1.library_id = library.id AND v1.label = 'min'
-//             LEFT JOIN value v2 ON v2.library_id = library.id AND v2.label = 'max'
-//             LEFT JOIN data ON data.library_id = library.id
-//             GROUP BY library.id
-//         `);
-//         // console.log(rows)
-//         let data = [];
-//         for(let o of rows) {
-//             if (o.id != 0) {
-//                 data.push({
-//                     id: o.id,
-//                     name: o.name,
-//                     data: o.data ? o.data.split(',').map(x => JSON.parse(x)) : [],
-//                     labels: o.labels ? o.labels.split(',') : [],
-//                     val1:{
-//                         value: o.val1 ? JSON.parse(o.val1.split(',')[0]) : 0,
-//                         label: o.val1 ? o.val1.split(',')[1] : ''
-//                     },
-//                     val2: {
-//                         value: o.val2 ? JSON.parse(o.val2.split(',')[0]) : 0,
-//                         label: o.val2 ? o.val2.split(',')[1] : ''
-//                     },
-//                     link: o.link
-//                 });
-//             }  
-//         }
-//         return data;
-//     } catch (e) {
-//         console.error(e.message);
-//     }
-// };
-// const getDataByParametr = async (_,{linkSelected}) => {
-//     try {
-//         // let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=${parametr}&date=${createDate(12)}`, {agent}); // !!!!!
-//         let response = await fetch(`https://elem-pre.elem.ru/spline/api/salary?filter=company,sex,platform,byAge&date=${createDate(6)}`, {agent});
-//         let data = await response.json();
-//         let restructData = restructJSON(data);
-        
-//         return getDataByParametrModule(restructData, sortLinkSelected[0].linkParametr);
-        
-//     } catch (e) {
-//         console.log(e.message);
-//     }
-// };
-// const getTree = async (parent, {treeId}, {connect}) => {
-//     try {
-//         const [tree] = await connect.execute(`
-//             SELECT * FROM library l
-//             JOIN tree t ON l.id = t.id_note AND t.id_tree = ${treeId}
-//             ORDER BY parent_id
-//         `);
-//         const [lib] = await connect.execute(`
-//             SELECT 
-//                 library.id,
-//                 library.name,
-//                 library.link,
-//                 CONCAT(v1.value, ',', v1.label) AS val1,
-//                 CONCAT(v2.value, ',', v2.label) AS val2,
-//                 GROUP_CONCAT(data.value,'') AS data,
-//                 GROUP_CONCAT(data.label,'') AS labels
-//             FROM library
-//             LEFT JOIN value v1 ON v1.library_id = library.id AND v1.label = 'min'
-//             LEFT JOIN value v2 ON v2.library_id = library.id AND v2.label = 'max'
-//             LEFT JOIN data ON data.library_id = library.id
-//             GROUP BY library.id
-//         `);
-        
-//         let result = createTree(tree, lib);
-//         return result;
-//     } catch (e) {
-//         console.error(e.message);
-//     }
-// };
-// const getData = async () => {
-//     return {};
-// };
-// const getLibraryLink = async (_, args, {connect}) => {
-//     try {
-//         const [libLink] = await connect.execute(`
-//             SELECT * FROM link_salary
-//             WHERE id != 0
-//         `);
-//         let result = createLinkTree(libLink);
-//         return JSON.stringify(result);
-//     } catch (e) {
-//         console.error(e.message);
-//     }
-// };
-// const getLibraryTree = async (_, args, {connect}) => {
-//     try {
-//         const [libTree] = await connect.execute(`
-//             SELECT * FROM library_trees
-//             WHERE id != 0
-//         `);
-//         let result = [];
-//         for(let o of Object.keys(libTree)) {
-//             result.push({
-//                 id: libTree[o].id,
-//                 title: libTree[o].title,
-//                 date: libTree[o].date
-//             });
-//         }
-//         console.log(result)
-//         return result;
-//     } catch (e) {
-//         console.error(e.message);
-//     }
-// };
 module.exports = {
     getActiveLibrarys,
     getLibrarysList,
@@ -387,12 +340,6 @@ module.exports = {
     getTree,
     getLibraryIdInTree,
     getData,
-    getIndicators
-//////////////////////////
-    // getLibrary,
-    // getDataByParametr,
-    // getTree,
-    // getData,
-    // getLibraryLink,
-    // getLibraryTree
+    getIndicators,
+    getCharts
 };

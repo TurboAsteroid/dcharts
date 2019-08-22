@@ -93,7 +93,9 @@ const changeLib = async (_, {library}, {connect}) => {
                         name = ${JSON.stringify(dataset.name)}
                 `);
                 for(let i = 0; i < dataset.data.length; i++) {
-                    dataArr.push([ID, dataset.data[i], dataset.labels[i]]);
+                    let date = dataset.labels[i];
+                    date[2] === '.' ? dataArr.push([ID, dataset.data[i], dataset.labels[i]]) :
+                                      dataArr.push([ID, dataset.data[i], `${date.slice(0, 2)}.${date.slice(2, 6)}`]) ;
                 }
                 controlValueArr.push(
                     [ID, dataset.val1.value, dataset.val1.label],
