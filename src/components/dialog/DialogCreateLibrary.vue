@@ -200,158 +200,88 @@
                                             <span v-else-if="item === items[1]">
                                                 <v-layout row class="maxHeight2">
                                                     <v-flex xs12 v-if="indicators">
-                                                        <v-list >
-                                                            <v-layout v-for="(indicator, idx) in indicators" :key="idx">
-                                                                <v-flex xs12>
-                                                                    <v-list-tile @click="''">
-
-                                                                        <v-list-tile-content>
-                                                                            <v-list-tile-title>{{indicator.name}}</v-list-tile-title>
-                                                                        </v-list-tile-content>
-                                                                        
-                                                                        <v-btn fab flat dark small color="orange" @click="''">
-                                                                            <v-icon dark>settings</v-icon>
-                                                                        </v-btn>
-                                                                        
-                                                                    </v-list-tile>
-                                                                    <v-divider v-if="idx != indicators.length - 1"></v-divider>
-                                                                </v-flex>
-                                                            </v-layout>
-                                                            
-                                                        </v-list>
-                                                    </v-flex>  
+                                                        <v-expansion-panel>
+                                                            <v-expansion-panel-content v-for="(indicator, idx) in indicators" :key="idx">
+                                                            <template v-slot:header>
+                                                                <div>
+                                                                    <v-text-field
+                                                                        label="Имя показателя"
+                                                                        v-model="indicator.name">
+                                                                    </v-text-field>
+                                                                </div>
+                                                            </template>
+                                                            <v-divider></v-divider>
+                                                            <v-card>
+                                                                <v-card-text>
+                                                                    <v-layout row>
+                                                                        <v-flex xs6>
+                                                                            <v-text-field
+                                                                                v-model.number="indicator.val1.value"
+                                                                                label="Первый порог"
+                                                                                @keypress="onlyNumber" 
+                                                                                type="text"
+                                                                            ></v-text-field>
+                                                                        </v-flex>
+                                                                        <v-flex xs6 ml-2>
+                                                                            <v-text-field
+                                                                                v-model.number="indicator.val2.value"
+                                                                                label="Второй порог"
+                                                                                @keypress="onlyNumber" 
+                                                                                type="text"
+                                                                            ></v-text-field>
+                                                                        </v-flex>
+                                                                    </v-layout>
+                                                                </v-card-text>
+                                                            </v-card>
+                                                            </v-expansion-panel-content>
+                                                        </v-expansion-panel>
+                                                    </v-flex>
+                                                    <v-flex xs12 v-else-if="currentDataSet.indicators">
+                                                        <v-expansion-panel>
+                                                            <v-expansion-panel-content v-for="(indicator, idx) in currentDataSet.indicators" :key="idx">
+                                                            <template v-slot:header>
+                                                                <div>
+                                                                    <v-text-field
+                                                                        label="Имя показателя"
+                                                                        v-model="indicator.name">
+                                                                    </v-text-field>
+                                                                </div>
+                                                            </template>
+                                                            <v-divider></v-divider>
+                                                            <v-card>
+                                                                <v-card-text>
+                                                                    <v-layout row>
+                                                                        <v-flex xs6>
+                                                                            <v-text-field
+                                                                                v-model.number="indicator.val1.value"
+                                                                                label="Первый порог"
+                                                                                @keypress="onlyNumber" 
+                                                                                type="text"
+                                                                            ></v-text-field>
+                                                                        </v-flex>
+                                                                        <v-flex xs6 ml-2>
+                                                                            <v-text-field
+                                                                                v-model.number="indicator.val2.value"
+                                                                                label="Второй порог"
+                                                                                @keypress="onlyNumber" 
+                                                                                type="text"
+                                                                            ></v-text-field>
+                                                                        </v-flex>
+                                                                    </v-layout>
+                                                                </v-card-text>
+                                                            </v-card>
+                                                            </v-expansion-panel-content>
+                                                        </v-expansion-panel>
+                                                    </v-flex>
+                                                    <v-flex v-else>
+                                                        <span class="regular">
+                                                            Отсутствуют доступные показатели
+                                                        </span>
+                                                    </v-flex>
                                                 </v-layout>
-                                                <v-divider></v-divider>
+                                                <!-- <v-divider></v-divider>
                                                 <v-layout row justify-center>
                                                     <v-btn outline @click="addIndicators()" color="info">все показатели</v-btn>
-                                                </v-layout>
-                                                <!-- <v-layout row >
-                                                    <v-flex xs12 >
-                                                        <v-tabs
-                                                            v-model="tabIn"
-                                                            grow
-                                                            >
-                                                            <v-tabs-slider color="info"></v-tabs-slider>
-                                                            <v-tab
-                                                                v-for="it in itemsIn"
-                                                                :key="it"
-                                                            >
-                                                                {{ it }}
-                                                            </v-tab>
-                                                        </v-tabs>
-                                                        <v-tabs-items v-model="tabIn">
-                                                            <v-tab-item
-                                                                v-for="it in itemsIn"
-                                                                :key="it"
-                                                                
-                                                            > -->
-                                                                    <!-- <v-divider light></v-divider>
-                                                                        <span v-if="it === itemsIn[0] && indicators.length">
-                                                                            <v-layout row class="maxHeight2">
-                                                                                <v-flex xs12>
-                                                                                    <v-list v-for="(indicator, idx) in indicators" :key="idx">
-                                                                                        <v-list-tile @click="''">
-                                                                                            <v-list-tile-action>
-                                                                                                <v-checkbox v-model="selected" :value="indicator" color="info"></v-checkbox>
-                                                                                            </v-list-tile-action>
-
-                                                                                            <v-list-tile-content>
-                                                                                                <v-list-tile-title>{{indicator.name}}</v-list-tile-title>
-                                                                                            </v-list-tile-content>
-                                                                                            
-                                                                                            <v-btn fab flat dark small color="grey" @click="''">
-                                                                                                <v-icon dark>close</v-icon>
-                                                                                            </v-btn>
-                                                                                            
-                                                                                        </v-list-tile>
-                                                                                        <v-divider></v-divider>
-                                                                                    </v-list>
-                                                                                </v-flex>  
-                                                                            </v-layout>
-                                                                            <v-divider></v-divider>
-                                                                            <v-layout row justify-center>
-                                                                                <v-btn outline @click="addIndicators()" color="info">все показатели</v-btn>
-                                                                            </v-layout>
-                                                                        </span>
-                                                                        <span v-else-if="it === itemsIn[1]"> -->
-                                                                            <!-- <v-layout row>
-                                                                                <v-flex xs6>
-                                                                                    <v-text-field
-                                                                                        v-model.number="currentDataSet.val1.value"
-                                                                                        label="Первый порог"
-                                                                                        @keypress="onlyNumber" 
-                                                                                        type="text"
-                                                                                    ></v-text-field>
-                                                                                </v-flex>
-                                                                                <v-flex xs6 ml-2>
-                                                                                    <v-text-field
-                                                                                        v-model.number="currentDataSet.val2.value"
-                                                                                        label="Второй порог"
-                                                                                        @keypress="onlyNumber" 
-                                                                                        type="text"
-                                                                                    ></v-text-field>
-                                                                                </v-flex>
-                                                                            </v-layout>
-                                                                            <v-divider></v-divider>
-                                                                            <v-layout mt-1>
-                                                                                <v-flex xs12>
-                                                                                    <v-layout row
-                                                                                        v-for="(it, j) in currentDataSet.data"
-                                                                                        :key="j + 'item'"
-                                                                                    >
-                                                                                        <v-flex xs6>
-                                                                                            <v-text-field
-                                                                                                v-model.number="currentDataSet.data[j]"
-                                                                                                mask="#############"
-                                                                                                label="Значение"
-                                                                                            ></v-text-field>
-                                                                                        </v-flex>
-                                                                                        <v-flex xs6 ml-2>
-                                                                                            <v-text-field
-                                                                                                v-model="currentDataSet.labels[j]"
-                                                                                                mask="##.##.##"
-                                                                                                label="Дата!?"
-                                                                                            ></v-text-field>
-                                                                                        </v-flex>
-                                                                                            <v-btn fab flat dark small color="red" @click="removeDataValue(j)">
-                                                                                                <v-icon dark>close</v-icon>
-                                                                                            </v-btn>
-                                                                                    </v-layout>
-                                                                                </v-flex>
-                                                                            
-                                                                            </v-layout> -->
-                                                                            
-                                                                            <!-- <v-divider v-if="!currentDataSet.link"></v-divider>
-                                                                            <v-layout row justify-center v-if="!currentDataSet.link">
-                                                                                <v-btn outline @click="addDataValue()" color="info">Добавить значение</v-btn>
-                                                                            </v-layout> -->
-                                                                        <!-- </span>
-                                                            </v-tab-item>
-                                                        </v-tabs-items>
-                                                    </v-flex>
-                                                </v-layout> -->
-
-                                                <!-- <v-layout row>
-                                                    <v-flex xs12>
-                                                        <v-list v-for="(indicator, idx) in indicators" :key="idx">
-                                                            <v-list-tile @click="''" >
-                                                                <v-list-tile-action>
-                                                                    <v-checkbox v-model="selected" :value="indicator" color="info"></v-checkbox>
-                                                                </v-list-tile-action>
-
-                                                                <v-list-tile-content>
-                                                                    <v-list-tile-title>{{indicator.name}}</v-list-tile-title>
-                                                                   
-                                                                </v-list-tile-content>
-                                                                
-                                                                <v-btn fab flat dark small color="grey" @click="''">
-                                                                    <v-icon dark>close</v-icon>
-                                                                </v-btn>
-                                                                
-                                                            </v-list-tile>
-                                                            <v-divider></v-divider>
-                                                        </v-list>
-                                                    </v-flex>  
                                                 </v-layout> -->
                                             </span>
                                         </v-card-text>
@@ -370,34 +300,7 @@
 export default {
     data: () => ({
         selected: [],
-        indicators: [
-        ],
-        allIndicators: [
-            {
-                id: 4,
-                name: 'test4',
-            },
-            {
-                id: 5,
-                name: 'test5',
-            },
-            {
-                id: 6,
-                name: 'test6',
-            },
-            {
-                id: 7,
-                name: 'test7',
-            },
-            {
-                id: 8,
-                name: 'test8',
-            },
-            {
-                id: 9,
-                name: 'test9',
-            },
-        ],
+        indicators: [],
         currentDataSet: {},
         deleteDataSetsID: [],
         boolSetting: false,
@@ -408,7 +311,7 @@ export default {
     }),
     methods: {
         getIndicators(item) {
-            if(item === this.items[1]) {
+            if(item === this.items[1] && !this.currentDataSet.indicators) {
                 this.$store.dispatch('getIndicators', { currentDataSet: this.currentDataSet }).then(res => this.indicators = this.currentDataSet.indicators)
             }
         },
@@ -420,6 +323,10 @@ export default {
         },
         currentItem(item) {
             this.currentDataSet = item
+            if(!this.currentDataSet.indicators) {
+                // this.indicators = []
+                this.$store.dispatch('getIndicators', { currentDataSet: this.currentDataSet }).then(res => this.indicators = this.currentDataSet.indicators)
+            }
             // console.log(item)
         },
         settingValue() {
@@ -449,6 +356,8 @@ export default {
             this.$store.dispatch('deleteLibrarysOrDataSets', {libID: parseInt(this.currentLibrary.id)})
         },
         saveChangeLib() {
+            // console.log(this.indicators)
+            // console.log(this.currentDataSet.indicators)
             this.currentDataSet = {}
             this.$store.state.setting = false
             this.$store.dispatch('changeLibrarys', {

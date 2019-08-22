@@ -36,7 +36,7 @@
             </v-flex>
         </v-layout>
         <v-layout row wrap>
-            <v-flex xs12 lg6 xl4 v-if="charts[0].active">
+            <v-flex xs12 lg6 xl4 v-if="charts[0].active && dataCollections">
                 <v-card>
                     <v-card-text>
                         <line-chart :chart-data="dataCollections"></line-chart>
@@ -44,7 +44,7 @@
                 </v-card>
             </v-flex>
 
-            <v-flex xs12 lg6 xl4 v-if="charts[1].active">
+            <v-flex xs12 lg6 xl4 v-if="charts[1].active && dataCollections">
                 <v-card>
                     <v-card-text>
                         <Bar-chart :chart-data="dataCollections"></Bar-chart>
@@ -52,7 +52,7 @@
                 </v-card>
             </v-flex>
 
-            <v-flex xs12 lg6 xl4 v-if="charts[2].active">
+            <v-flex xs12 lg6 xl4 v-if="charts[2].active && dataCollections">
                 <v-card>
                     <v-card-text>
                         <pie-chart :chart-data="dataCollections"></pie-chart>
@@ -60,29 +60,66 @@
                 </v-card>  
             </v-flex>
 
-            <v-flex xs12 lg6 xl4>
+            <v-flex xs12 lg6 xl4 v-if="charts[3].active && dataCollections">
                 <v-card>
                     <v-card-title class="headline">
                         Показатели
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
-                        <v-list subheader>
-                            <v-list-tile
-                                v-for="indicator in currentDashbord.indicators"
-                                :key="indicator.id"
-                                avatar
-                                @click="''"
+                        <v-list subheader v-if="currentDashbord.indicators && currentDashbord.indicators.length">
+                            <v-layout
+                                row
+                                v-for="(indicator, idx) in currentDashbord.indicators"
+                                :key="idx"
+                                align-center
+                                @click="getCharts(indicator)"
                             >
-                                <v-list-tile-avatar>
-                                    <v-icon dark :class="[indicator.status.iconClass]">{{ indicator.status.icon }}</v-icon>
-                                </v-list-tile-avatar>
+                                <v-flex xs12 py-0>
+                                    <v-list-tile
+                                        avatar
+                                        @click="''"
+                                    >
+                                        <v-list-tile-avatar>
+                                            <v-icon dark :class="[indicator.status.iconClass]">{{ indicator.status.icon }}</v-icon>
+                                        </v-list-tile-avatar>
 
-                                <v-list-tile-content>
-                                    <v-list-tile-title>{{ indicator.name }}</v-list-tile-title>
-                                </v-list-tile-content>
-                            </v-list-tile>
+                                        <v-list-tile-content>
+                                            <v-list-tile-title>{{ indicator.name }}</v-list-tile-title>
+                                        </v-list-tile-content>
+                                    </v-list-tile>
+                                        <v-divider v-if="idx != currentDashbord.indicators.length - 1"></v-divider>
+                                </v-flex>
+
+                            </v-layout>
+                            
                         </v-list>
+                        <v-layout align-center v-else>
+                            <v-flex xs1>
+                                <v-icon large>warning</v-icon>
+                            </v-flex>
+                            <v-flex xs11>
+                                <span class="headline">
+                                    Показатели не назначены
+                            </span>
+                            </v-flex>
+                        </v-layout>
+                    </v-card-text>
+                </v-card>   
+            </v-flex>
+            <v-flex xs12 lg6 xl4 v-if="!dataCollections">
+                <v-card>
+                    <v-card-text>
+                        <v-layout align-center>
+                            <v-flex xs1>
+                                <v-icon large>warning</v-icon>
+                            </v-flex>
+                            <v-flex xs11>
+                                <span class="headline">
+                                Отсутствуют данные
+                            </span>
+                            </v-flex>
+                        </v-layout>
                     </v-card-text>
                 </v-card>   
             </v-flex>
@@ -119,6 +156,10 @@ export default {
             title: 'Круговая диаграмма',
             active: true
           },
+          {
+              title: 'Показатели',
+              active: true
+          }
         ],
         //   datacollections: {},
         //   collections: {},
@@ -130,13 +171,15 @@ export default {
         //     'rgba(153, 102, 255, 0.2)',
         //     'rgba(255, 159, 64, 0.2)'
         //   ],
-        items: [
-          { icon: 'check_circle', iconClass: 'green', title: 'Показатель 1'},
-          { icon: 'error', iconClass: 'red', title: 'Показатель 2'},
-          { icon: 'warning', iconClass: 'orange', title: 'Показатель 3'},
-          { icon: 'check_circle', iconClass: 'green', title: 'Показатель 4'},
-          { icon: 'check_circle', iconClass: 'green', title: 'Золото в слитках'},
-        ],
+        datacollections: {},
+        backgroundColors: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+          ],
       }
     },
     computed: {
@@ -151,30 +194,62 @@ export default {
 
     },
     methods: {
-        fillData (libraryItem, currentReport) {
-           
-            // for (let i in currentReport.children) {
-            //         let child = currentReport.children[i]
-            //         this.datacollections.children[i] = {
-            //         id: child.id,
-            //         name: child.name,
-            //         link: child.link
-            //     }
-            //     if (child.data[child.data.length - 1] >= child.val2.value) {
-            //     this.datacollections.children[i].st = 'check_circle'
-            //     this.datacollections.children[i].co = 'green'
-            //     } else if (child.data[child.data.length - 1] < child.val1.value) {
-            //     this.datacollections.children[i].st = 'error'
-            //     this.datacollections.children[i].co = 'red'
-            //     } else {
-            //     this.datacollections.children[i].st = 'warning'
-            //     this.datacollections.children[i].co = 'orange'
-            //     }
-            // }
+        getCharts(indicator) {
+            // this.$store.state.currentDashbord = i;
+            if(indicator.data.length && indicator.labels.length) {
+                this.datacollections = {}
+                this.fillData(Object.assign({},indicator))
+                this.$router.push({ 
+                    path: `${this.$route.path}/${indicator.id}`, 
+                    query: { 
+                        obj: indicator ,
+                        dataCollections: Object.assign({},this.datacollections)
+                    } 
+                })
+            }
         },
-        // goBack () {
-        // this.$router.back()
-        // },
+        fillData (currentReport) {
+            this.datacollections = {
+                name: currentReport.name,
+                data: currentReport.data,
+                children: []
+            }
+            let collections = {}
+            if (currentReport.data && currentReport.data.length) {
+                collections = {
+                    name: currentReport.name,
+                    data: currentReport.data,
+                    children: [],
+                    top: {
+                        label: 'Верхний порог',
+                        backgroundColor: 'rgba(0, 255, 0, 1)',
+                        borderColor: 'rgba(0, 255, 0, 1)',
+                        borderWidth: 2,
+                        data: Array(currentReport.data.length).fill(currentReport.val2.value),
+                        fill: false,
+                        type: 'line'
+                    },
+                    bot: {
+                        label: 'Нижний порог',
+                        backgroundColor: 'rgba(255, 0, 0, 1)',
+                        borderColor: 'rgba(255, 0, 0, 1)',
+                        borderWidth: 2,
+                        data: Array(currentReport.data.length).fill(currentReport.val1.value),
+                        fill: false,
+                        type: 'line'
+                    },
+                    datasets: [
+                        {
+                            label: currentReport.name,
+                            backgroundColor: this.backgroundColors,
+                            data: currentReport.data
+                        }
+                    ],
+                    labels: currentReport.labels || this.datacollections.data
+                }
+                this.datacollections = JSON.parse(JSON.stringify(collections))
+            }
+        },
         getTreeElement (root, path) {
             if (path.length > 0 && root.children.length) {
                 let tmpNode = path.shift()
