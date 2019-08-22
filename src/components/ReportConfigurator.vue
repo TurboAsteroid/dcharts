@@ -3,15 +3,15 @@
         <v-container>
           <v-container grid-list-md>
             <v-layout wrap align-center justify-center>
-              <!-- <v-flex xs2> -->
-                <v-btn @click="checkTree" color="info">Выбрать отчет</v-btn>
-              <!-- </v-flex> -->
-              <!-- <v-flex xs2> -->
-                <v-btn @click="addTree()" color="warning">Создать отчет</v-btn>                
-              <!-- </v-flex> -->
-              <!-- <v-flex xs2> -->
-                <v-btn @click="toReport" color="success">Сохранить отчет</v-btn>                
-              <!-- </v-flex> -->
+              <v-flex xs2>
+                <v-btn block @click="checkTree" color="info">Выбрать отчет</v-btn>
+              </v-flex>
+              <v-flex xs2>
+                <v-btn block @click="addTree()" color="warning">Создать отчет</v-btn>                
+              </v-flex>
+              <v-flex xs2>
+                <v-btn block @click="toReport" color="success">Сохранить отчет</v-btn>                
+              </v-flex>
             </v-layout>
             <v-divider></v-divider>
           </v-container>
@@ -123,11 +123,10 @@
                                 </v-flex>
                               </v-layout>
                           </v-card-title>
-                          <v-card-text >
+                          <v-card-text>
                             <!-- Начало: Выбор наборов -->
                             <span v-if="item === items[0]">
-                              <v-list two-line>
-                                <span v-if="node && node.data.dataSets">
+                              <v-list two-line v-if="node && node.data.dataSets">
                                   <v-layout row 
                                     v-for="(item, index) in node.data.dataSets"
                                     :key="index"
@@ -149,15 +148,17 @@
                                         <v-divider v-if="index != node.data.dataSets.length - 1"></v-divider>
                                       </v-flex>
                                   </v-layout>
-                                </span>
                               </v-list>
+                              <span v-else class="regular">
+                                Отсутствуют доступные наборы. Проверьте библиотеку в коллекции
+                              </span>
                             </span>
                             <!-- Конец: Выбор наборов -->
 
 
                             <!-- Начало: Выбор показателей -->
                             <span v-if="item === items[1] && node && node.data.id !== 0">
-                              <v-list two-line>
+                              <v-list two-line v-if="indicators && indicators.length">
                                 <span>
                                   <v-layout row 
                                     v-for="(item, index) in indicators"
@@ -182,6 +183,9 @@
                                   </v-layout>
                                 </span>
                               </v-list>
+                              <span v-else class="regular">
+                                Отсутствуют доступные показатели
+                              </span>
                             </span>
                             <!-- Конец: Выбор показателей -->
                           </v-card-text>
@@ -281,7 +285,7 @@ export default {
   },
   methods: {
     getIndicators(item) {
-      if(item === this.items[1] && !this.node.data.source && !this.indicators.length) {
+      if(item === this.items[1] && !this.node.data.source  && this.indicators && !this.indicators.length) {
           this.$store.dispatch('getIndicators', { currentDataSet: this.node.data }).then(res => {
             this.indicators = this.node.data.indicators
             this.selectedIndicators = []
@@ -324,9 +328,10 @@ export default {
       // this.tab = 0;
       !this.node.data.source ? this.$store.dispatch('getIndicators', { currentDataSet: this.node.data }).then(res => {
         this.indicators = this.node.data.indicators
-        this.indicators.forEach(x => {
+        console.log(this.indicators)
+        this.indicators ? this.indicators.forEach(x => {
           x.active ? this.selectedIndicators.push(x.id) : []
-        })
+        }) : []
       }) : {}
       if((this.node.data.dataSets || !this.node.data.source) && this.node.data.hasOwnProperty('source')) {
         this.$store.dispatch('getLibrarys', {currentLib: this.node.data, boolTree: true})
@@ -420,7 +425,7 @@ export default {
             return this.node.data.children ? this.selected.length === this.librarys.length : false
           }
         } else if(this.tab === 1) {
-          if(this.indicators.length) {
+          if(this.indicators && this.indicators.length) {
             return this.indicators ? this.selectedIndicators.length === this.indicators.length : false
           } else {
             return false

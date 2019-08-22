@@ -139,6 +139,7 @@ input inputIndicators {
     labels: [String]
     val1: inputValue
     val2: inputValue
+    status: inputStatus
 }
 input inputValue {
     value: Int

@@ -579,8 +579,7 @@ export default new Vuex.Store({
       if(this.state.oldLibrarys.some(x => x.id === lib.id)) {
         this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => x.id === lib.id)].name = lib.name;
       } else {
-        // console.log(lib)
-        this.state.oldLibrarys.push(lib)
+        this.state.oldLibrarys.push(lib);
       }
 
       commit('changeDialogLibrary',{ boolCreate: false, boolSetting: false});
