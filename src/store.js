@@ -574,7 +574,7 @@ export default new Vuex.Store({
       // }
     },
 
-    changeLibrarys({commit}, {library}) {
+    changeLibrarys({dispatch, commit}, {library}) {
       let lib = JSON.parse(JSON.stringify(library));
       if(this.state.oldLibrarys.some(x => x.id === lib.id)) {
         this.state.oldLibrarys[this.state.oldLibrarys.findIndex(x => x.id === lib.id)].name = lib.name;
@@ -583,23 +583,30 @@ export default new Vuex.Store({
       }
 
       commit('changeDialogLibrary',{ boolCreate: false, boolSetting: false});
+      let datasets = [];
       for(let o of lib.dataSets) { // убираю id у созданных наборов, чтобы можно было создавать записи в бд
+        datasets.push(o);
         if(o.datasetID && typeof o.id === 'string' || o.datasetID === 0) {
           o.id = ''
         }
       }
+      // console.log(datasets)
 
       axios.post('http://10.1.100.170:4000', {
         query:
           `mutation ChangeLibrary(
             $library: inputLibrary
+            $datasets: [inputDataSet]
           ) {
-            changeLib(library: $library) 
+            changeLib(library: $library)
+            changeIndicators(indicators: $datasets)
           }`,
         variables: {
-          library: lib
+          library: lib,
+          datasets
         }
       }).then((res) => {
+        // dispatch('changeIndicators', {indicators: datasets});
         if(res.data.data.changeLib) {
           lib.id = res.data.data.changeLib;
         }

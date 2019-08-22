@@ -15,6 +15,7 @@ type Mutation {
     activationIndicators(activeInd: [inputActive]) : String
 
     changeLib(library: inputLibrary) : Int
+    changeIndicators(indicators: [inputDataSet]) : String
     deleteLibrarysOrDataSets(libID: Int, datasetID: [Int]) : String
     changeTree(tree: [inputTree], treeLibrary: inputTreeLibrary) : String
     deleteTree(treeID: ID!) : String

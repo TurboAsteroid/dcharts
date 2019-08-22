@@ -147,6 +147,56 @@ const changeLib = async (_, {library}, {connect}) => {
         return newID;
     }
 };
+const changeIndicators = async (_,{indicators}, {connect}) => {
+    let allIndicators = []
+    for(let o in indicators) {
+        (function recurse(currentNode) {
+            currentNode.indicators ? allIndicators.push(...currentNode.indicators) : {}
+
+            for(let i = 0, length = currentNode.children.length; i < length; i++) {
+                recurse(currentNode.children[i]);
+            }
+        })(indicators[o]);
+    }
+    if(allIndicators.length) {
+        let indicator_id;
+        try {
+            for(let o of allIndicators) {
+                [arr] = await connect.execute(`
+                    SELECT indicator_id
+                    FROM relations_indicators
+                    WHERE id = ${o.id}
+                `);
+                indicator_id = arr[0].indicator_id;
+                console.log(indicator_id);
+                await connect.execute(`
+                    UPDATE indicators
+                    SET
+                        name = ${JSON.stringify(o.name)}
+                    WHERE
+                        id = ${indicator_id}
+                `);
+                await connect.execute(`
+                    UPDATE control_values_relations
+                    SET 
+                        value = ${o.val1.value}
+                    WHERE
+                        indicator_id = ${indicator_id} AND label = ${JSON.stringify(o.val1.label)}
+                `);
+                await connect.execute(`
+                    UPDATE control_values_relations
+                    SET 
+                        value = ${o.val2.value}
+                    WHERE
+                        indicator_id = ${indicator_id} AND label = ${JSON.stringify(o.val2.label)}
+                `);
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+    
+}
 const deleteLibrarysOrDataSets = async (_, {libID, datasetID}, {connect}) => {
     if(libID) {
         try {
@@ -247,6 +297,7 @@ module.exports = {
     deleteLibrarysOrDataSets,
     activationLib,
     changeTree,
+    changeIndicators,
     deleteTree,
     activationTree,
     activationIndicators

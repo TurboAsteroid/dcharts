@@ -237,7 +237,6 @@ const resolvers = {
     },
     DataSet: {
         indicators: async (parent, args, {connect}) => {
-            // console.log('parent', parent)
             try {
                 let indicators;
                 if(parent.link) {
@@ -284,7 +283,6 @@ const resolvers = {
                     indicators = [...indicators[0]];
                 }
                 let result = [];
-                // console.log(indicators)
                 for(let o of indicators) {
                     let idx = result.push({
                         id: o.id,
@@ -304,8 +302,6 @@ const resolvers = {
                     });
                     createStatus(result[idx - 1]);
                 }
-                // console.log('ind',indicators)
-                console.log('ind',result)
                 return result;
             } catch (e) {
                 console.log(e);
