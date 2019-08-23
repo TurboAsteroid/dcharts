@@ -96,9 +96,7 @@
                                     </v-list-tile>
                                         <v-divider v-if="idx != currentDashbord.indicators.length - 1"></v-divider>
                                 </v-flex>
-
-                            </v-layout>
-                            
+                            </v-layout>            
                         </v-list>
                         <v-layout align-center v-else>
                             <v-flex xs1>
@@ -141,44 +139,23 @@ import BarChart from './chart/BarChart.js'
 import PieChart from './chart/PieChart.js'
 
 export default {
-        components: {
+    components: {
         LineChart,
         BarChart,
         PieChart
     },
-    mounted() {
-        // console.log(this.currentDashbord)
-    },
     data () {
-      return {
-          charts: [
-          {
-            title: 'Линейная диаграмма',
-            active: true
-          },
-          {
-            title: 'Столбчатая диаграмма',
-            active: true
-          },
-          {
-            title: 'Круговая диаграмма',
-            active: true
-          },
-          {
-              title: 'Показатели',
-              active: true
-          }
-        ],
-        datacollections: {},
-        backgroundColors: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)'
-          ],
-      }
+        return {
+            datacollections: {},
+            backgroundColors: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+        }
     },
     computed: {
         currentDashbord() {
@@ -187,13 +164,9 @@ export default {
         dataCollections() {
             return this.$route.query.dataCollections
         },
-        report: function () {
-        }
-
     },
     methods: {
-        getCharts(indicator) {
-            // this.$store.state.currentDashbord = i;
+        getCharts(indicator) { // получение графиков для выбранного элеманта отчета
             if(indicator.data.length && indicator.labels.length) {
                 this.datacollections = {}
                 this.fillData(Object.assign({},indicator))
@@ -257,7 +230,6 @@ export default {
             }
         }
     },
-
 }
 </script>
 
@@ -265,8 +237,4 @@ export default {
 .name {
     cursor: pointer;
 }
-    /* .resize {
-        width: 730px;
-        height: 400px;
-    } */
 </style>

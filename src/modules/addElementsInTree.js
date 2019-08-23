@@ -3,9 +3,9 @@ function addElementsInTree(report, { data, addedData }) {
     if (data) {
         for(let o of data) {
             if(o.inTree) {
-            tmp = Object.assign({}, o);
-            tmp.children = [];
-            report.children.push(tmp);
+                tmp = Object.assign({}, o);
+                tmp.children = [];
+                report.children.push(tmp);
             }
         }
     } else if (addedData) {
@@ -17,7 +17,6 @@ function addElementsInTree(report, { data, addedData }) {
     }
     
     report.children.forEach(x => {
-
         x.dataSets ? recurse(x, x.dataSets) : {};
     });
 }

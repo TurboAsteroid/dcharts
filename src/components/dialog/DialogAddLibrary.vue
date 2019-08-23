@@ -1,4 +1,5 @@
 <template>
+    <!-- Окно добавления библиотек в коллекцию -->
     <v-dialog
         persistent
         v-model="$store.state.dialogAddLibrary"
@@ -14,7 +15,6 @@
                         <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
                                 <v-btn flat outline dark small v-on="on" color="success" @click="addLib()">
-                                    <!-- <v-icon dark >done</v-icon> -->
                                     Изменить коллекцию
                                 </v-btn>
                             </template>
@@ -80,36 +80,27 @@
 <script>
 export default {
     data:() => ({
-        selected: []
+        selected: [] // выбранные библиотеки
     }),
-    // mounted() {
-    //     this.$store.state.selected = []
-    // },
     methods: {
         getSelected(item) {
             if(item.active) {
-                console.log('item',item)
-                
                 this.selected.push(item)
             }
         },
         addLib() {
-            
-            this.$store.commit('changeDialogLibrary',{ boolAdd: false })
-            this.$store.commit('changeDialogTree',{bool: false});
-
-            this.$store.commit('addLibrarys')
-            this.$store.dispatch('activationLibrarys',);
+            this.$store.commit('changeDialogLibrary',{ boolAdd: false }) // закрытие окна выбора библиотек
+            this.$store.commit('changeDialogTree',{bool: false}); // закрытие окна выбор отчетов
+            this.$store.commit('addLibrarys') // добавление отчета в коллекцию
+            this.$store.dispatch('activationLibrarys',) // активация библиотек в бд
         },
         closeDialog() {
-            // this.$store.commit('changeDialogTree', {boolAlert: false})
-            this.$store.commit('changeDialogLibrary',{ boolAdd: false })
-            this.$store.state.selected = this.selectedLib
+            this.$store.commit('changeDialogLibrary',{ boolAdd: false }) // закрытие окна выбора библиотек
+            this.$store.state.selected = this.selectedLib // отмена всех изменений
         }
     },
     computed: {
-        selectedLib () {
-            // console.log('dsf')
+        selectedLib () { // Уже активные библиотеки
             if(this.librarysList.length) {
                 return this.librarysList.filter(l => {
                     return l.active
@@ -118,13 +109,10 @@ export default {
                 })
             }
         },
-        librarysList() {
+        librarysList() { // Список всех библиотек
             return this.$store.state.librarysList
         },
-        sel() {
-            return this.$store.state.selected
-        },
-        selectAll: {
+        selectAll: { // отслеживаем состояние чекбокса для выбора всего
             get: function () {
                 return this.librarysList ? this.$store.state.selected.length === this.librarysList.length : false
             },

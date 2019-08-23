@@ -32,7 +32,6 @@
               
               <v-container>
                 <tree :data="report" node-text="name" layoutType="euclidean" :zoomable="true" style="height: 800px;" @clicked="onClick" @retract="onClick"/>
-                <!-- <tree :data="report" node-text="name" layoutType="euclidean" :zoomable="true" style="height: 800px;" @clicked="onClick" @retract="onClick"/> -->
               </v-container>
             </v-card>
           </v-container>     
@@ -49,7 +48,6 @@
                               readonly
                               class="headline"
                             ></v-text-field>
-                            <!-- <span class="headline">Выбор библиотек</span> -->
                           </v-flex>
                           <v-flex xs10 v-else-if="node && node.data.id !== 0 && !node.data.hasOwnProperty('source')">
                             <v-text-field
@@ -68,9 +66,6 @@
                             ></v-text-field>
                           </v-flex>
                         <v-flex xs3>
-                          <!-- <v-btn flat outline dark small color="info" @click="''">
-                              Выбрать все
-                          </v-btn> -->
                         </v-flex>
                         <v-flex xs4>
                           <v-btn flat outline  dark small color="success" @click="ok">
@@ -256,35 +251,31 @@ export default {
     dialogAddLibrary
   },
   data: () => ({
-    selected: [],
-    selectedIndicators: [],
+    selected: [], // выбранные элементы в списке
+    selectedIndicators: [], // выбранные показатели
     dialog: false,
     tab: null,
     items:['Список наборов', 'Список показателей'],
-    indicators: [
-    ],
+    indicators: [],
 
-    node: null,
+    node: null,//выбранный элемент дерева
     currentChild: null,
     child: [],
     result:[],
   }),
   mounted () {
-    // console.log(this.$store.state.treesLibrary.length)
-    // if(!this.$store.state.treesLibrary.length) {
-      this.$store.state.report = {
-          id: 0,
-          data:[],
-          name:'Библиотеки',
-          children:[],
-      };
-      this.$store.dispatch('getTreesLibrary');
-      this.$store.dispatch('getTree', {getLastTree: true, addData:false})
-    // }
+    this.$store.state.report = {
+        id: 0,
+        data:[],
+        name:'Библиотеки',
+        children:[],
+    };
+    this.$store.dispatch('getTreesLibrary'); // получение списка всех отчетов
+    this.$store.dispatch('getTree', {getLastTree: true, addData:false}) // получение последнего выбранного отчета
   
   },
   methods: {
-    getIndicators(item) {
+    getIndicators(item) { // получение показателей для выбранного узла отчета
       if(item === this.items[1] && !this.node.data.source  && this.indicators && !this.indicators.length) {
           this.$store.dispatch('getIndicators', { currentDataSet: this.node.data }).then(res => {
             this.indicators = this.node.data.indicators
@@ -295,7 +286,7 @@ export default {
           })
       }
     },
-    addTree() { 
+    addTree() { // создание нового отчета
       let newTree = {
           id: '',
           name: '',
@@ -305,22 +296,19 @@ export default {
       this.$store.commit('changeDialogTree',{bool: false, value: newTree})
         
     },
-    checkTree() {
+    checkTree() { // выбор отчета в списке
       this.$store.commit('changeDialogTree', {bool: true})
       this.$store.dispatch('getTreesLibrary');
     },
-    currentId(item) {
+    currentId(item) { // получение корректного id для чекбокса
       let id = !item.datasetID ? item.id : JSON.stringify(item.datasetID)
       return id
     },
     goBackToLibrary() {
       this.$router.push('/');
     },
-    toReport() {
-      console.log(this.report)
+    toReport() { // сохранение отчета
       this.$store.dispatch('setTree', { tree: this.report }).then(() => {
-      //   this.$router.push('/report')
-
         this.$store.dispatch('getTreesLibrary');
         this.$store.dispatch('getTree', {getLastTree: true, addData:true})
       })
@@ -335,7 +323,6 @@ export default {
       // this.tab = 0;
       !this.node.data.source ? this.$store.dispatch('getIndicators', { currentDataSet: this.node.data }).then(res => {
         this.indicators = this.node.data.indicators
-        console.log(this.indicators)
         this.indicators ? this.indicators.forEach(x => {
           x.active ? this.selectedIndicators.push(x.id) : []
         }) : []
@@ -343,11 +330,9 @@ export default {
       if((this.node.data.dataSets || !this.node.data.source) && this.node.data.hasOwnProperty('source')) {
         this.$store.dispatch('getLibrarys', {currentLib: this.node.data, boolTree: true})
       } else if(this.node.data.id !== 0 && !this.node.data.dataSets  && this.node.data.link) {
-        // this.$store.dispatch('getLibrarys', {currentLib: this.node.data, boolTree: true})
         for(let o of this.librarys) {
           if (o.source) {
             for(let i of o.dataSets) {
-              console.log(i)
               this.findChild(i);
             }
           }
@@ -372,7 +357,6 @@ export default {
       }
     },
     ok () {
-      // this.dialog = false
       this.$store.dispatch('activationIndicators', { selected: this.selectedIndicators, currentIndicators: this.indicators }).then(() => this.dialog = false)
       for (let i = 0; i < this.node.data.children.length; i++) {
         if (!this.selected.find(function (element) {

@@ -20,19 +20,6 @@ type Mutation {
     deleteLibrarysOrDataSets(libID: Int, datasetID: [Int]) : String
     changeTree(tree: [inputTree], treeLibrary: inputTreeLibrary) : Int
     deleteTree(treeID: ID!) : String
-
-    # changeLinkLib(library: inputLibrary) : String
-
-
-#////////////////////////////////////////////////////////
-    # createNewNote(data: [libraryInput]!): [Library]
-    # updateNote(data: [libraryInput]!): [Library]
-    # deleteNote(data: [Int]!): [Library]
-    # changeTree(tree: treeInput, currentTree: libraryTreeInput): String
-    # addLibraryTree(tree: libraryTreeInput): String
-    # updateLibraryTree(tree: libraryTreeInput): String
-    # deleteLibraryTree(trees: [libraryTreeInput]): String
-#/////////////////////////////////////////////////////////
 }
 
 type LibrarysList {
@@ -166,13 +153,3 @@ input inputTreeLibrary {
     levels: Int
     addLib: Boolean
 }
-# input inputTree {
-#     children: [inputDataSet]
-#     date: String
-#     id: ID
-#     name: String
-# }
-
-
-#//////////////////////////////////////////////
-# rs
