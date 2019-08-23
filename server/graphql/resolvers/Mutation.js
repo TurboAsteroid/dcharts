@@ -252,22 +252,29 @@ const changeTree = async (_, {tree, treeLibrary}, {connect}) => {
         for(let o of tree) {
             library_id = o.id;
             if(o.children.length) {
-                recurse(o.children);
+                await recurse(o.children);
             } else {
-                arr.push([id, parseInt(library_id), 0, 0]);
+                // arr.push([id, parseInt(library_id), 0, 0]);
+                let lastId;
+                await connect.query(`
+                    INSERT INTO trees
+                        (tree_id, library_id, dataset_id, link_id)
+                    VALUES (${id}, ${parseInt(library_id)},  0, 0)
+                `).then(res => lastId = parseInt(res[0].insertId));
+                await connect.query(`
+                    INSERT INTO charts
+                        (elements_trees_id)
+                    VALUES (${lastId})
+                `);
             }
             
         }
-        await connect.query(`
-            INSERT INTO trees
-                (tree_id, library_id, dataset_id, link_id)
-            VALUES ?
-        `, [arr]);
+        
         return !treeLibrary.id ? id : 0;
     } catch(e) {
         console.log(e);
     }
-    function recurse(parent) {
+    async function recurse(parent) {
         for(let o of Object.keys(parent)) {
             let link_id, dataset_id;
 
@@ -281,9 +288,24 @@ const changeTree = async (_, {tree, treeLibrary}, {connect}) => {
                 link_id = 0,
                 dataset_id = parent[o].id;
             }
-            arr.push([id, parseInt(library_id), parseInt(dataset_id), parseInt(link_id)]);
+            // arr.push([id, parseInt(library_id), parseInt(dataset_id), parseInt(link_id)]);
+            let lastId;
+            try {
+                await connect.query(`
+                    INSERT INTO trees
+                        (tree_id, library_id, dataset_id, link_id)
+                    VALUES (${id}, ${parseInt(library_id)}, ${parseInt(dataset_id)}, ${parseInt(link_id)})
+                `).then(res => lastId = parseInt(res[0].insertId));
+                await connect.query(`
+                    INSERT INTO charts
+                        (elements_trees_id)
+                    VALUES (${lastId})
+                `);
+            } catch (e) {
+                console.log(e)
+            }
             if(parent[o].children) {
-                recurse(parent[o].children);
+                await recurse(parent[o].children);
             }
         }
     }

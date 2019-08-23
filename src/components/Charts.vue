@@ -1,35 +1,41 @@
 <template>
-    <v-container grid-list-lg my-0 py-0>
+    <v-container grid-list-lg my-0 py-0 fluid>
         <v-layout>
-            <v-flex xs12 md4>
+            <v-flex xs12 md5>
                 <v-card>
-                    <v-card-title> 
-                        <v-text-field
-                            readonly
-                            :value="currentDashbord.name"
-                            class="headline"
-                        >
-                        </v-text-field>
-                        
-                        <v-menu :close-on-content-click="false" bottom offset-y>
-                            <template v-slot:activator="{ on }">
-                                <v-btn outline fab small color="orange" v-on="on">
-                                    <v-icon dark >settings</v-icon>
-                                </v-btn>
-                            </template>
-                            <v-list>
-                                <v-list-tile v-for="(item, i) in $store.state.charts" :key="i" @click="''">
-                                    <v-list-tile-action>
-                                        <v-checkbox
-                                            type="checkbox"
-                                            color="info"
-                                            v-model="item.active"
-                                        ></v-checkbox>
-                                    </v-list-tile-action>
-                                    <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                                </v-list-tile>
-                            </v-list>
-                        </v-menu>
+                    <v-card-title>
+                        <v-layout align-center>
+                            <v-flex xs10>
+                                <v-text-field
+                                    readonly
+                                    :value="currentDashbord.name"
+                                    class="headline"
+                                >
+                                </v-text-field>
+                            </v-flex>
+                            <!-- <v-flex xs1></v-flex> -->
+                            <v-flex xs1>
+                                <v-menu :close-on-content-click="false" bottom offset-y>
+                                    <template v-slot:activator="{ on }">
+                                        <v-btn outline fab small color="orange" v-on="on">
+                                            <v-icon dark >settings</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <v-list>
+                                        <v-list-tile v-for="(item, i) in $store.state.charts" :key="i" @click="''">
+                                            <v-list-tile-action>
+                                                <v-checkbox
+                                                    type="checkbox"
+                                                    color="info"
+                                                    v-model="item.active"
+                                                ></v-checkbox>
+                                            </v-list-tile-action>
+                                            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                                        </v-list-tile>
+                                    </v-list>
+                                </v-menu>
+                            </v-flex>
+                        </v-layout>
                     </v-card-title>
                     
                 </v-card>

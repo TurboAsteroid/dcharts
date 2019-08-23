@@ -6,8 +6,11 @@
     @click="getCharts(node)"
     >
         <v-layout align-center>
-            <v-flex v-if="node.hasOwnProperty('status')">
+            <v-flex v-if="node.hasOwnProperty('status') && currentStatus.iconClass && currentStatus.icon">
                 <v-icon dark fab :class="currentStatus.iconClass">{{currentStatus.icon}}</v-icon>
+            </v-flex>
+            <v-flex v-else-if="node.hasOwnProperty('status') && !currentStatus.iconClass.length && !currentStatus.icon.length">
+                <v-icon dark fab color="grey">warning</v-icon>
             </v-flex>
             <v-flex xs11 ml-2 v-if="node.hasOwnProperty('status')">
                 <span style="word-wrap: break-word;">{{ node.name }}</span>

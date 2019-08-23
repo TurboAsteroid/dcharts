@@ -264,10 +264,11 @@ const getIndicators = async (_, {id, boolLink}, {connect}) => {
     }
     
 };
-const getCharts = async (_,{id, boolLink, boolDataset}, {connect}) => {
-    console.log('id',id)
-    console.log('boolLink',boolLink)
-    console.log(' boolDataset', boolDataset)
+const getCharts = async (_,{id, treeID, boolLink, boolDataset}, {connect}) => {
+    // console.log(treeID)
+    // console.log('id',id)
+    // console.log('boolLink',boolLink)
+    // console.log(' boolDataset', boolDataset)
     let element_id,
         charts = [],
         obj = {}
@@ -276,10 +277,10 @@ const getCharts = async (_,{id, boolLink, boolDataset}, {connect}) => {
             let [x] = await connect.execute(`
                 SELECT id
                 FROM trees
-                WHERE link_id = ${id}
+                WHERE link_id = ${id} AND tree_id = ${treeID}
             `);
             element_id = x[0].id;
-            [a] = await connect.execute(`
+            let [a] = await connect.execute(`
                 SELECT 
                     bar,
                     line,
@@ -293,10 +294,10 @@ const getCharts = async (_,{id, boolLink, boolDataset}, {connect}) => {
             let [x] = await connect.execute(`
                 SELECT id
                 FROM trees
-                WHERE dataset_id = ${id}
+                WHERE dataset_id = ${id} AND tree_id = ${treeID}
             `);
             element_id = x[0].id;
-            [a] = await connect.execute(`
+            let [a] = await connect.execute(`
                 SELECT 
                     bar,
                     line,
@@ -327,10 +328,24 @@ const getCharts = async (_,{id, boolLink, boolDataset}, {connect}) => {
         ];
         return charts;
     } catch(e) {
-        console.log(e)
+        console.log(e);
     }
     
 };
+const getActiveTree = async (_, args, {connect}) => {
+    try {
+        let id,
+        lastTreeId;
+        [lastTreeId] = await connect.execute(`
+            SELECT id FROM trees_library WHERE active = 1;
+        `);
+        id = lastTreeId[0]['id'];
+        return id;
+    }
+    catch(e) {
+        console.log(e);
+    }
+}
 
 module.exports = {
     getActiveLibrarys,
@@ -341,5 +356,6 @@ module.exports = {
     getLibraryIdInTree,
     getData,
     getIndicators,
-    getCharts
+    getCharts,
+    getActiveTree
 };
