@@ -29,18 +29,18 @@ export default {
       Tree
     },
     data () {
-        return {
-        }
+      return {
+      }
     },
     mounted(){      
       this.$store.dispatch('getTreesLibrary')
-      this.$store.dispatch('getTree', {getLastTree: true, addData: true})
+      this.$store.dispatch('getTree', {getLastTree: true, addData: true}).then(() => console.log('fg'))
       this.$router.replace('/report')
     },
     methods: {
       currentLink(item) {
         this.$store.state.currentDashbord = item
-      }
+      },
     },
     computed: {
       report() { // отчет

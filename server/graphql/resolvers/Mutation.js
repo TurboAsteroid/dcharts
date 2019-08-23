@@ -48,12 +48,12 @@ const activationIndicators = async (_,{activeInd}, {connect}) => {
 // Изменение библиотеки в бд
 const changeLib = async (_, {library}, {connect}) => {
     const lib = library;
-    let dataArr = [];
-    let controlValueArr = [];
-    let lastDataSetId;
-    let newID;
+    let dataArr = [],
+        controlValueArr = [],
+        lastDataSetId,
+        newID;
     try {
-        if(parseInt(lib.id) !== 0) {
+        if(parseInt(lib.id)) {
             await connect.execute(`
                 UPDATE librarys
                 SET 
@@ -61,7 +61,7 @@ const changeLib = async (_, {library}, {connect}) => {
                 WHERE 
                     id = ${parseInt(lib.id)}
             `);
-        } else if(parseInt(lib.id) === 0) {
+        } else {
             await connect.execute(`
                 INSERT INTO librarys
                     (name, source, active)
@@ -101,7 +101,7 @@ const changeLib = async (_, {library}, {connect}) => {
                     [ID, dataset.val1.value, dataset.val1.label],
                     [ID, dataset.val2.value, dataset.val2.label]                    
                 );
-            } else if(dataset.link) {
+            } else {
                 (async function recurse(currentNode) {
                     try {
                         await connect.execute(`
@@ -133,8 +133,7 @@ const changeLib = async (_, {library}, {connect}) => {
                         recurse(currentNode.children[i]);
                     }
                 })(dataset);
-            }
-            
+            }      
         }
         if(dataArr.length) {
             await connect.query(`INSERT INTO dataset_values (dataset_id, value, label) VALUES ?`, [dataArr]);
@@ -226,9 +225,9 @@ const deleteLibrarysOrDataSets = async (_, {libID, datasetID}, {connect}) => {
     }
 };
 const changeTree = async (_, {tree, treeLibrary}, {connect}) => {
-    let arr = [];
-    let library_id;
-    let id;
+    let arr = [],
+        library_id,
+        id;
 
     try {
         if(treeLibrary.id) {
@@ -254,7 +253,6 @@ const changeTree = async (_, {tree, treeLibrary}, {connect}) => {
             if(o.children.length) {
                 await recurse(o.children);
             } else {
-                // arr.push([id, parseInt(library_id), 0, 0]);
                 let lastId;
                 await connect.query(`
                     INSERT INTO trees
@@ -269,7 +267,6 @@ const changeTree = async (_, {tree, treeLibrary}, {connect}) => {
             }
             
         }
-        
         return !treeLibrary.id ? id : 0;
     } catch(e) {
         console.log(e);
@@ -288,7 +285,6 @@ const changeTree = async (_, {tree, treeLibrary}, {connect}) => {
                 link_id = 0,
                 dataset_id = parent[o].id;
             }
-            // arr.push([id, parseInt(library_id), parseInt(dataset_id), parseInt(link_id)]);
             let lastId;
             try {
                 await connect.query(`
@@ -302,7 +298,7 @@ const changeTree = async (_, {tree, treeLibrary}, {connect}) => {
                     VALUES (${lastId})
                 `);
             } catch (e) {
-                console.log(e)
+                console.log(e);
             }
             if(parent[o].children) {
                 await recurse(parent[o].children);
