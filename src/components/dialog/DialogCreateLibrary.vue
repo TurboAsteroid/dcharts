@@ -1,4 +1,5 @@
 <template>
+<!-- Окно создания-редактирования библиотеки -->
     <v-dialog
         persistent
         v-model="dialog"
@@ -87,7 +88,6 @@
                                 </v-treeview> 
                                 
                             </v-list>
-                            <!-- <v-divider></v-divider>  -->
                         </v-flex>
                         
                         <v-divider vertical></v-divider>
@@ -137,7 +137,8 @@
                                         <v-divider></v-divider>
                                         
                                         <v-card-text>
-                                            
+
+                                            <!-- Настройка набора -->
                                             <span v-if="item === items[0]  && currentDataSet.val1">
                                                 
                                                 <v-layout row>
@@ -161,7 +162,6 @@
                                                 <v-divider></v-divider>
                                                 <v-layout mt-1 class="maxHeight">
                                                     <v-flex xs12>
-                                                        <!-- <transition-group name="item" tag="div" class="items"> -->
                                                         <v-layout row
                                                             v-for="(it, j) in currentDataSet.data"
                                                             :key="j + 'item'"
@@ -181,13 +181,10 @@
                                                                     label="Дата"
                                                                 ></v-text-field>
                                                             </v-flex>
-                                                            <!-- <v-flex xs1> -->
                                                                 <v-btn fab flat dark small color="red" @click="removeDataValue(j)">
                                                                     <v-icon dark>close</v-icon>
                                                                 </v-btn>
-                                                            <!-- </v-flex> -->
                                                         </v-layout>
-                                                        <!-- </transition-group> -->
                                                     </v-flex>
                                                 
                                                 </v-layout>
@@ -198,6 +195,7 @@
                                                 </v-layout>
                                             </span>
 
+                                            <!-- Настройка показателей -->
                                             <span v-else-if="item === items[1]">
                                                 <v-layout row class="maxHeight2">
                                                     <v-flex xs12 v-if="indicators">
@@ -285,6 +283,7 @@
                                                     <v-btn outline @click="addIndicators()" color="info">все показатели</v-btn>
                                                 </v-layout> -->
                                             </span>
+
                                         </v-card-text>
                                     </v-card>
                                 </v-tab-item>
@@ -301,9 +300,9 @@
 export default {
     data: () => ({
         selected: [],
-        indicators: [],
-        currentDataSet: {},
-        deleteDataSetsID: [],
+        indicators: [], // Список показателей
+        currentDataSet: {}, // выбранный набор данных
+        deleteDataSetsID: [], // id удаляемых наборов
         boolSetting: false,
         tab: null,
         tabIn: 0,
@@ -311,57 +310,44 @@ export default {
         itemsIn: ['Выбор', 'Создание']
     }),
     methods: {
-        save (date) {
-            this.$refs.menu.save(date)
-        },
-        getIndicators(item) {
+        getIndicators(item) { // получение всех показателей принадлежащих набору
             if(item === this.items[1] && !this.currentDataSet.indicators) {
                 this.$store.dispatch('getIndicators', { currentDataSet: this.currentDataSet }).then(res => this.indicators = this.currentDataSet.indicators)
             }
         },
-        onlyNumber ($event) {
+        onlyNumber ($event) { // проверка на ввод только чисел
             let keyCode = ($event.keyCode ? $event.keyCode : $event.which);
-            if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) { // 46 is dot
+            if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) {
                 $event.preventDefault();
             }
         },
-        currentItem(item) {
+        currentItem(item) { // выбор набора
             this.currentDataSet = item
             if(!this.currentDataSet.indicators) {
-                // this.indicators = []
                 this.$store.dispatch('getIndicators', { currentDataSet: this.currentDataSet }).then(res => this.indicators = this.currentDataSet.indicators)
             }
-            // console.log(item)
         },
-        settingValue() {
-        },
-        cancel() {
+        cancel() { // Закрытие окна
             this.currentDataSet = {}
             this.deleteDataSetsID = []
             this.tab = null
             this.$store.state.dialogSetting ? this.$store.commit('changeDialogLibrary',{ boolSetting: false})
              : this.$store.commit('changeDialogLibrary',{ boolCreate: false })
-            // this.$store.commit('changeDialogLibrary',{ boolSetting: false, boolCreate: false })
         },
-        createLib() {
+        createLib() { // создание библиотеки
             this.currentDataSet = {}
-            // if(this.currentLibrary.name) {
-            //     this.$store.commit('changeDialogLibrary',{ boolCreateSetting: false, newLibrary: this.currentLibrary })
-            // }
             if(this.currentLibrary.name){
-                this.$store.dispatch('changeLibrarys', {
+                this.$store.dispatch('changeLibrarys', { // создание-изменение библиотеки в бд
                     library: this.currentLibrary
                 })
             }
         },
-        deleteLib() {
+        deleteLib() { // удаление библиотеки из бд
             this.currentDataSet = {}
             this.$store.state.dialogSetting = false
             this.$store.dispatch('deleteLibrarysOrDataSets', {libID: parseInt(this.currentLibrary.id)})
         },
-        saveChangeLib() {
-            // console.log(this.indicators)
-            // console.log(this.currentDataSet.indicators)
+        saveChangeLib() { // сохранение всех изменений в библиотеке
             this.currentDataSet = {}
             this.$store.state.setting = false
             this.$store.dispatch('changeLibrarys', {
@@ -372,11 +358,11 @@ export default {
                 this.deleteDataSetsID = []
             }
         },
-        addDataSet() {
+        addDataSet() { // создание нового набора данных
             let idx = this.currentLibrary.dataSets.push({
                 // id: Math.floor(Math.random() * 50000) + 30000, // !!!??? в дереве должны быть разные id
-                id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15), // пусть будет любая строка как id, затем при записи в бд подставлю максимальный id + 1
-                datasetID: 0,
+                id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15), // пусть будет любая строка как id
+                datasetID: 0, // вспомогательный id для определения, что это новый созданный набор
                 data: [],
                 labels:[],
                 name: 'Новый набор',
@@ -390,13 +376,11 @@ export default {
                 },
                 link: '',
                 children: [],
-                // relations: []
             })
             this.currentDataSet = this.currentLibrary.dataSets[idx - 1]
         },
-        deleteDataSet() {     
+        deleteDataSet() { // удаление набора из библиотеки  
             this.currentLibrary.dataSets.splice(this.currentLibrary.dataSets.findIndex(x => x.id === this.currentDataSet.id), 1)
-            // console.log(this.currentDataSet)
             if(this.currentDataSet.datasetID === null) {
                 this.deleteDataSetsID.push(parseInt(this.currentDataSet.id))
             } else if (this.currentDataSet.datasetID !== 0) {
@@ -404,23 +388,23 @@ export default {
             }
             this.currentDataSet = {}
         },
-        addDataValue() {
+        addDataValue() { // добавление новых значений в набор данных
             this.currentDataSet.data.push(0)
             this.currentDataSet.labels.push('0')
         },
-        removeDataValue(j) {
+        removeDataValue(j) { // удаление значений из набора
             this.currentDataSet.data.splice(j, 1)
             this.currentDataSet.labels.splice(j, 1)
         },
-        addIndicators() {
-            this.indicators.push(...this.allIndicators)
-        }
+        // addIndicators() { //
+        //     this.indicators.push(...this.allIndicators)
+        // }
     },
     computed: {
         dialog() {
             return this.$store.state.dialogSetting || this.$store.state.dialogCreate
         },
-        currentLibrary() {
+        currentLibrary() { // выбранная для редактирования библиотека
             return this.$store.state.currentLibrary
         },
     }
@@ -446,15 +430,4 @@ export default {
     max-height: 640px;
     overflow-y: auto;
 }
-
-/* .item-enter-active,
-.item-leave-active {
-  transition: height .5s;
-}
-.item-enter,
-.item-leave-to {
-  height: 0;
-  margin: 0;
-  border: 0;
-} */
 </style>

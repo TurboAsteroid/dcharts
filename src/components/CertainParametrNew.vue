@@ -1,9 +1,10 @@
 <template>
     <v-app>
         <v-navigation-drawer 
-        width="350"
-        app
-        permanent>
+          width="350"
+          app
+          permanent
+        >
           <v-toolbar>
           </v-toolbar>
           <v-list dense class="pt-3">
@@ -29,13 +30,10 @@ export default {
     },
     data () {
         return {
-          
         }
     },
-    mounted(){
-    // if(!this.$store.state.treesLibrary.length) {      
-      this.$store.dispatch('getTreesLibrary');
-    // }
+    mounted(){      
+      this.$store.dispatch('getTreesLibrary')
       this.$store.dispatch('getTree', {getLastTree: true, addData: true})
       this.$router.replace('/report')
     },
@@ -45,7 +43,7 @@ export default {
       }
     },
     computed: {
-      report() {
+      report() { // отчет
         return this.$store.state.report.children
       }
     }

@@ -74,32 +74,22 @@ export default {
         this.$store.dispatch('getActiveLibrarys');
     },
     methods: {
-        addLib() {
+        addLib() { // Выбор из списка всех библиотек
             this.$store.state.selected = []
             this.$store.state.currentTree.addLib = false
-            this.$store.commit('changeDialogLibrary', { boolAdd: true })
-            this.$store.dispatch('getLibrarysList');
+            this.$store.commit('changeDialogLibrary', { boolAdd: true }) // открытие окна выбора библиотеки
+            this.$store.dispatch('getLibrarysList'); // Получение списка библиотек
         },
-        createLib() {
-            this.$store.commit('changeDialogLibrary', { boolCreate: true })
-            // this.$store.commit('changeDialogLibrary', { boolCreateSetting: true })
+        createLib() { // Создание новой библиотеки
+            this.$store.commit('changeDialogLibrary', { boolCreate: true }) // открытие окна создания-редактирования библиотеки (создание)
         },
-        settingLib(obj) {
-            this.$store.commit('changeDialogLibrary', { boolSetting: true, valueSetting: obj })
-            // this.$store.commit('changeDialogLibrary', { boolCreateSetting: true, valueSetting: obj })
-            this.$store.dispatch('getLibrarys', {currentLib: obj})
-        },
-        closeLib(j, obj) {
-            obj.active = false;
-            this.$store.state.activeLib[this.$store.state.activeLib.findIndex(x => x.id === obj.id)].active = 0;
-            // console.log(this.$store.state.selected.findIndex(x => x === obj.id))
-            this.$store.state.selected.splice(this.$store.state.selected.findIndex(x => x === obj.id), 1)
-            this.librarys.splice(j, 1);
-            this.$store.dispatch('activationLibrarys');
+        settingLib(obj) { // Редактирование библиотеки
+            this.$store.commit('changeDialogLibrary', { boolSetting: true, valueSetting: obj }) // открытие окна создания-редактирования библиотеки (редактирование)
+            this.$store.dispatch('getLibrarys', {currentLib: obj}) // получение данных для библиотеки
         }
     },
     computed: {
-        librarys() {
+        librarys() { // Все активные библиотеки
             return this.$store.getters.oldLibrarys
         }
     }
