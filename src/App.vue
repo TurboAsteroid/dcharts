@@ -21,7 +21,7 @@
         <v-btn flat exact :to="{ name: 'reportConfigurator'}" :disabled="active">
           Создание отчёта
         </v-btn>
-        <v-btn flat :to="{ path: '/report'}" :disabled="active">
+        <v-btn flat :to="{ path: '/report'}" :disabled="active" @click="getReport">
           Отчёт
         </v-btn>
       </v-toolbar-items>
@@ -52,11 +52,13 @@ export default {
   },
   mounted () {
     this.$store.dispatch('getActiveLibrarys');
-    // this.$store.dispatch('getLibrary')
-    // this.$store.dispatch('getTree')
-    // this.$store.dispatch('getLibraryLink')
-    // this.$store.dispatch('getLibraryTree')
-    
+  },
+  methods: {
+    getReport() {
+      console.log('dsf')
+      this.$store.dispatch('getTreesLibrary');
+      this.$store.dispatch('getTree', {getLastTree: true, addData:true})
+    }
   }
 }
 </script>

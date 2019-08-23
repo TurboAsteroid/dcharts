@@ -309,8 +309,8 @@ export default {
     },
     toReport() { // сохранение отчета
       this.$store.dispatch('setTree', { tree: this.report }).then(() => {
-        this.$store.dispatch('getTreesLibrary');
-        this.$store.dispatch('getTree', {getLastTree: true, addData:true})
+        // this.$store.dispatch('getTreesLibrary');
+        // this.$store.dispatch('getTree', {getLastTree: true, addData:true})
       })
       
     },

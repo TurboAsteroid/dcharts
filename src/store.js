@@ -346,7 +346,7 @@ export default new Vuex.Store({
       if(tree) {
         treeID = tree.id;
       }
-      axios.post('http://10.1.100.170:4000', {
+      return axios.post('http://10.1.100.170:4000', {
         query: `
           query GetTree($treeID: Int, $lastTree: Boolean, $addData: Boolean){
             getTree(treeID: $treeID, lastTree: $lastTree) {
@@ -619,7 +619,7 @@ export default new Vuex.Store({
     setTree({dispatch}, {tree}) {
       if(this.state.currentTree.name) {
         let treeLib = Object.assign({}, this.state.currentTree);
-        delete treeLib.active
+        delete treeLib.active;
         return axios.post('http://10.1.100.170:4000', {
           query:`
             mutation ChangeTree($tree: [inputTree], $treeLibrary: inputTreeLibrary) {

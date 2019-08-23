@@ -12,7 +12,6 @@
                         <span class="headline">Список отчетов</span>
                     </v-flex>
                     <v-flex xs4>
-                        <!-- <v-btn outline dark small @click="addTree()" color="info">Создать новый отчет</v-btn> -->
                     </v-flex>
                     <v-flex xs2>
                         <v-tooltip bottom>
@@ -43,14 +42,6 @@
                                     <v-list-tile-title>{{ item.name }}</v-list-tile-title>
                                     <v-list-tile-sub-title>{{ item.date }}</v-list-tile-sub-title>
                                 </v-list-tile-content>
-                                <!-- <v-alert
-                                    v-model="a"
-                                    :value="alert"
-                                    type="success"
-                                    transition="scale-transition"
-                                >
-                                    This is a success alert.
-                                </v-alert> -->
                                 <v-tooltip bottom>
                                     <template v-slot:activator="{ on }">
                                         <v-btn fab outline dark small color="red" @click="removeRow(index, item)" v-on="on">
@@ -62,10 +53,6 @@
                             </v-list-tile>
                             <v-divider v-if="index !== treesLibrary.length - 1"></v-divider>
                         </v-flex>
-                            
-                        <!-- <v-flex xs2>
-                            
-                        </v-flex> -->
                     </v-layout>
                     
                 </v-list>
@@ -79,10 +66,6 @@
         <v-card>
             <v-card-title style="padding: 5px 10px;">
               <v-layout row align-center>
-                    <!-- <v-flex xs1>
-                        <v-icon large color="red">{{'warning'}}</v-icon>
-
-                    </v-flex> -->
                     <v-flex xs10>
                         <v-text-field
                             :value = currentTree.name
