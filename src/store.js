@@ -13,6 +13,7 @@ export default new Vuex.Store({
     selected: [],
     selectedTreeElement:[],
     activeLib: [],
+    activeTreeId: null,
 
     dialogTree: false,
     dialogAlert: false,
@@ -245,7 +246,7 @@ export default new Vuex.Store({
           o.active ? this.state.selected.push(o.id) : '';
         }
         this.state.librarysList = Object.assign([], libList);
-        console.log(this.state.librarysList)
+        // console.log(this.state.librarysList)
 
       }); 
     },
@@ -397,6 +398,7 @@ export default new Vuex.Store({
               }  
             }
             getLibraryIdInTree(treeID: $treeID, lastTree: $lastTree)
+            getActiveTree
           }
           fragment dataSet on DataSet {
             id
@@ -446,7 +448,7 @@ export default new Vuex.Store({
         }
       }).then(res => {
         this.state.oldLibrarys = res.data.data.getTree;
-        console.log( res.data.data.getTree)
+        this.state.activeTreeId = res.data.data.getActiveTree;
         report = {
           id: 0,
           data:[],
@@ -577,7 +579,6 @@ export default new Vuex.Store({
       // }
     },
     getCharts({}, {currentNode}) {
-      console.log(currentNode)
       let boolLink = false,
           boolDataset = false;
       let id;
@@ -591,8 +592,8 @@ export default new Vuex.Store({
 
       return axios.post('http://10.1.100.170:4000', {
         query:`
-          query GetCharts($id: ID, $boolLink: Boolean, $boolDataset: Boolean){
-            getCharts(id: $id, boolLink: $boolLink, boolDataset: $boolDataset) {
+          query GetCharts($id: ID, $treeID: ID,$boolLink: Boolean, $boolDataset: Boolean){
+            getCharts(id: $id, treeID: $treeID, boolLink: $boolLink, boolDataset: $boolDataset) {
               title
               active
             }
@@ -600,6 +601,7 @@ export default new Vuex.Store({
         `,
         variables: {
           id,
+          treeID: this.state.activeTreeId,
           boolLink,
           boolDataset
         }
@@ -669,7 +671,7 @@ export default new Vuex.Store({
         // console.log(this.state.currentTree)
         let treeLib = Object.assign({}, this.state.currentTree);
         delete treeLib.active
-        axios.post('http://10.1.100.170:4000', {
+        return axios.post('http://10.1.100.170:4000', {
           query:`
             mutation ChangeTree($tree: [inputTree], $treeLibrary: inputTreeLibrary) {
               changeTree(tree: $tree, treeLibrary: $treeLibrary)

@@ -318,7 +318,13 @@ export default {
     },
     toReport() {
       console.log(this.report)
-      this.$store.dispatch('setTree', { tree: this.report })
+      this.$store.dispatch('setTree', { tree: this.report }).then(() => {
+      //   this.$router.push('/report')
+
+        this.$store.dispatch('getTreesLibrary');
+        this.$store.dispatch('getTree', {getLastTree: true, addData:true})
+      })
+      
     },
     onClick (evt) {
       this.selected = []

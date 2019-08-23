@@ -6,8 +6,8 @@ type Query {
     getTree(treeID: Int, lastTree: Boolean): [Librarys]
     getLibraryIdInTree(treeID: Int, lastTree: Boolean) : [Int]
     getIndicators(id: ID, boolLink: Boolean) : [Indicators]
-    getCharts(id: ID, boolLink: Boolean, boolDataset: Boolean) : [Chart]
-
+    getCharts(id: ID, treeID: ID,boolLink: Boolean, boolDataset: Boolean) : [Chart]
+    getActiveTree: ID
     getData(salary: String, salaryBool: Boolean!): dataSource
 }
 type Mutation {
@@ -164,6 +164,7 @@ input inputTreeLibrary {
     name: String
     date: String
     levels: Int
+    addLib: Boolean
 }
 # input inputTree {
 #     children: [inputDataSet]
